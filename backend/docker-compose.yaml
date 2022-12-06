@@ -1,0 +1,25 @@
+services:
+  backend-service:
+    build: .
+    ports:
+      - "3000:3000"
+    environment: 
+      POSTGRES_URL: "user=postgres password=123 host=postgres  dbname=dev port=5432 sslmode=disable"
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    image: postgres:14-alpine
+    ports: 
+      - "5000:5432"
+    user: postgres
+    environment:
+      POSTGRES_PASSWORD: "123"
+      POSTGRES_DB: "dev"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "dev", "--username=postgres", "-p", "5432"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+     
