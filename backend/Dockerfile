@@ -10,7 +10,7 @@ COPY . .
 
 RUN mkdir bin
 
-RUN go build -o ./bin/backend ./cmd/main.go
+RUN go build -o ./bin/backend ./main.go
 
 # Copy it the app to an alpine
 FROM alpine:3.11.3

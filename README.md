@@ -17,103 +17,36 @@
 
 # API Definitions
 
-## Get Component
+## Register A User
 
-**GET /components/**
+**POST /register**
 
 ```json
 {
-  "components": {
-    "data": [
-      {
-        "ID": 1,
-        "CreatedAt": "2022-11-17T22:00:04.790248+08:00",
-        "UpdatedAt": "2022-11-17T22:00:04.790248+08:00",
-        "DeletedAt": null,
-        "name": "nginx",
-        "version": "1.10.2",
-        "levelsPopulated": 6,
-        "classification1": "Platform",
-        "classification2": "Application",
-        "classification3": "Content Management",
-        "classification4": "Storage",
-        "classification5": "Cloud Storage",
-        "classification6": "Event-Based-Trigger",
-        "classification7": "",
-        "status": "componentDraft",
-        "approved_by": "",
-        "country": "SGP",
-        "created_by": 1,
-        "artifact": {
-          "ID": 1,
-          "CreatedAt": "2022-11-17T22:00:04.798025+08:00",
-          "UpdatedAt": "2022-11-17T22:00:04.798025+08:00",
-          "DeletedAt": null,
-          "configs": [
-            {
-              "ID": 1,
-              "CreatedAt": "2022-11-17T22:00:04.806076+08:00",
-              "UpdatedAt": "2022-11-17T22:00:04.806076+08:00",
-              "DeletedAt": null,
-              "artifactId": 1,
-              "label": "nginx config",
-              "configLocation": "/etc/nginx/conf.d",
-              "configFile": "server{}"
-            }
-          ],
-          "componentId": 1,
-          "testResultID": 0,
-          "name": "nginx",
-          "url": "http://nginx.org/download/nginx-1.23.1.tar.gz",
-          "status": "CREATED",
-          "taxonomy": "/software/webserver",
-          "checksum": "W+Hsx5NfHdhWNdT+7a9mBZQDAlPMl8npyjgZ/+rDa2U=",
-          "createdBy": 1,
-          "approvedBy": 1
-        }
-      },
-      {
-        "ID": 2,
-        "CreatedAt": "2022-11-17T22:00:04.794297+08:00",
-        "UpdatedAt": "2022-11-17T22:00:04.794297+08:00",
-        "DeletedAt": null,
-        "name": "cache",
-        "version": "1.13.4",
-        "levelsPopulated": 6,
-        "classification1": "Platform",
-        "classification2": "Application",
-        "classification3": "Content Management",
-        "classification4": "Storage",
-        "classification5": "Cloud Storage",
-        "classification6": "Event-Based-Trigger",
-        "classification7": "",
-        "status": "componentPendingApproval",
-        "approved_by": "",
-        "country": "MYS",
-        "created_by": 1,
-        "artifact": {
-          "ID": 2,
-          "CreatedAt": "2022-11-17T22:00:04.802529+08:00",
-          "UpdatedAt": "2022-11-17T22:00:04.802529+08:00",
-          "DeletedAt": null,
-          "configs": [],
-          "componentId": 2,
-          "testResultID": 0,
-          "name": "redis",
-          "url": "https://github.com/redis/redis/archive/7.0.4.tar.gz",
-          "status": "CREATED",
-          "taxonomy": "/software/cache",
-          "checksum": "NPtGyEe7nfluUgWjnTgvZIpujc4eAUzYW0ymqI2I7QM=",
-          "createdBy": 1,
-          "approvedBy": 1
-        }
-      }
-    ],
-    "message": "Successfully returned all components",
-    "status": "Success"
-  }
+  "email": "test1@example.com",
+  "password": "1234",
+  "name": "test1",
+  "access_type": "1"
 }
 ```
+
+**POST /login**
+
+```json
+{
+  "email": "test1@example.com",
+  "password": "1234",
+}
+```
+
+**POST /logout**
+
+```json
+{
+}
+```
+
+**GET /user**
 
 **GET /components/{componentId}**
 

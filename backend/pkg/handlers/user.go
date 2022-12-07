@@ -1,20 +1,19 @@
 package handlers
 
-import (
-	"backend/pkg/utils"
-	"net/http"
+// import (
+// 	"backend/utils"
+// 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	_ "github.com/lib/pq"
-)
+// 	_ "github.com/lib/pq"
+// )
 
-func GetAllUsers(c *gin.Context) {
-	users := utils.FindAllUsers()
+// func GetAllUsers(c *gin.Context) {
+// 	users := utils.FindAllUsers()
 
-	responseBody := utils.CreateResponseBody("components", "Successfully returned all components", "Success", users)
+// 	responseBody := utils.CreateResponseBody("components", "Successfully returned all components", "Success", users)
 
-	c.JSON(http.StatusOK, responseBody)
-}
+// 	c.JSON(http.StatusOK, responseBody)
+// }
 
 // // Middleware. Extract component id from url. Abort if component id does not exist in url.
 // func ExtractComponentId(c *gin.Context) {
@@ -173,7 +172,6 @@ func GetAllUsers(c *gin.Context) {
 // 	statusStr = Approval.Status
 // 	commentStr = Approval.Comment
 
-	
 // 	fmt.Println(statusStr);
 // 	fmt.Println(commentStr);
 
