@@ -25,12 +25,13 @@ func Connect() {
 }
 
 func CreateTables(db *gorm.DB) {
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Post{},
+		&models.Comment{}, &models.View{}, &models.Like{})
 }
 
 // Remove all records from all tables.
 func ClearTables(db *gorm.DB) {
-	cols := [5]string{"users", "posts", "comments", "views", "likes"}
+	cols := [5]string{"likes", "comments", "views", "posts", "users"}
 	for _, col := range cols {
 		s := fmt.Sprintf("DROP TABLE IF EXISTS %s", col)
 		db.Exec(s)
