@@ -11,33 +11,29 @@ type User struct {
 }
 
 type Post struct {
-	User      User      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	PostId    uint      `json:"post_id" gorm:"primaryKey;gorm:autoIncrement"`
-	UserId    uint      `json:"user_id" gorm:"primaryKey"`
+	User      User      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	UserId    uint      `json:"user_id"`
 	Title     string    `json:"title"`
 	Body      string    `json:"body"`
 	CreatedDt time.Time `json:"created_dt"`
 }
 
 type Comment struct {
+	CommentId uint      `json:"comment_id" gorm:"primaryKey;gorm:autoIncrement"`
 	User      User      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Post      Post      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	UserId    uint      `json:"user_id" gorm:"primaryKey"`
-	PostId    uint      `json:"post_id" gorm:"primaryKey"`
-	CreatedDt time.Time `json:"created_dt" gorm:"primaryKey"`
+	UserId    uint      `json:"user_id"`
+	PostId    uint      `json:"post_id"`
+	Content   string    `json:"content"`
+	CreatedDt time.Time `json:"created_dt"`
 }
 
-type View struct {
+type Popularity struct {
 	User   User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Post   Post `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	UserId uint `json:"user_id" gorm:"primaryKey"`
 	PostId uint `json:"post_id" gorm:"primaryKey"`
-	Count  uint `json:"count"`
-}
-
-type Like struct {
-	User   User `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Post   Post `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	UserId uint `json:"user_id"`
-	PostId uint `json:"post_id"`
+	Views  uint `json:"views"`
+	Likes  bool `json:"likes"`
 }

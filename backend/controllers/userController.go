@@ -14,8 +14,16 @@ import (
 
 const SecretKey = "secret"
 
-func Home(c *fiber.Ctx) error {
-	return c.SendString("Hello, My World")
+var db = database.DB
+
+func User(c *fiber.Ctx) error {
+	user, err := utils.GetCurrentUser(c, SecretKey)
+
+	if err != nil {
+		c.Status(fiber.StatusNotFound)
+		return utils.ErrorResponse(c, "user is unauthenticated")
+	}
+	return c.JSON(user)
 }
 
 func Register(c *fiber.Ctx) error {
@@ -26,16 +34,15 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	password, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
-	accessType, _ := utils.ParseUint(data["access_type"])
 
 	user := models.User{
 		Email:      data["email"],
 		Password:   password,
 		Name:       data["name"],
-		AccessType: accessType,
+		AccessType: utils.ParseUint(data["access_type"]),
 	}
 
-	database.DB.Create(&user)
+	db.Create(&user)
 
 	return c.JSON(user)
 }
@@ -49,7 +56,7 @@ func Login(c *fiber.Ctx) error {
 
 	var user models.User
 
-	database.DB.Where("email = ?", data["email"]).First(&user)
+	db.Where("email = ?", data["email"]).First(&user)
 
 	if user.UserId == 0 {
 		c.Status(fiber.StatusNotFound)
@@ -91,29 +98,6 @@ func Login(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "success",
 	})
-}
-
-func User(c *fiber.Ctx) error {
-	cookie := c.Cookies("jwt")
-
-	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(SecretKey), nil
-	})
-
-	if err != nil {
-		c.Status(fiber.StatusUnauthorized)
-		return c.JSON(fiber.Map{
-			"message": "unauthenticated",
-		})
-	}
-
-	claims := token.Claims.(*jwt.StandardClaims)
-
-	var user models.User
-
-	database.DB.Where("id = ?", claims.Issuer).First(&user)
-
-	return c.JSON(user)
 }
 
 func Logout(c *fiber.Ctx) error {
