@@ -1,0 +1,70 @@
+###
+GET http://localhost:3000/api/user
+###
+
+POST http://localhost:3000/api/user/register 
+Content-Type: application/json
+
+{
+  "email": "test1@example.com",
+  "password": "1234",
+  "name": "test1",
+  "access_type": "1"
+}
+###
+
+POST http://localhost:3000/api/user/login 
+Content-Type: application/json
+
+{
+  "email": "abby@test.com",
+  "password": "123"
+}
+###
+
+POST http://localhost:3000/api/user/logout 
+Content-Type: application/json
+
+{
+}
+###
+
+GET http://localhost:3000/api/post
+###
+
+GET http://localhost:3000/api/post/2
+###
+
+POST http://localhost:3000/api/post/add 
+Content-Type: application/json
+
+{
+  "title": "title4",
+  "body": "this is some body text 4" 
+}
+###
+
+POST http://localhost:3000/api/post/delete/4 
+Content-Type: application/json
+
+{
+}
+###
+
+GET http://localhost:3000/api/post/1/comment
+###
+
+POST http://localhost:3000/api/post/1/comment/add
+Content-Type: application/json
+
+{
+  "content": "this is some comment"
+}
+###
+
+POST http://localhost:3000/api/post/1/comment/delete/1
+Content-Type: application/json
+
+{
+}
+###

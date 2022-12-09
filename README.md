@@ -8,7 +8,7 @@
   - [Get Classifications](#get-classifications)
   - [Get Controls](#get-classifications)
   - [Other APIs](#other-apis)
-- [Instructions to initialize postgresql database](#instructions-to-initialize-postgresql-database)
+- [Instructions to initialize PostgreSQL database](#instructions-to-initialize-postgresql-database)
 
 # For local dev
 
@@ -35,15 +35,14 @@
 ```json
 {
   "email": "test1@example.com",
-  "password": "1234",
+  "password": "1234"
 }
 ```
 
 **POST /logout**
 
 ```json
-{
-}
+{}
 ```
 
 **GET /user**
@@ -984,12 +983,12 @@
 }
 ```
 
-# Instructions to initialize postgresql database
+# Instructions to initialize PostgreSQL database
 
 To initialize the database, you can either:
 
 - Use `psql` CLI to execute [init.sql](init.sql) on the database that psql is connected to, or
-- Run docker command: `docker compose up` under the data directory. After the container is up, the database will be listening on localhost:5000 with
+- Run docker command: `docker compose up` from the root directory. After the container is up, the database will be listening on localhost:5000 with
 
   - server: localhost
   - database name: dev
