@@ -19,6 +19,7 @@ func Setup(app *fiber.App) {
 	// Post API
 	post_api := api.Group("/post")
 	post_api.Get("", controllers.Posts)
+	post_api.Get("/:postId", controllers.GetPost)
 	post_api.Post("/add", controllers.AddPost)
 	post_api.Post("/delete/:postId", controllers.DeletePost)
 
@@ -27,9 +28,5 @@ func Setup(app *fiber.App) {
 	comment_api.Get("", controllers.Comments)
 	comment_api.Post("/add", controllers.AddComment)
 	comment_api.Post("/delete/:commentId", controllers.DeleteComment)
-
-	// Popularity API
-	popularity_api := post_api.Group("/:postId/popularity")
-	popularity_api.Get("", controllers.Popularity)
 
 }

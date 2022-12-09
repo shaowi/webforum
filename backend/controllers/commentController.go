@@ -1,28 +1,29 @@
 package controllers
 
 import (
+	"backend/database"
 	"backend/models"
 	"backend/utils"
-	"fmt"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func Comments(c *fiber.Ctx) error {
-
 	// Check that user is logged in
-	user, err := utils.GetCurrentUser(c, SecretKey)
-	if err != nil {
-		return utils.ErrorResponse(c, "user is not found")
+	if _, err := utils.GetCurrentUser(c, SecretKey); err != nil {
+		return utils.ErrorResponse(c, utils.UserNotFound)
 	}
 
 	comments := []models.Comment{}
 	postId := c.Params("postId")
-	db.Where(map[string]interface{}{"user_id": user.UserId, "post_id": postId}).Find(&comments)
+	condition := map[string]interface{}{"post_id": postId}
 
-	resStr := fmt.Sprintf("all comments retrieved for post_id: %s", postId)
-	return utils.ResponseBody(c, resStr, c.JSON(comments))
+	if err := database.DB.Where(condition).Find(&comments).Error; err != nil {
+		return utils.ErrorResponse(c, utils.GetError)
+	}
+
+	return utils.GetRequestResponse(c, comments)
 }
 
 func AddComment(c *fiber.Ctx) error {
@@ -35,39 +36,43 @@ func AddComment(c *fiber.Ctx) error {
 	// Check that user is logged in
 	user, err := utils.GetCurrentUser(c, SecretKey)
 	if err != nil {
-		return utils.ErrorResponse(c, "user is not found")
+		return utils.ErrorResponse(c, utils.UserNotFound)
 	}
-	postId := utils.ParseUint(c.Params("postId"))
+	postId, err := utils.ParseUint(c.Params("postId"))
+	if err != nil {
+		return err
+	}
 
 	comment := models.Comment{
 		UserId:    user.UserId,
 		PostId:    postId,
 		Content:   data["content"],
-		CreatedDt: time.Now(),
+		CreatedDt: time.Now().Unix(),
 	}
 
-	db.Create(&comment)
-	resStr := fmt.Sprintf("comment has been added successfully for post_id: %d", postId)
+	if err := database.DB.Create(&comment).Error; err != nil {
+		return utils.ErrorResponse(c, utils.CreateError)
+	}
 
-	return utils.ResponseBody(c, resStr, c.JSON(comment))
+	return utils.CreateRequestResponse(c, comment)
 }
 
 func DeleteComment(c *fiber.Ctx) error {
 	// Check that user is logged in
 	user, err := utils.GetCurrentUser(c, SecretKey)
 	if err != nil {
-		return utils.ErrorResponse(c, "user is not found")
+		return utils.ErrorResponse(c, utils.UserNotFound)
 	}
 
 	// Check that user is an administrator
 	if user.AccessType == 1 {
 		commentId := c.Params("commentId")
-		db.Delete(&models.Comment{}, commentId)
+		if err := database.DB.Delete(&models.Comment{}, commentId).Error; err != nil {
+			return utils.ErrorResponse(c, utils.DeleteError)
+		}
 
-		postId := c.Params("postId")
-		resStr := fmt.Sprintf("comment has been deleted successfully for post_id: %s", postId)
-		return utils.ResponseBody(c, resStr, nil)
+		return utils.ResponseBody(c, utils.DeleteSuccess)
 	}
 
-	return utils.ErrorResponse(c, "comment is not found")
+	return utils.ErrorResponse(c, utils.ForbiddenAction)
 }

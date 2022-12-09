@@ -14,8 +14,6 @@ import (
 
 const SecretKey = "secret"
 
-var db = database.DB
-
 func User(c *fiber.Ctx) error {
 	user, err := utils.GetCurrentUser(c, SecretKey)
 
@@ -23,7 +21,7 @@ func User(c *fiber.Ctx) error {
 		c.Status(fiber.StatusNotFound)
 		return utils.ErrorResponse(c, "user is unauthenticated")
 	}
-	return c.JSON(user)
+	return utils.GetRequestResponse(c, user)
 }
 
 func Register(c *fiber.Ctx) error {
@@ -34,17 +32,22 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	password, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
+	access_type, err := utils.ParseUint(data["access_type"])
+	if err != nil {
+		return err
+	}
 
 	user := models.User{
 		Email:      data["email"],
 		Password:   password,
 		Name:       data["name"],
-		AccessType: utils.ParseUint(data["access_type"]),
+		AccessType: access_type,
 	}
 
-	db.Create(&user)
-
-	return c.JSON(user)
+	if err := database.DB.Create(&user).Error; err != nil {
+		return utils.ErrorResponse(c, "Error creating user")
+	}
+	return utils.CreateRequestResponse(c, user)
 }
 
 func Login(c *fiber.Ctx) error {
@@ -56,7 +59,7 @@ func Login(c *fiber.Ctx) error {
 
 	var user models.User
 
-	db.Where("email = ?", data["email"]).First(&user)
+	database.DB.Where("email = ?", data["email"]).First(&user)
 
 	if user.UserId == 0 {
 		c.Status(fiber.StatusNotFound)
@@ -95,9 +98,7 @@ func Login(c *fiber.Ctx) error {
 
 	c.Cookie(&cookie)
 
-	return c.JSON(fiber.Map{
-		"message": "success",
-	})
+	return utils.ResponseBody(c, utils.UserLoggedIn)
 }
 
 func Logout(c *fiber.Ctx) error {
@@ -110,7 +111,5 @@ func Logout(c *fiber.Ctx) error {
 
 	c.Cookie(&cookie)
 
-	return c.JSON(fiber.Map{
-		"message": "success",
-	})
+	return utils.ResponseBody(c, utils.UserLoggedOut)
 }

@@ -3,7 +3,6 @@ package utils
 import (
 	"backend/database"
 	"backend/models"
-	"fmt"
 	"strconv"
 
 	"github.com/dgrijalva/jwt-go"
@@ -11,27 +10,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func ResponseBody(c *fiber.Ctx, msg string, data error) error {
-	return c.JSON(fiber.Map{
-		"message": msg,
-		"data":    data,
-	})
-}
-
-func ErrorResponse(c *fiber.Ctx, errMsg string) error {
-	return c.JSON(fiber.Map{
-		"error": errMsg,
-	})
-}
-
 // Wrapper around strconv.ParseUint. Base is set to 10; bitSize is set to 64.
-func ParseUint(s string) uint {
+func ParseUint(s string) (uint, error) {
 	num, err := strconv.ParseUint(s, 10, 64)
-	if err != nil {
-		return uint(num)
-	}
-	errStr := fmt.Sprintf("Error parsing %s to int", s)
-	panic(errStr)
+	return uint(num), err
 }
 
 func GetJwtToken(cookie string, SecretKey string) (*jwt.Token, error) {
@@ -54,7 +36,7 @@ func GetCurrentUser(c *fiber.Ctx, SecretKey string) (models.User, error) {
 
 	claims := token.Claims.(*jwt.StandardClaims)
 
-	database.DB.Where("id = ?", claims.Issuer).First(&user)
+	database.DB.Where("user_id = ?", claims.Issuer).First(&user)
 
 	return user, nil
 }
