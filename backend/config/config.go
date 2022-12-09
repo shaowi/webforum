@@ -32,20 +32,22 @@ func GoDotEnvVariable(key string) string {
 }
 
 func GetPostgresConnectionStr() string {
-	config := Config{
-		Host:     GoDotEnvVariable("DB_HOST"),
-		Port:     GoDotEnvVariable("DB_PORT"),
-		User:     GoDotEnvVariable("DB_USER"),
-		Password: GoDotEnvVariable("DB_PASS"),
-		DBName:   GoDotEnvVariable("DB_NAME"),
-		SSLMode:  GoDotEnvVariable("DB_SSLMODE"),
-	}
-	postgresConnectionStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
-		config.Host, config.User, config.Password, config.DBName, config.Port, config.SSLMode)
+	postgresConnectionStr := ""
 
 	// Has docker container for backend service
 	if len(os.Getenv("POSTGRES_URL")) > 0 {
 		postgresConnectionStr = os.Getenv("POSTGRES_URL")
+	} else {
+		config := Config{
+			Host:     GoDotEnvVariable("DB_HOST"),
+			Port:     GoDotEnvVariable("DB_PORT"),
+			User:     GoDotEnvVariable("DB_USER"),
+			Password: GoDotEnvVariable("DB_PASS"),
+			DBName:   GoDotEnvVariable("DB_NAME"),
+			SSLMode:  GoDotEnvVariable("DB_SSLMODE"),
+		}
+		postgresConnectionStr = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+			config.Host, config.User, config.Password, config.DBName, config.Port, config.SSLMode)
 	}
 	return postgresConnectionStr
 }
