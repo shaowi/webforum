@@ -13,13 +13,15 @@ import { useState } from 'react';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import NavbarLink from './NavbarLink';
 import '../../App.css';
+import { User } from '../../types/User';
+import { API_HOST } from '../../utils/constants';
 
 export default function Nav({
-  name,
-  setName,
+  user,
+  setUser,
 }: {
-  name: string;
-  setName: Function;
+  user: User | undefined;
+  setUser: Function;
 }) {
   const [active, setActive] = useState(2);
 
@@ -43,20 +45,21 @@ export default function Nav({
   ));
 
   const logout = async () => {
-    await fetch('http://localhost:8000/api/logout', {
+    const url = `${API_HOST}/logout`;
+    await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
     });
 
-    setName('');
+    setUser(undefined);
   };
 
   return (
     <Navbar className="side-nav" p="md">
       <Center>
         <p>Logo</p>
-        <p>{name}</p>
+        <p>{user ? user.name : ''}</p>
       </Center>
       <Navbar.Section grow mt={50}>
         <Stack justify="center" spacing={0}>

@@ -11,9 +11,10 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import { API_HOST } from './utils/constants';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
+import { User } from './types/User';
 
 function App() {
-  const [name, setName] = useState('');
+  const [user, setUser] = useState<User | undefined>(undefined);
 
   useEffect(() => {
     // Fetch cache cookie user
@@ -25,8 +26,9 @@ function App() {
       });
 
       const content = await response.json();
-
-      setName(content.name);
+      if (!('error' in content)) {
+        setUser(content as User);
+      }
     })();
   });
 
@@ -36,9 +38,9 @@ function App() {
         <Route
           path="/"
           exact
-          component={() => <Home name={name} setName={setName} />}
+          component={() => <Home user={user} setUser={setUser} />}
         />
-        <Route path="/login" component={() => <Login setName={setName} />} />
+        <Route path="/login" component={() => <Login setUser={setUser} />} />
         <Route path="/register" component={Register} />
       </BrowserRouter>
     </div>

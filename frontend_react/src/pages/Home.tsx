@@ -2,20 +2,21 @@ import '../App.css';
 import { Redirect } from 'react-router-dom';
 import Nav from '../components/nav/Nav';
 import PostContainer from '../components/posts/PostContainer';
+import { User } from '../types/User';
 
 export default function Home({
-  name,
-  setName,
+  user,
+  setUser,
 }: {
-  name: string;
-  setName: Function;
+  user: User | undefined;
+  setUser: Function;
 }) {
-  if (name.length === 0) {
+  if (typeof user === 'undefined' || user.name.length === 0) {
     return <Redirect to="/login" />;
   }
   return (
     <div className="flex-container">
-      <Nav name={name} setName={setName} />
+      <Nav user={user} setUser={setUser} />
       <PostContainer />
     </div>
   );

@@ -1,26 +1,49 @@
 import { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import {
   TextInput,
   PasswordInput,
   Checkbox,
-  Anchor,
   Paper,
   Title,
   Text,
   Container,
   Group,
   Button,
+  Modal,
 } from '@mantine/core';
 import { API_HOST } from '../utils/constants';
 import '../App.css';
+import { User } from '../types/User';
+import { useForm } from '@mantine/form';
 
-export default function Login({ setName }: { setName: Function }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function Login({ setUser }: { setUser: Function }) {
+  const [cacheUser, setCacheUser] = useState(false);
   const [redirect, setRedirect] = useState(false);
+  const [showError, setShowError] = useState(false);
 
-  const submit = async () => {
+  const form = useForm({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+
+    validate: {
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+      password: (value) =>
+        value.trim().length >= 6
+          ? null
+          : 'Password must be at least 6 characters long',
+    },
+  });
+
+  const submit = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
     const url = `${API_HOST}/login`;
 
     const response = await fetch(url, {
@@ -34,9 +57,12 @@ export default function Login({ setName }: { setName: Function }) {
     });
 
     const content = await response.json();
-
-    setRedirect(true);
-    setName(content.name);
+    if ('error' in content) {
+      setUser(content as User);
+      setRedirect(true);
+    } else {
+      setShowError(true);
+    }
   };
 
   return redirect ? (
@@ -54,42 +80,48 @@ export default function Login({ setName }: { setName: Function }) {
       </Title>
       <Text color="dimmed" size="sm" align="center" mt={5}>
         Do not have an account yet?{' '}
-        <Anchor<'a'>
-          href="#"
-          size="sm"
-          onClick={(event) => event.preventDefault()}
-        >
+        <Link to="/register" className="hyperlinks">
           Create account
-        </Anchor>
+        </Link>
       </Text>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <TextInput
-          label="Email"
-          placeholder="you@mantine.dev"
-          required
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <PasswordInput
-          label="Password"
-          placeholder="Your password"
-          required
-          mt="md"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Group position="apart" mt="lg">
-          <Checkbox label="Remember me" sx={{ lineHeight: 1 }} />
-          <Anchor<'a'>
-            onClick={(event) => event.preventDefault()}
-            href="#"
-            size="sm"
-          >
-            Forgot password?
-          </Anchor>
-        </Group>
-        <Button fullWidth mt="xl" onClick={submit}>
-          Sign in
-        </Button>
+        <form onSubmit={form.onSubmit((values) => submit(values))}>
+          <TextInput
+            label="Email"
+            placeholder="Enter your email address"
+            required
+            {...form.getInputProps('email')}
+          />
+          <PasswordInput
+            label="Password"
+            placeholder="Enter your password"
+            required
+            mt="md"
+            {...form.getInputProps('password')}
+          />
+          <Group position="apart" mt="lg">
+            <Checkbox
+              label="Remember me"
+              sx={{ lineHeight: 1 }}
+              checked={cacheUser}
+              onChange={(e) => setCacheUser(e.currentTarget.checked)}
+            />
+            <Link to="/resetpassword" className="hyperlinks">
+              Forgot password?
+            </Link>
+          </Group>
+          <Button fullWidth mt="xl" type="submit">
+            Sign in
+          </Button>
+        </form>
+        <Modal
+          opened={showError}
+          onClose={() => setShowError(false)}
+          title="Error occured while logging in"
+        >
+          Invalid email address or password. Please try again.
+        </Modal>
       </Paper>
     </Container>
   );
