@@ -13,7 +13,7 @@ func ResponseBody(c *fiber.Ctx, msg string) error {
 }
 
 func ErrorResponse(c *fiber.Ctx, errMsg string) error {
-	return c.Status(http.StatusFailedDependency).JSON(fiber.Map{
+	return c.Status(http.StatusNotFound).JSON(fiber.Map{
 		"error": errMsg,
 	})
 }

@@ -13,7 +13,7 @@ func Setup(app *fiber.App) {
 	user_api := api.Group("/user")
 	user_api.Get("", controllers.User)
 	user_api.Post("/register", controllers.Register)
-	user_api.Post("/login", controllers.Login)
+	user_api.Post("/login/:cacheUser", controllers.Login)
 	user_api.Post("/logout", controllers.Logout)
 
 	// Post API

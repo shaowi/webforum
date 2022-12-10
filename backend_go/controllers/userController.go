@@ -19,7 +19,7 @@ func User(c *fiber.Ctx) error {
 
 	if err != nil {
 		c.Status(fiber.StatusNotFound)
-		return utils.ErrorResponse(c, "user is unauthenticated")
+		return utils.ErrorResponse(c, utils.UserNotFound)
 	}
 	return utils.GetRequestResponse(c, user)
 }
@@ -45,7 +45,7 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	if err := database.DB.Create(&user).Error; err != nil {
-		return utils.ErrorResponse(c, "Error creating user")
+		return utils.ErrorResponse(c, utils.CreateError)
 	}
 	return utils.CreateRequestResponse(c, user)
 }
@@ -63,40 +63,37 @@ func Login(c *fiber.Ctx) error {
 
 	if user.UserId == 0 {
 		c.Status(fiber.StatusNotFound)
-		return c.JSON(fiber.Map{
-			"message": "user not found",
-		})
+		return utils.ErrorResponse(c, utils.UserNotFound)
 	}
 
 	if err := bcrypt.CompareHashAndPassword(user.Password, []byte(data["password"])); err != nil {
-		c.Status(fiber.StatusBadRequest)
-		return c.JSON(fiber.Map{
-			"message": "incorrect password",
+		return utils.ErrorResponse(c, utils.IncorrectPassword)
+	}
+	cacheUser, err := strconv.ParseBool(c.Params("cacheUser"))
+	if err == nil {
+		panic(err)
+	}
+	if cacheUser {
+		claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+			Issuer:    strconv.Itoa(int(user.UserId)),
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), //1 day
 		})
+
+		token, err := claims.SignedString([]byte(SecretKey))
+
+		if err != nil {
+			return utils.ErrorResponse(c, utils.LogInError)
+		}
+
+		cookie := fiber.Cookie{
+			Name:     "jwt",
+			Value:    token,
+			Expires:  time.Now().Add(time.Hour * 24),
+			HTTPOnly: true,
+		}
+
+		c.Cookie(&cookie)
 	}
-
-	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Issuer:    strconv.Itoa(int(user.UserId)),
-		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), //1 day
-	})
-
-	token, err := claims.SignedString([]byte(SecretKey))
-
-	if err != nil {
-		c.Status(fiber.StatusInternalServerError)
-		return c.JSON(fiber.Map{
-			"message": "could not login",
-		})
-	}
-
-	cookie := fiber.Cookie{
-		Name:     "jwt",
-		Value:    token,
-		Expires:  time.Now().Add(time.Hour * 24),
-		HTTPOnly: true,
-	}
-
-	c.Cookie(&cookie)
 
 	return utils.ResponseBody(c, utils.UserLoggedIn)
 }
