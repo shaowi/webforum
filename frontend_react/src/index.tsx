@@ -1,5 +1,4 @@
 import React from 'react';
-import './index.css';
 import WrapperApp from './App';
 import reportWebVitals from './reportWebVitals';
 

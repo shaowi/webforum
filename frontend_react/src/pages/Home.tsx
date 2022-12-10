@@ -1,6 +1,7 @@
-import { Container } from '@mantine/core';
-import Nav from '../components/Nav';
-import PostContainer from '../components/PostContainer';
+import '../App.css';
+import { Redirect } from 'react-router-dom';
+import Nav from '../components/nav/Nav';
+import PostContainer from '../components/posts/PostContainer';
 
 export default function Home({
   name,
@@ -9,10 +10,13 @@ export default function Home({
   name: string;
   setName: Function;
 }) {
+  if (name.length === 0) {
+    return <Redirect to="/login" />;
+  }
   return (
-    <Container>
+    <div className="flex-container">
       <Nav name={name} setName={setName} />
       <PostContainer />
-    </Container>
+    </div>
   );
 }
