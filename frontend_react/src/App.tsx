@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import Login from './pages/Login';
-import Nav from './components/Nav';
-import { BrowserRouter, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Register from './pages/Register';
 import {
   ColorScheme,
   ColorSchemeProvider,
   MantineProvider,
 } from '@mantine/core';
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Route } from 'react-router-dom';
+import './App.css';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import { API_HOST } from './utils/constants';
+import { useHotkeys, useLocalStorage } from '@mantine/hooks';
 
 function App() {
-  const [name, setName] = useState('shao');
+  const [name, setName] = useState('');
 
   useEffect(() => {
+    // Fetch cache cookie user
     (async () => {
       const url = `${API_HOST}/user`;
       const response = await fetch(url, {
@@ -32,12 +33,12 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <div style={{ display: 'flex' }}>
-          <Nav name={name} setName={setName} />
-          <Route path="/" exact component={() => <Home name={name} />} />
-        </div>
-
-        {/* <Route path="/login" component={() => <Login setName={setName}/>}/> */}
+        <Route
+          path="/"
+          exact
+          component={() => <Home name={name} setName={setName} />}
+        />
+        <Route path="/login" component={() => <Login setName={setName} />} />
         <Route path="/register" component={Register} />
       </BrowserRouter>
     </div>
@@ -45,9 +46,20 @@ function App() {
 }
 
 function WrapperApp() {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+    key: 'mantine-color-scheme',
+    defaultValue: 'light',
+    getInitialValueInEffect: true,
+  });
+
+  const toggleColorScheme = (value?: ColorScheme) => {
+    const nextColorScheme =
+      value || (colorScheme === 'dark' ? 'light' : 'dark');
+    setColorScheme(nextColorScheme);
+  };
+
+  // Ctrl/Cmd-J to toggle between light/dark theme
+  useHotkeys([['mod+J', () => toggleColorScheme()]]);
 
   return (
     <ColorSchemeProvider

@@ -58,7 +58,7 @@ import {
   Button,
 } from '@mantine/core';
 
-const Login = () => {
+export default function Login({ setName }: { setName: Function }) {
   return (
     <Container size={420} my={40}>
       <Title
@@ -105,6 +105,4 @@ const Login = () => {
       </Paper>
     </Container>
   );
-};
-
-export default Login;
+}

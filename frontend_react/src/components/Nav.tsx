@@ -67,7 +67,7 @@ export default function Nav({
   setName,
 }: {
   name: string;
-  setName: (name: string) => void;
+  setName: Function;
 }) {
   const [active, setActive] = useState(2);
 
@@ -101,7 +101,7 @@ export default function Nav({
   };
 
   return (
-    <Navbar height={710} width={{ base: 80 }} p="md">
+    <Navbar width={{ base: 80 }} p="md" style={{ height: '100vh' }}>
       <Center>
         <p>Logo</p>
       </Center>
