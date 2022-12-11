@@ -25,7 +25,7 @@ export default function UserProfile() {
     ],
   };
   return (
-    <div className="flex-container">
+    <div className="flex-row-container">
       <UserCardImage {...mockdata} />
       <Button>Change Password</Button>
     </div>

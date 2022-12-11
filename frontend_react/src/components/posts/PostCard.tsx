@@ -34,9 +34,9 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function PostCard({
-  image,
   category,
   title,
+  body,
   likes,
   views,
   comments,
@@ -45,7 +45,7 @@ export default function PostCard({
   const { classes, theme } = useStyles();
   const [opened, setOpened] = useState(false);
   const commentOnPost = () => console.log('commenting');
-  const viewPost = () => console.log('viewing');
+  const viewPost = () => setOpened(true);
   const likePost = () => console.log('like');
   const authorName = author.user_info.name;
   const authorInitials = authorName
@@ -61,23 +61,20 @@ export default function PostCard({
         <Modal
           opened={opened}
           onClose={() => setOpened(false)}
-          title="title"
+          title={title}
           transition="fade"
           transitionDuration={600}
           transitionTimingFunction="ease"
         >
-          Some modal content
+          {body}
         </Modal>
       )}
-      <Card.Section mb="sm">
-        <Image src={image} alt={title} height={180} />
-      </Card.Section>
 
-      <Badge>{category}</Badge>
-
-      <Text weight={700} className={classes.title} mt="xs">
+      <Text weight={700} className={classes.title}>
         {title}
       </Text>
+
+      <Badge mt="xs">{category}</Badge>
 
       <Group mt="lg">
         <Avatar src={null} alt={authorName} color={avatarColor}>

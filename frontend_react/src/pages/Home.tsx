@@ -19,7 +19,7 @@ export default function Home({
     return <Redirect to="/login" />;
   }
   return (
-    <div className="flex-container">
+    <div className="flex-row-container">
       <Nav
         user={user}
         setUser={setUser}

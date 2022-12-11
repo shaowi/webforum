@@ -1,7 +1,14 @@
-.flex-container {
+.flex-row-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
+}
+
+.flex-col-container {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  flex-direction: column;
 }
 
 .grid-container {
