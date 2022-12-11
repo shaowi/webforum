@@ -2,7 +2,9 @@ interface PostCardProps {
   image: string;
   category: string;
   title: string;
-  footer: string;
+  likes: number;
+  views: number;
+  comments: number;
   author: {
     name: string;
     description: string;

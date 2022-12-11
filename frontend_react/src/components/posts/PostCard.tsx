@@ -8,7 +8,7 @@ import {
   Avatar,
   Badge,
 } from '@mantine/core';
-import { IconHeart, IconBookmark, IconShare } from '@tabler/icons';
+import { IconHeart, IconMessage2, IconEye } from '@tabler/icons';
 import { PostCardProps } from '../../types/Post';
 
 const useStyles = createStyles((theme) => ({
@@ -34,10 +34,14 @@ export default function PostCard({
   image,
   category,
   title,
-  footer,
+  likes,
+  views,
+  comments,
   author,
 }: PostCardProps) {
   const { classes, theme } = useStyles();
+  const commentOnPost = () => console.log('commenting');
+  const viewPost = () => console.log('viewing');
 
   return (
     <Card withBorder p="lg" radius="md" className={classes.card}>
@@ -62,23 +66,33 @@ export default function PostCard({
       </Group>
 
       <Card.Section className={classes.footer}>
-        <Group position="apart">
-          <Text size="xs" color="dimmed">
-            {footer}
-          </Text>
+        <Group position="right">
           <Group spacing={0}>
+            <Text size="xs" color="dimmed">
+              {likes}
+            </Text>
             <ActionIcon>
               <IconHeart size={18} color={theme.colors.red[6]} stroke={1.5} />
             </ActionIcon>
-            <ActionIcon>
-              <IconBookmark
-                size={18}
-                color={theme.colors.yellow[6]}
+          </Group>
+          <Group spacing={0}>
+            <Text size="xs" color="dimmed">
+              {views}
+            </Text>
+            <ActionIcon onClick={viewPost}>
+              <IconEye size={16} color={theme.colors.yellow[6]} stroke={1.5} />
+            </ActionIcon>
+          </Group>
+          <Group spacing={0}>
+            <Text size="xs" color="dimmed">
+              {comments}
+            </Text>
+            <ActionIcon onClick={commentOnPost}>
+              <IconMessage2
+                size={16}
+                color={theme.colors.blue[6]}
                 stroke={1.5}
               />
-            </ActionIcon>
-            <ActionIcon>
-              <IconShare size={16} color={theme.colors.blue[6]} stroke={1.5} />
             </ActionIcon>
           </Group>
         </Group>
