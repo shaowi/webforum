@@ -25,11 +25,6 @@ const useStyles = createStyles((theme) => ({
       theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2]
     }`,
   },
-
-  icon: {
-    border: 'none !important',
-    background: 'transparent !important',
-  },
 }));
 
 export default function PostCard(postCardProps: PostCardProps) {

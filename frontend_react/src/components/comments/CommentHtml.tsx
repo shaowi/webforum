@@ -5,6 +5,8 @@ import {
   Text,
   TypographyStylesProvider,
 } from '@mantine/core';
+import { getNameInitials } from '../../utils/constants';
+import { Comment } from '../../types/Comment';
 
 const useStyles = createStyles((theme) => ({
   comment: {
@@ -24,29 +26,25 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface CommentHtmlProps {
-  postedAt: string;
-  body: string;
-  author: {
-    name: string;
-    image: string;
-  };
-}
-
-export default function CommentHtml({
-  postedAt,
-  body,
-  author,
-}: CommentHtmlProps) {
+export default function CommentHtml({ posted_on, body, author }: Comment) {
   const { classes } = useStyles();
+  const authorInitials = getNameInitials(author.name);
+
   return (
     <div>
       <Group>
-        <Avatar src={author.image} alt={author.name} radius="xl" />
+        <Avatar
+          src={null}
+          alt={author.name}
+          color={author.avatarColor}
+          radius="xl"
+        >
+          {authorInitials}
+        </Avatar>
         <div>
           <Text size="sm">{author.name}</Text>
           <Text size="xs" color="dimmed">
-            {postedAt}
+            {posted_on}
           </Text>
         </div>
       </Group>

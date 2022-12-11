@@ -18,3 +18,15 @@ export function getRandomColors() {
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 }
+
+export function getNameInitials(name: string) {
+  return name
+    .split(' ')
+    .map((s) => s[0])
+    .join('')
+    .toUpperCase();
+}
+
+export function lowerCaseStrArrays(arr: Array<string>) {
+  return arr.map((s) => s.toLowerCase());
+}

@@ -8,10 +8,8 @@ interface PostCardProps {
   views: number;
   comments: number;
   category: string;
-  author: {
-    user_info: User;
-    description: string;
-  };
+  author: User;
+  description: string;
 }
 
 export type { PostCardProps };

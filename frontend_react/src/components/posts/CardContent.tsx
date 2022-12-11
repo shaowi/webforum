@@ -10,6 +10,7 @@ import {
 import { IconEye, IconHeart, IconMessage2 } from '@tabler/icons';
 import { PostCardProps } from '../../types/Post';
 import CommentContainer from '../comments/CommentContainer';
+import { getNameInitials } from './../../utils/constants';
 
 export default function CardContent({
   classes,
@@ -32,6 +33,7 @@ export default function CardContent({
     views,
     comments,
     author,
+    description,
   }: PostCardProps = postCardProps;
   const commentOnPost = () => {
     setOpened(true);
@@ -40,12 +42,7 @@ export default function CardContent({
   const likePost = () => {
     console.log('hi');
   };
-  const authorName = author.user_info.name;
-  const authorInitials = authorName
-    .split(' ')
-    .map((s) => s[0])
-    .join('')
-    .toUpperCase();
+  const authorInitials = getNameInitials(author.name);
 
   return (
     <>
@@ -56,17 +53,13 @@ export default function CardContent({
       <Badge mt="xs">{category}</Badge>
 
       <Group mt="lg">
-        <Avatar
-          src={null}
-          alt={authorName}
-          color={author.user_info.avatarColor}
-        >
+        <Avatar src={null} alt={author.name} color={author.avatarColor}>
           {authorInitials}
         </Avatar>
         <div>
-          <Text weight={500}>{authorName}</Text>
+          <Text weight={500}>{author.name}</Text>
           <Text size="xs" color="dimmed">
-            {author.description}
+            {description}
           </Text>
         </div>
       </Group>
@@ -93,7 +86,7 @@ export default function CardContent({
             <ActionIcon
               onClick={viewPost}
               disabled={renderBody}
-              className={classes.icon}
+              className="action-icons"
             >
               <IconEye size={16} color={theme.colors.yellow[8]} stroke={1.5} />
             </ActionIcon>
@@ -105,7 +98,7 @@ export default function CardContent({
             <ActionIcon
               onClick={commentOnPost}
               disabled={renderBody}
-              className={classes.icon}
+              className="action-icons"
             >
               <IconMessage2
                 size={16}

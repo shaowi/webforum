@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: start;
+  column-gap: 1.5rem;
 }
 
 .flex-col-container {
@@ -13,7 +14,7 @@
 
 .grid-container {
   display: grid;
-  grid-template-columns: 4fr 4fr 4fr;
+  grid-template-columns: auto auto auto;
   grid-column-gap: 2rem;
   grid-row-gap: 2rem;
   justify-items: stretch;
@@ -46,4 +47,13 @@
 
 .hyperlinks:hover {
   text-decoration: underline;
+}
+
+.searchBox {
+  min-width: 21rem;
+}
+
+.action-icons {
+  border: none !important;
+  background: transparent !important;
 }
