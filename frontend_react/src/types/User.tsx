@@ -3,6 +3,7 @@ interface User {
   email: string;
   name: string;
   access_type: number;
+  avatarColor: string;
 }
 
 interface UserCardImageProps {

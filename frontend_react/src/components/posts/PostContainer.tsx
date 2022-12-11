@@ -1,16 +1,9 @@
-import PostCard from './PostCard';
-import { PostCardProps } from '../../types/Post';
-import '../../App.css';
-import {
-  createStyles,
-  Header,
-  Autocomplete,
-  Group,
-  Burger,
-  Container,
-  MultiSelect,
-} from '@mantine/core';
+import { Autocomplete, MultiSelect } from '@mantine/core';
 import { IconSearch } from '@tabler/icons';
+import '../../App.css';
+import { PostCardProps } from '../../types/Post';
+import { getRandomColors } from '../../utils/constants';
+import PostCard from './PostCard';
 
 export default function PostContainer() {
   const mockUser = {
@@ -18,6 +11,7 @@ export default function PostContainer() {
     email: 'abby@test.com',
     name: 'abby cool',
     access_type: 1,
+    avatarColor: getRandomColors(),
   };
 
   const items: PostCardProps[] = [
@@ -35,15 +29,6 @@ export default function PostContainer() {
       },
     },
   ];
-
-  const useStyles = createStyles((theme) => ({
-    container: {
-      margin: '5rem 3rem 5rem 8rem',
-      flexDirection: 'column',
-    },
-  }));
-
-  const { classes } = useStyles();
 
   const categoriesData = [
     { label: 'United States', value: 'US' },

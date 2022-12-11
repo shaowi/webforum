@@ -1,18 +1,7 @@
-import {
-  createStyles,
-  Card,
-  Image,
-  ActionIcon,
-  Group,
-  Text,
-  Avatar,
-  Badge,
-  Modal,
-} from '@mantine/core';
-import { IconHeart, IconMessage2, IconEye } from '@tabler/icons';
+import { Card, createStyles, Modal } from '@mantine/core';
 import { useState } from 'react';
 import { PostCardProps } from '../../types/Post';
-import { getRandomColors } from '../../utils/constants';
+import CardContent from './CardContent';
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -24,6 +13,11 @@ const useStyles = createStyles((theme) => ({
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
   },
 
+  body: {
+    marginTop: theme.spacing.md,
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+  },
+
   footer: {
     padding: `${theme.spacing.xs}px ${theme.spacing.lg}px`,
     marginTop: theme.spacing.md,
@@ -31,29 +25,19 @@ const useStyles = createStyles((theme) => ({
       theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2]
     }`,
   },
+
+  icon: {
+    border: 'none !important',
+    background: 'transparent !important',
+  },
 }));
 
-export default function PostCard({
-  category,
-  title,
-  body,
-  likes,
-  views,
-  comments,
-  author,
-}: PostCardProps) {
+export default function PostCard(postCardProps: PostCardProps) {
   const { classes, theme } = useStyles();
   const [opened, setOpened] = useState(false);
-  const commentOnPost = () => console.log('commenting');
-  const viewPost = () => setOpened(true);
-  const likePost = () => console.log('like');
-  const authorName = author.user_info.name;
-  const authorInitials = authorName
-    .split(' ')
-    .map((s) => s[0])
-    .join('')
-    .toUpperCase();
-  const avatarColor = getRandomColors();
+  // const commentOnPost = () => console.log('commenting');
+  // const viewPost = () => setOpened(true);
+  // const likePost = () => console.log('like');
 
   return (
     <Card withBorder p="lg" radius="md" className={classes.card}>
@@ -61,65 +45,26 @@ export default function PostCard({
         <Modal
           opened={opened}
           onClose={() => setOpened(false)}
-          title={title}
           transition="fade"
           transitionDuration={600}
           transitionTimingFunction="ease"
         >
-          {body}
+          <CardContent
+            classes={classes}
+            theme={theme}
+            postCardProps={postCardProps}
+            setOpened={setOpened}
+            renderBody={true}
+          />
         </Modal>
       )}
-
-      <Text weight={700} className={classes.title}>
-        {title}
-      </Text>
-
-      <Badge mt="xs">{category}</Badge>
-
-      <Group mt="lg">
-        <Avatar src={null} alt={authorName} color={avatarColor}>
-          {authorInitials}
-        </Avatar>
-        <div>
-          <Text weight={500}>{authorName}</Text>
-          <Text size="xs" color="dimmed">
-            {author.description}
-          </Text>
-        </div>
-      </Group>
-
-      <Card.Section className={classes.footer}>
-        <Group position="right">
-          <Group spacing={0}>
-            <Text size="xs" color="dimmed">
-              {likes}
-            </Text>
-            <ActionIcon onClick={likePost}>
-              <IconHeart size={18} color={theme.colors.red[6]} stroke={1.5} />
-            </ActionIcon>
-          </Group>
-          <Group spacing={0}>
-            <Text size="xs" color="dimmed">
-              {views}
-            </Text>
-            <ActionIcon onClick={viewPost}>
-              <IconEye size={16} color={theme.colors.yellow[6]} stroke={1.5} />
-            </ActionIcon>
-          </Group>
-          <Group spacing={0}>
-            <Text size="xs" color="dimmed">
-              {comments}
-            </Text>
-            <ActionIcon onClick={commentOnPost}>
-              <IconMessage2
-                size={16}
-                color={theme.colors.blue[6]}
-                stroke={1.5}
-              />
-            </ActionIcon>
-          </Group>
-        </Group>
-      </Card.Section>
+      <CardContent
+        classes={classes}
+        theme={theme}
+        postCardProps={postCardProps}
+        setOpened={setOpened}
+        renderBody={false}
+      />
     </Card>
   );
 }

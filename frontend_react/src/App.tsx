@@ -9,7 +9,7 @@ import Register from './pages/Register';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import './App.css';
-import { API_HOST } from './utils/constants';
+import { API_HOST, getRandomColors } from './utils/constants';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
 import { User } from './types/User';
 
@@ -19,6 +19,7 @@ function App() {
     email: 'abby@test.com',
     name: 'abby',
     access_type: 1,
+    avatarColor: getRandomColors(),
   });
 
   useEffect(() => {
