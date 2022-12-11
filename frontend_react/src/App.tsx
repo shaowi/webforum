@@ -3,18 +3,24 @@ import {
   ColorSchemeProvider,
   MantineProvider,
 } from '@mantine/core';
-import { useEffect, useState } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
-import './App.css';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import UserProfile from './pages/UserProfile';
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Route } from 'react-router-dom';
+import './App.css';
 import { API_HOST } from './utils/constants';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
 import { User } from './types/User';
 
 function App() {
-  const [user, setUser] = useState<User | undefined>(undefined);
+  const [user, setUser] = useState<User | undefined>({
+    user_id: 1,
+    email: 'abby@test.com',
+    name: 'abby',
+    access_type: 1,
+  });
 
   useEffect(() => {
     // Fetch cache cookie user

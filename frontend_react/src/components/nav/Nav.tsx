@@ -1,46 +1,33 @@
 import { Center, Navbar, Stack } from '@mantine/core';
-import {
-  IconCalendarStats,
-  IconDeviceDesktopAnalytics,
-  IconFingerprint,
-  IconGauge,
-  IconHome2,
-  IconLogout,
-  IconSettings,
-  IconUser,
-} from '@tabler/icons';
-import { useState } from 'react';
-import ColorSchemeToggle from './ColorSchemeToggle';
-import NavbarLink from './NavbarLink';
+import { IconHome2, IconLogout, IconUser } from '@tabler/icons';
 import '../../App.css';
 import { User } from '../../types/User';
 import { API_HOST } from '../../utils/constants';
+import ColorSchemeToggle from './ColorSchemeToggle';
+import NavbarLink from './NavbarLink';
 
 export default function Nav({
   user,
   setUser,
+  activePage,
+  setActivePage,
 }: {
   user: User | undefined;
   setUser: Function;
+  activePage: Number;
+  setActivePage: Function;
 }) {
-  const [active, setActive] = useState(2);
-
-  const mockdata = [
+  const navIcons = [
     { icon: IconHome2, label: 'Home' },
-    { icon: IconGauge, label: 'Dashboard' },
-    { icon: IconDeviceDesktopAnalytics, label: 'Analytics' },
-    { icon: IconCalendarStats, label: 'Releases' },
     { icon: IconUser, label: 'Account' },
-    { icon: IconFingerprint, label: 'Security' },
-    { icon: IconSettings, label: 'Settings' },
   ];
 
-  const links = mockdata.map((link, index) => (
+  const links = navIcons.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
-      active={index === active}
-      onClick={() => setActive(index)}
+      active={index === activePage}
+      onClick={() => setActivePage(index)}
     />
   ));
 
