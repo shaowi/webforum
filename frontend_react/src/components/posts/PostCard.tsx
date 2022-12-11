@@ -40,31 +40,32 @@ export default function PostCard(postCardProps: PostCardProps) {
   // const likePost = () => console.log('like');
 
   return (
-    <Card withBorder p="lg" radius="md" className={classes.card}>
-      {opened && (
-        <Modal
-          opened={opened}
-          onClose={() => setOpened(false)}
-          transition="fade"
-          transitionDuration={600}
-          transitionTimingFunction="ease"
-        >
-          <CardContent
-            classes={classes}
-            theme={theme}
-            postCardProps={postCardProps}
-            setOpened={setOpened}
-            renderBody={true}
-          />
-        </Modal>
-      )}
-      <CardContent
-        classes={classes}
-        theme={theme}
-        postCardProps={postCardProps}
-        setOpened={setOpened}
-        renderBody={false}
-      />
-    </Card>
+    <>
+      <Modal
+        size="xl"
+        opened={opened}
+        onClose={() => setOpened(false)}
+        transition="rotate-left"
+        transitionDuration={600}
+        transitionTimingFunction="ease"
+      >
+        <CardContent
+          classes={classes}
+          theme={theme}
+          postCardProps={postCardProps}
+          setOpened={setOpened}
+          renderBody={true}
+        />
+      </Modal>
+      <Card withBorder p="lg" radius="md" className={classes.card}>
+        <CardContent
+          classes={classes}
+          theme={theme}
+          postCardProps={postCardProps}
+          setOpened={setOpened}
+          renderBody={false}
+        />
+      </Card>
+    </>
   );
 }

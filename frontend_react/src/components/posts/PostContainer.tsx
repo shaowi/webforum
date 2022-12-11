@@ -28,6 +28,97 @@ export default function PostContainer() {
         description: 'posted 34 minutes ago',
       },
     },
+    {
+      post_id: 1,
+      category: 'decorations',
+      title: 'Top 50 underrated plants for house decoration',
+      body: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repudiandae voluptates, provident dolores sit animi quia deserunt. Amet quidem ut id nesciunt, expedita cumque, temporibus suscipit, quam voluptatum quod ducimus eveniet?',
+      likes: 1000,
+      views: 733,
+      comments: 5,
+      author: {
+        user_info: mockUser,
+        description: 'posted 34 minutes ago',
+      },
+    },
+    {
+      post_id: 1,
+      category: 'decorations',
+      title: 'Top 50 underrated plants for house decoration',
+      body: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repudiandae voluptates, provident dolores sit animi quia deserunt. Amet quidem ut id nesciunt, expedita cumque, temporibus suscipit, quam voluptatum quod ducimus eveniet?',
+      likes: 1000,
+      views: 733,
+      comments: 5,
+      author: {
+        user_info: mockUser,
+        description: 'posted 34 minutes ago',
+      },
+    },
+    {
+      post_id: 1,
+      category: 'decorations',
+      title: 'Top 50 underrated plants for house decoration',
+      body: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repudiandae voluptates, provident dolores sit animi quia deserunt. Amet quidem ut id nesciunt, expedita cumque, temporibus suscipit, quam voluptatum quod ducimus eveniet?',
+      likes: 1000,
+      views: 733,
+      comments: 5,
+      author: {
+        user_info: mockUser,
+        description: 'posted 34 minutes ago',
+      },
+    },
+    {
+      post_id: 1,
+      category: 'decorations',
+      title: 'Top 50 underrated plants for house decoration',
+      body: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repudiandae voluptates, provident dolores sit animi quia deserunt. Amet quidem ut id nesciunt, expedita cumque, temporibus suscipit, quam voluptatum quod ducimus eveniet?',
+      likes: 1000,
+      views: 733,
+      comments: 5,
+      author: {
+        user_info: mockUser,
+        description: 'posted 34 minutes ago',
+      },
+    },
+    {
+      post_id: 1,
+      category: 'decorations',
+      title: 'Top 50 underrated plants for house decoration',
+      body: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repudiandae voluptates, provident dolores sit animi quia deserunt. Amet quidem ut id nesciunt, expedita cumque, temporibus suscipit, quam voluptatum quod ducimus eveniet?',
+      likes: 1000,
+      views: 733,
+      comments: 5,
+      author: {
+        user_info: mockUser,
+        description: 'posted 34 minutes ago',
+      },
+    },
+    {
+      post_id: 1,
+      category: 'decorations',
+      title: 'Top 50 underrated plants for house decoration',
+      body: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repudiandae voluptates, provident dolores sit animi quia deserunt. Amet quidem ut id nesciunt, expedita cumque, temporibus suscipit, quam voluptatum quod ducimus eveniet?',
+      likes: 1000,
+      views: 733,
+      comments: 5,
+      author: {
+        user_info: mockUser,
+        description: 'posted 34 minutes ago',
+      },
+    },
+    {
+      post_id: 1,
+      category: 'decorations',
+      title: 'Top 50 underrated plants for house decoration',
+      body: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repudiandae voluptates, provident dolores sit animi quia deserunt. Amet quidem ut id nesciunt, expedita cumque, temporibus suscipit, quam voluptatum quod ducimus eveniet?',
+      likes: 1000,
+      views: 733,
+      comments: 5,
+      author: {
+        user_info: mockUser,
+        description: 'posted 34 minutes ago',
+      },
+    },
   ];
 
   const categoriesData = [
@@ -73,8 +164,8 @@ export default function PostContainer() {
         />
       </div>
       <div className="grid-container" style={{ marginTop: '2rem' }}>
-        {items.map((item) => (
-          <PostCard key={item.post_id} {...item} />
+        {items.map((item, idx) => (
+          <PostCard key={item.post_id + idx} {...item} />
         ))}
       </div>
     </div>

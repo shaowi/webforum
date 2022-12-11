@@ -9,6 +9,7 @@ import {
 } from '@mantine/core';
 import { IconEye, IconHeart, IconMessage2 } from '@tabler/icons';
 import { PostCardProps } from '../../types/Post';
+import CommentContainer from '../comments/CommentContainer';
 
 export default function CardContent({
   classes,
@@ -32,9 +33,13 @@ export default function CardContent({
     comments,
     author,
   }: PostCardProps = postCardProps;
-  const commentOnPost = () => console.log('commenting');
+  const commentOnPost = () => {
+    setOpened(true);
+  };
   const viewPost = () => setOpened(true);
-  const likePost = () => console.log('like');
+  const likePost = () => {
+    console.log('hi');
+  };
   const authorName = author.user_info.name;
   const authorInitials = authorName
     .split(' ')
@@ -90,7 +95,7 @@ export default function CardContent({
               disabled={renderBody}
               className={classes.icon}
             >
-              <IconEye size={16} color={theme.colors.yellow[6]} stroke={1.5} />
+              <IconEye size={16} color={theme.colors.yellow[8]} stroke={1.5} />
             </ActionIcon>
           </Group>
           <Group spacing={0}>
@@ -111,6 +116,8 @@ export default function CardContent({
           </Group>
         </Group>
       </Card.Section>
+
+      {renderBody && <CommentContainer />}
     </>
   );
 }
