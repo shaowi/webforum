@@ -6,7 +6,6 @@ import {
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import UserProfile from './pages/UserProfile';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import './App.css';

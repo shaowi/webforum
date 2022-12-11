@@ -3,8 +3,16 @@ import { PostCardProps } from '../../types/Post';
 import '../../App.css';
 
 export default function PostContainer() {
+  const mockUser = {
+    user_id: 1,
+    email: 'abby@test.com',
+    name: 'abby cool',
+    access_type: 1,
+  };
+
   const items: PostCardProps[] = [
     {
+      post_id: 1,
       image:
         'https://images.unsplash.com/photo-1477554193778-9562c28588c0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
       category: 'decorations',
@@ -13,10 +21,8 @@ export default function PostContainer() {
       views: 733,
       comments: 5,
       author: {
-        name: 'Elsa Gardenowl',
+        user_info: mockUser,
         description: 'posted 34 minutes ago',
-        image:
-          'https://images.unsplash.com/photo-1628890923662-2cb23c2e0cfe?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
       },
     },
   ];

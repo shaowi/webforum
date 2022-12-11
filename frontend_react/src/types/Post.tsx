@@ -1,14 +1,16 @@
+import { User } from './User';
+
 interface PostCardProps {
-  image: string;
-  category: string;
+  post_id: number;
   title: string;
   likes: number;
   views: number;
   comments: number;
+  image: string;
+  category: string;
   author: {
-    name: string;
+    user_info: User;
     description: string;
-    image: string;
   };
 }
 
