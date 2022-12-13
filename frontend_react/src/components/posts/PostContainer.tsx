@@ -1,9 +1,10 @@
-import { MultiSelect, TextInput } from '@mantine/core';
-import { IconSearch } from '@tabler/icons';
+import { ActionIcon, Modal, MultiSelect, TextInput } from '@mantine/core';
+import { IconSearch, IconSquarePlus } from '@tabler/icons';
 import { useState } from 'react';
 import '../../App.css';
-import { PostCardProps } from '../../types/Post';
+import { PostCardProps, NewPost } from '../../types/Post';
 import { getRandomColors, lowerCaseStrArrays } from '../../utils/constants';
+import CreateForm from './CreateForm';
 import PostCard from './PostCard';
 
 export default function PostContainer() {
@@ -117,6 +118,7 @@ export default function PostContainer() {
   const [posts, setPosts] = useState(items);
   const [searchVal, setSearchVal] = useState('');
   const [categories, setCategories] = useState<Array<string>>([]);
+  const [showAddPostModal, setShowAddPostModal] = useState(false);
 
   function filterPostsByTitle(e: any) {
     const curSearchVal = e.currentTarget.value;
@@ -168,45 +170,75 @@ export default function PostContainer() {
     );
   }
 
+  function addPost(post: NewPost) {
+    console.log(post);
+  }
+
   return (
-    <div
-      className="flex-col-container"
-      style={{
-        margin: '3rem 3rem 5rem 8rem',
-      }}
-    >
+    <>
+      <Modal
+        opened={showAddPostModal}
+        centered
+        onClose={() => setShowAddPostModal(false)}
+      >
+        <CreateForm categoriesData={categoriesData} addPost={addPost} />
+      </Modal>
       <div
         className="flex-col-container"
         style={{
-          alignSelf: 'start',
-          rowGap: '1rem',
-          alignItems: 'start',
+          margin: '3rem 3rem 5rem 8rem',
         }}
       >
-        <TextInput
-          className="searchBox"
-          placeholder="Search By Title"
-          icon={<IconSearch size={16} stroke={1.5} />}
-          onChange={(e) => filterPostsByTitle(e)}
-        />
-        <MultiSelect
-          className="searchBox"
-          data={categoriesData}
-          value={categories}
-          onChange={(cats) => filterPostsByCategories(cats)}
-          searchable
-          label="Filter By Categories"
-          placeholder="Pick Posts Categories"
-          transitionDuration={150}
-          transition="pop-top-left"
-          transitionTimingFunction="ease"
-        />
+        <div
+          className="flex-row-container"
+          style={{
+            justifyContent: 'space-between',
+            width: '85vw',
+          }}
+        >
+          <div
+            className="flex-col-container"
+            style={{
+              alignSelf: 'start',
+              rowGap: '1rem',
+              alignItems: 'start',
+            }}
+          >
+            <TextInput
+              className="searchBox"
+              placeholder="Search By Title"
+              icon={<IconSearch size={16} stroke={1.5} />}
+              onChange={(e) => filterPostsByTitle(e)}
+            />
+            <MultiSelect
+              className="searchBox"
+              data={categoriesData}
+              value={categories}
+              onChange={(cats) => filterPostsByCategories(cats)}
+              searchable
+              label="Filter By Categories"
+              placeholder="Pick Posts Categories"
+              transitionDuration={150}
+              transition="pop-top-left"
+              transitionTimingFunction="ease"
+            />
+          </div>
+          <ActionIcon
+            variant="transparent"
+            onClick={() => setShowAddPostModal(true)}
+          >
+            <IconSquarePlus size={36} />
+          </ActionIcon>
+        </div>
+        <div
+          className="grid-container"
+          style={{ marginTop: '2rem', alignSelf: 'start' }}
+        >
+          {posts.map((post, idx) => (
+            <PostCard key={post.post_id + idx} {...post} />
+          ))}
+        </div>
       </div>
-      <div className="grid-container" style={{ marginTop: '2rem' }}>
-        {posts.map((post, idx) => (
-          <PostCard key={post.post_id + idx} {...post} />
-        ))}
-      </div>
-    </div>
+    </>
   );
 }

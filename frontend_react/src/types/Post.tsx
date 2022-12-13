@@ -12,4 +12,10 @@ interface PostCardProps {
   description: string;
 }
 
-export type { PostCardProps };
+interface NewPost {
+  title: string;
+  body: string;
+  category: Array<string>;
+}
+
+export type { PostCardProps, NewPost };

@@ -30,3 +30,7 @@ export function getNameInitials(name: string) {
 export function lowerCaseStrArrays(arr: Array<string>) {
   return arr.map((s) => s.toLowerCase());
 }
+
+export function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
