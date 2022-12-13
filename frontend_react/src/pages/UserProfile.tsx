@@ -1,33 +1,73 @@
-import { Button } from '@mantine/core';
+import { Button, createStyles } from '@mantine/core';
 import UserCardImage from '../components/user/UserCardImage';
 
 export default function UserProfile() {
   const mockdata = {
-    image:
-      'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80',
-    avatar:
-      'https://images.unsplash.com/photo-1623582854588-d60de57fa33f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-    name: 'Bill Headbanger',
-    job: 'Fullstack engineer',
+    user: {
+      user_id: 1,
+      email: 'bill@test.com',
+      name: 'Bill Headbanger',
+      avatarColor: 'red',
+      access_type: 1,
+    },
+
     stats: [
       {
         value: '34K',
-        label: 'Followers',
+        label: 'Viewed',
       },
       {
         value: '187',
-        label: 'Follows',
+        label: 'Liked',
       },
       {
         value: '1.6K',
-        label: 'Posts',
+        label: 'Made',
       },
     ],
   };
+
+  const useStyles = createStyles((theme) => ({
+    card: {
+      backgroundColor:
+        theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+    },
+
+    avatar: {
+      border: `2px solid ${
+        theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white
+      }`,
+    },
+  }));
+
+  const { classes, theme } = useStyles();
+
   return (
-    <div className="flex-row-container">
-      <UserCardImage {...mockdata} />
-      <Button>Change Password</Button>
+    <div
+      className="flex-col-container centered"
+      style={{
+        rowGap: '2rem',
+      }}
+    >
+      <UserCardImage data={mockdata} classes={classes} theme={theme} />
+      <Button
+        fullWidth
+        radius="md"
+        mt="xl"
+        size="md"
+        color={theme.colorScheme === 'dark' ? undefined : 'dark'}
+      >
+        Change Display Name
+      </Button>
+      <Button
+        fullWidth
+        radius="md"
+        mt="xl"
+        size="md"
+        color={theme.colorScheme === 'dark' ? undefined : 'dark'}
+      >
+        Change Password
+      </Button>
     </div>
   );
 }

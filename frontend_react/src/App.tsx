@@ -13,7 +13,13 @@ import { API_HOST, getRandomColors } from './utils/constants';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
 import { User } from './types/User';
 
-function App() {
+function App({
+  activePage,
+  setActivePage,
+}: {
+  activePage: number;
+  setActivePage: Function;
+}) {
   const [user, setUser] = useState<User | undefined>({
     user_id: 1,
     email: 'abby@test.com',
@@ -44,7 +50,14 @@ function App() {
         <Route
           path="/"
           exact
-          component={() => <Home user={user} setUser={setUser} />}
+          component={() => (
+            <Home
+              user={user}
+              setUser={setUser}
+              activePage={activePage}
+              setActivePage={setActivePage}
+            />
+          )}
         />
         <Route path="/login" component={() => <Login setUser={setUser} />} />
         <Route path="/register" component={Register} />
@@ -54,6 +67,7 @@ function App() {
 }
 
 function WrapperApp() {
+  const [activePage, setActivePage] = useState(0);
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'mantine-color-scheme',
     defaultValue: 'light',
@@ -81,7 +95,7 @@ function WrapperApp() {
           colorScheme: colorScheme,
         }}
       >
-        <App />
+        <App activePage={activePage} setActivePage={setActivePage} />
       </MantineProvider>
     </ColorSchemeProvider>
   );

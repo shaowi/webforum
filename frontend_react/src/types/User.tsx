@@ -7,10 +7,7 @@ interface User {
 }
 
 interface UserCardImageProps {
-  image: string;
-  avatar: string;
-  name: string;
-  job: string;
+  user: User;
   stats: { label: string; value: string }[];
 }
 
