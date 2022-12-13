@@ -130,9 +130,9 @@ export default function Register({ setUser }: { setUser: Function }) {
         title=""
         centered
       >
-        <Text c="red" fw={700}>
+        <Title c="red" fw={700}>
           Error occured while signing up
-        </Text>
+        </Title>
         <Text c="red" fz="md">
           Please try again.
         </Text>

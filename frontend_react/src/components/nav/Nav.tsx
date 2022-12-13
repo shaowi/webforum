@@ -1,8 +1,8 @@
-import { Center, Navbar, Stack } from '@mantine/core';
+import { Center, Navbar, Stack, Avatar, Text } from '@mantine/core';
 import { IconHome2, IconLogout, IconUser } from '@tabler/icons';
 import '../../App.css';
 import { User } from '../../types/User';
-import { API_HOST } from '../../utils/constants';
+import { API_HOST_USER } from '../../utils/constants';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import NavbarLink from './NavbarLink';
 
@@ -12,7 +12,7 @@ export default function Nav({
   activePage,
   setActivePage,
 }: {
-  user: User | undefined;
+  user: User;
   setUser: Function;
   activePage: Number;
   setActivePage: Function;
@@ -32,21 +32,20 @@ export default function Nav({
   ));
 
   const logout = async () => {
-    const url = `${API_HOST}/logout`;
+    const url = `${API_HOST_USER}/logout`;
     await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
     });
-
     setUser(undefined);
   };
 
   return (
     <Navbar className="side-nav" p="md">
       <Center>
-        <p>Logo</p>
-        <p>{user ? user.name : ''}</p>
+        <Avatar src="../../assets/wj.png" alt="it's me" />
+        <Text>{user ? user.name : ''}</Text>
       </Center>
       <Navbar.Section grow mt={50}>
         <Stack justify="center" spacing={0}>

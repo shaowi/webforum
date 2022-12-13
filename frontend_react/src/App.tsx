@@ -3,16 +3,17 @@ import {
   ColorSchemeProvider,
   MantineProvider,
 } from '@mantine/core';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import { useHotkeys, useLocalStorage } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
-import { API_HOST, getRandomColors } from './utils/constants';
-import { useHotkeys, useLocalStorage } from '@mantine/hooks';
-import { User } from './types/User';
+import Home from './pages/Home';
+import Login from './pages/Login';
 import NotFound from './pages/NotFound';
+import Register from './pages/Register';
+import ResetPassword from './pages/ResetPassword';
+import { User } from './types/User';
+import { API_HOST_USER, getRandomColors } from './utils/constants';
 
 function App({
   activePage,
@@ -21,18 +22,12 @@ function App({
   activePage: number;
   setActivePage: Function;
 }) {
-  const [user, setUser] = useState<User | undefined>({
-    user_id: 1,
-    email: 'abby@test.com',
-    name: 'abby',
-    access_type: 1,
-    avatarColor: getRandomColors(),
-  });
+  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     // Fetch cache cookie user
     (async () => {
-      const url = `${API_HOST}/user`;
+      const url = API_HOST_USER;
       const response = await fetch(url, {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -40,7 +35,9 @@ function App({
 
       const content = await response.json();
       if (!('error' in content)) {
-        setUser(content as User);
+        const curUser: User = content;
+        curUser.avatarColor = getRandomColors();
+        setUser(curUser);
       }
     })();
   });
@@ -63,6 +60,7 @@ function App({
           />
           <Route path="/login" component={() => <Login setUser={setUser} />} />
           <Route path="/register" component={Register} />
+          <Route path="/resetpassword" component={ResetPassword} />
           <Route component={NotFound} />
         </Switch>
       </BrowserRouter>

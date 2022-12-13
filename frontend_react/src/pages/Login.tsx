@@ -37,33 +37,37 @@ export default function Login({ setUser }: { setUser: Function }) {
     },
   });
 
-  const submit = async ({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }) => {
-    const url = `${API_HOST}/login`;
+  function submit(_: any) {
+    console.log(process.env.REACT_APP_SERVICE_ID);
+  }
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
+  // const submit = async ({
+  //   email,
+  //   password,
+  // }: {
+  //   email: string;
+  //   password: string;
+  // }) => {
+  //   const url = `${API_HOST}/login`;
 
-    const content = await response.json();
-    if ('error' in content) {
-      setUser(content as User);
-      setRedirect(true);
-    } else {
-      setShowError(true);
-    }
-  };
+  //   const response = await fetch(url, {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     credentials: 'include',
+  //     body: JSON.stringify({
+  //       email,
+  //       password,
+  //     }),
+  //   });
+
+  //   const content = await response.json();
+  //   if ('error' in content) {
+  //     setUser(content as User);
+  //     setRedirect(true);
+  //   } else {
+  //     setShowError(true);
+  //   }
+  // };
 
   return redirect ? (
     <Redirect to="/" />
@@ -124,9 +128,9 @@ export default function Login({ setUser }: { setUser: Function }) {
         title=""
         centered
       >
-        <Text c="red" fw={700}>
+        <Title c="red" fw={700}>
           Error occured while signing in
-        </Text>
+        </Title>
         <Text c="red" fz="md">
           Invalid email address or password. Please try again.
         </Text>
