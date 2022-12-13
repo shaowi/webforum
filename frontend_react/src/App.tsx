@@ -12,6 +12,7 @@ import './App.css';
 import { API_HOST, getRandomColors } from './utils/constants';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
 import { User } from './types/User';
+import NotFound from './pages/NotFound';
 
 function App({
   activePage,
@@ -61,6 +62,7 @@ function App({
         />
         <Route path="/login" component={() => <Login setUser={setUser} />} />
         <Route path="/register" component={Register} />
+        <Route path="*" component={NotFound} />
       </BrowserRouter>
     </div>
   );
