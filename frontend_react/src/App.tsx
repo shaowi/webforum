@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 import { API_HOST, getRandomColors } from './utils/constants';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
@@ -48,21 +48,23 @@ function App({
   return (
     <div className="App">
       <BrowserRouter>
-        <Route
-          path="/"
-          exact
-          component={() => (
-            <Home
-              user={user}
-              setUser={setUser}
-              activePage={activePage}
-              setActivePage={setActivePage}
-            />
-          )}
-        />
-        <Route path="/login" component={() => <Login setUser={setUser} />} />
-        <Route path="/register" component={Register} />
-        <Route path="*" component={NotFound} />
+        <Switch>
+          <Route
+            path="/"
+            exact
+            component={() => (
+              <Home
+                user={user}
+                setUser={setUser}
+                activePage={activePage}
+                setActivePage={setActivePage}
+              />
+            )}
+          />
+          <Route path="/login" component={() => <Login setUser={setUser} />} />
+          <Route path="/register" component={Register} />
+          <Route component={NotFound} />
+        </Switch>
       </BrowserRouter>
     </div>
   );

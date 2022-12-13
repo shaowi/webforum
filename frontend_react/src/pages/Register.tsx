@@ -1,51 +1,142 @@
-import React, {SyntheticEvent, useState} from 'react';
-import {Redirect} from 'react-router-dom';
+import {
+  Button,
+  Container,
+  Modal,
+  Paper,
+  PasswordInput,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { useState } from 'react';
+import { Redirect } from 'react-router-dom';
+import '../App.css';
+import { User } from '../types/User';
+import { API_HOST } from '../utils/constants';
 
-const Register = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [redirect, setRedirect] = useState(false);
+export default function Register({ setUser }: { setUser: Function }) {
+  const [redirect, setRedirect] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCpError, setShowCpError] = useState(false);
 
-    const submit = async (e: SyntheticEvent) => {
-        e.preventDefault();
+  const form = useForm({
+    initialValues: {
+      email: '',
+      password: '',
+    },
 
-        await fetch('http://localhost:8000/api/register', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                name,
-                email,
-                password
-            })
-        });
+    validate: {
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+      password: (value) =>
+        value.trim().length >= 6
+          ? null
+          : 'Password must be at least 6 characters long',
+    },
+  });
 
-        setRedirect(true);
+  const submit = async ({
+    email,
+    password,
+  }: {
+    email: string;
+    password: string;
+  }) => {
+    if (confirmPassword !== password) {
+      setShowCpError(true);
+      return;
     }
+    const url = `${API_HOST}/register`;
 
-    if (redirect) {
-        return <Redirect to="/login"/>;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    const content = await response.json();
+    if ('error' in content) {
+      setUser(content as User);
+      setRedirect(true);
+    } else {
+      setShowError(true);
     }
+  };
 
-    return (
-        <form onSubmit={submit}>
-            <h1 className="h3 mb-3 fw-normal">Please register</h1>
+  return redirect ? (
+    <Redirect to="/" />
+  ) : (
+    <>
+      <Container size={420} my={40}>
+        <Title
+          align="center"
+          sx={(theme) => ({
+            fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+            fontWeight: 900,
+          })}
+        >
+          Your Particulars
+        </Title>
+        <Text color="dimmed" size="sm" align="center" mt={5}>
+          Please fill in your informations below
+        </Text>
 
-            <input className="form-control" placeholder="Name" required
-                   onChange={e => setName(e.target.value)}
+        <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+          <form onSubmit={form.onSubmit((values) => submit(values))}>
+            <TextInput
+              label="Email"
+              placeholder="Enter your email address"
+              required
+              {...form.getInputProps('email')}
             />
-
-            <input type="email" className="form-control" placeholder="Email address" required
-                   onChange={e => setEmail(e.target.value)}
+            <PasswordInput
+              label="Password"
+              placeholder="Enter your password"
+              required
+              mt="md"
+              {...form.getInputProps('password')}
             />
-
-            <input type="password" className="form-control" placeholder="Password" required
-                   onChange={e => setPassword(e.target.value)}
+            <PasswordInput
+              withAsterisk
+              label="Confirm Password"
+              placeholder="Enter your password again"
+              mt="md"
+              value={confirmPassword}
+              onChange={(e) => {
+                setShowCpError(false);
+                setConfirmPassword(e.currentTarget.value);
+              }}
             />
+            {showCpError && (
+              <Text c="red" fz="md">
+                Password must match confirm password
+              </Text>
+            )}
 
-            <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
-        </form>
-    );
-};
-
-export default Register;
+            <Button fullWidth mt="xl" type="submit">
+              Sign Up
+            </Button>
+          </form>
+        </Paper>
+      </Container>
+      <Modal
+        opened={showError}
+        onClose={() => setShowError(false)}
+        title=""
+        centered
+      >
+        <Text c="red" fw={700}>
+          Error occured while signing up
+        </Text>
+        <Text c="red" fz="md">
+          Please try again.
+        </Text>
+      </Modal>
+    </>
+  );
+}
