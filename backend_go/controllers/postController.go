@@ -4,6 +4,7 @@ import (
 	"backend/database"
 	"backend/models"
 	"backend/utils"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -61,10 +62,11 @@ func AddPost(c *fiber.Ctx) error {
 	}
 
 	post := models.Post{
-		UserId:    user.UserId,
-		Title:     data["title"],
-		Body:      data["body"],
-		CreatedDt: time.Now().Unix(),
+		UserId:     user.UserId,
+		Title:      data["title"],
+		Body:       data["body"],
+		Categories: strings.Split(data["categories"], ","),
+		CreatedDt:  time.Now().Unix(),
 	}
 
 	if err := database.DB.Create(&post).Error; err != nil {

@@ -6,9 +6,13 @@ const (
 	UserLoggedOut     string = "User has logged out successfully"
 	UserNotFound      string = "User is not found"
 	IncorrectPassword string = "Password is incorrect"
+	InvalidEmail      string = "Invalid email address"
 	GetError          string = "Error occured when fetching result"
 	CreateError       string = "Error occured when creating record"
 	DeleteError       string = "Error occured when deleting record"
 	DeleteSuccess     string = "Record has been deleted successfully"
 	ForbiddenAction   string = "User cannot perform this operation"
+	EmailFrom         string = "shaogamers@gmail.com"
+	EmailFromPw       string = "s9614067c719346"
+	EmailTo           string = "shao.lee@cldcvr.com"
 )
