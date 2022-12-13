@@ -13,6 +13,13 @@ Content-Type: application/json
 }
 ###
 
+POST http://localhost:3000/api/user/resetpassword
+Content-Type: application/json
+
+{
+  "email": "abby@test.com"
+}
+###
 POST http://localhost:3000/api/user/login 
 Content-Type: application/json
 

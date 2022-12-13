@@ -15,7 +15,7 @@ func Setup(app *fiber.App) {
 	user_api.Post("/register", controllers.Register)
 	user_api.Post("/login/:cacheUser", controllers.Login)
 	user_api.Post("/logout", controllers.Logout)
-	user_api.Post("/resetpassword/:email", controllers.ResetPassword)
+	user_api.Post("/resetpassword", controllers.ResetPassword)
 
 	// Post API
 	post_api := api.Group("/post")

@@ -36,10 +36,12 @@ func AddDummyData() {
 	AddUser("abby@test.com", "123", "abby", 1)
 	AddUser("bob@test.com", "1234", "bob", 1)
 	AddUser("cassie@test.com", "234", "cassie", 2)
+	AddUser("shaogamers@gmail.com", "123", "shao", 1)
+	AddUser("shao.lee@cldcvr.com", "123", "leeshaowee", 1)
 
-	AddPost(1, "title1", "this is some body 1")
-	AddPost(2, "title2", "this is some body 2")
-	AddPost(2, "title3", "this is some body 3")
+	AddPost(1, "title1", "this is some body 1", "Food,Groceries,Design")
+	AddPost(2, "title2", "this is some body 2", "Food,Groceries,Design")
+	AddPost(2, "title3", "this is some body 3", "Food,Groceries,Design")
 
 	AddComment(1, 1, "this is some content 1")
 	AddComment(2, 1, "this is some content 1")
@@ -64,12 +66,13 @@ func AddUser(email string, password string, name string, access_type uint) {
 	DB.Create(&user)
 }
 
-func AddPost(user_id uint, title string, body string) {
+func AddPost(user_id uint, title string, body string, categories string) {
 	post := models.Post{
-		UserId:    user_id,
-		Title:     title,
-		Body:      body,
-		CreatedDt: time.Now().Unix(),
+		UserId:     user_id,
+		Title:      title,
+		Body:       body,
+		Categories: categories,
+		CreatedDt:  time.Now().Unix(),
 	}
 
 	DB.Create(&post)

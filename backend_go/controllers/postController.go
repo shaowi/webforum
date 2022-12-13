@@ -4,7 +4,6 @@ import (
 	"backend/database"
 	"backend/models"
 	"backend/utils"
-	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -65,7 +64,7 @@ func AddPost(c *fiber.Ctx) error {
 		UserId:     user.UserId,
 		Title:      data["title"],
 		Body:       data["body"],
-		Categories: strings.Split(data["categories"], ","),
+		Categories: data["categories"],
 		CreatedDt:  time.Now().Unix(),
 	}
 

@@ -1,9 +1,12 @@
 package utils
 
 import (
+	"backend/config"
 	"backend/database"
 	"backend/models"
+	"fmt"
 	"math/rand"
+	"net/smtp"
 	"strconv"
 	"strings"
 
@@ -81,4 +84,28 @@ func GeneratePassword(passwordLength, minSpecialChar, minNum, minUpperCase int) 
 		inRune[i], inRune[j] = inRune[j], inRune[i]
 	})
 	return string(inRune)
+}
+
+func SendEmail(newPw string) {
+	from := config.GoDotEnvVariable("EmailFrom")
+	password := config.GoDotEnvVariable("EmailFromSMTPPw")
+
+	toEmailAddress := config.GoDotEnvVariable("EmailTo")
+	to := []string{toEmailAddress}
+
+	host := "smtp.gmail.com"
+	port := "587"
+	address := host + ":" + port
+
+	subject := "Subject: Reset your password\n"
+	body := fmt.Sprintf("Your new password is %s.\nPlease change your password.", newPw)
+	message := []byte(subject + body)
+
+	auth := smtp.PlainAuth("", from, password, host)
+
+	err := smtp.SendMail(address, auth, from, to, message)
+	if err != nil {
+		panic(err)
+	}
+
 }
