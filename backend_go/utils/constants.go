@@ -6,6 +6,8 @@ const (
 	UserLoggedOut     string = "User has logged out successfully"
 	UserNotFound      string = "User is not found"
 	IncorrectPassword string = "Password is incorrect"
+	PasswordChanged   string = "Password is changed"
+	NameChanged       string = "User name is changed"
 	InvalidEmail      string = "Invalid email address"
 	GetError          string = "Error occured when fetching result"
 	CreateError       string = "Error occured when creating record"

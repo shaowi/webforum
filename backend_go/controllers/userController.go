@@ -141,3 +141,44 @@ func ResetPassword(c *fiber.Ctx) error {
 
 	return utils.ResponseBody(c, newPw)
 }
+
+func ChangePassword(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	var user models.User
+	hashedNewPw, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
+
+	user.Email = data["email"]
+	// Find user with this email
+	if err := database.DB.First(&user).Error; err != nil {
+		return utils.ErrorResponse(c, utils.InvalidEmail)
+	}
+	user.Password = hashedNewPw
+	database.DB.Save(&user)
+
+	return utils.ResponseBody(c, utils.PasswordChanged)
+}
+
+func ChangeName(c *fiber.Ctx) error {
+	var data map[string]string
+
+	if err := c.BodyParser(&data); err != nil {
+		return err
+	}
+
+	var user models.User
+
+	user.Email = data["email"]
+	// Find user with this email
+	if err := database.DB.First(&user).Error; err != nil {
+		return utils.ErrorResponse(c, utils.InvalidEmail)
+	}
+	user.Name = data["name"]
+	database.DB.Save(&user)
+
+	return utils.ResponseBody(c, utils.NameChanged)
+}
