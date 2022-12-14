@@ -6,6 +6,8 @@ import { API_HOST_USER } from '../../utils/constants';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import NavbarLink from './NavbarLink';
 import wfLogo from '../../assets/wf.png';
+import { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 
 export default function Nav({
   user,
@@ -18,6 +20,7 @@ export default function Nav({
   activePage: Number;
   setActivePage: Function;
 }) {
+  const [redirect, setRedirect] = useState(false);
   const navIcons = [
     { icon: IconHome2, label: 'Home' },
     { icon: IconUser, label: 'Account' },
@@ -34,14 +37,19 @@ export default function Nav({
 
   const logout = async () => {
     const url = `${API_HOST_USER}/logout`;
-    await fetch(url, {
+    fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
+    }).then((_) => {
+      setUser(undefined);
+      setRedirect(true);
     });
-    setUser(undefined);
   };
 
+  if (redirect) {
+    return <Redirect to="/login" />;
+  }
   return (
     <Navbar className="side-nav" p="md">
       <Center>

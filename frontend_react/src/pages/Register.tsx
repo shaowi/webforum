@@ -1,30 +1,32 @@
 import {
   Button,
   Container,
+  Loader,
   Modal,
   Paper,
   PasswordInput,
   Text,
   TextInput,
-  Title,
+  Title
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import '../App.css';
-import { User } from '../types/User';
-import { API_HOST } from '../utils/constants';
+import { signIn, signUp } from '../utils/user_service';
 
-export default function Register({ setUser }: { setUser: Function }) {
+export default function Register() {
   const [redirect, setRedirect] = useState(false);
   const [showError, setShowError] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showCpError, setShowCpError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     initialValues: {
       email: '',
       password: '',
+      name: ''
     },
 
     validate: {
@@ -32,40 +34,44 @@ export default function Register({ setUser }: { setUser: Function }) {
       password: (value) =>
         value.trim().length >= 6
           ? null
-          : 'Password must be at least 6 characters long',
-    },
+          : 'Password must be at least 6 characters long'
+    }
   });
 
   const submit = async ({
     email,
     password,
+    name
   }: {
     email: string;
     password: string;
+    name: string;
   }) => {
     if (confirmPassword !== password) {
       setShowCpError(true);
       return;
     }
-    const url = `${API_HOST}/register`;
+    setLoading(true);
+    const newUser = {
+      email,
+      password,
+      name,
+      access_type: '1'
+    };
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        email,
-        password,
-      }),
+    signUp(newUser).then((content) => {
+      if ('error' in content) {
+        setShowError(true);
+        setLoading(false);
+      } else {
+        signIn({
+          email,
+          password
+        }).then(() => {
+          setRedirect(true);
+        });
+      }
     });
-
-    const content = await response.json();
-    if ('error' in content) {
-      setUser(content as User);
-      setRedirect(true);
-    } else {
-      setShowError(true);
-    }
   };
 
   return redirect ? (
@@ -77,7 +83,7 @@ export default function Register({ setUser }: { setUser: Function }) {
           align="center"
           sx={(theme) => ({
             fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-            fontWeight: 900,
+            fontWeight: 900
           })}
         >
           Your Particulars
@@ -89,10 +95,19 @@ export default function Register({ setUser }: { setUser: Function }) {
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
           <form onSubmit={form.onSubmit((values) => submit(values))}>
             <TextInput
+              label="Name"
+              placeholder="Enter your display name"
+              required
+              {...form.getInputProps('name')}
+            />
+            <TextInput
               label="Email"
               placeholder="Enter your email address"
               required
               {...form.getInputProps('email')}
+              style={{
+                marginTop: '16px'
+              }}
             />
             <PasswordInput
               label="Password"
@@ -113,13 +128,12 @@ export default function Register({ setUser }: { setUser: Function }) {
               }}
             />
             {showCpError && (
-              <Text c="red" fz="md">
+              <Text c="red" fz="xs">
                 Password must match confirm password
               </Text>
             )}
-
             <Button fullWidth mt="xl" type="submit">
-              Sign Up
+              {loading ? <Loader color="white" size="sm" /> : 'Sign Up'}
             </Button>
           </form>
         </Paper>
@@ -127,14 +141,11 @@ export default function Register({ setUser }: { setUser: Function }) {
       <Modal
         opened={showError}
         onClose={() => setShowError(false)}
-        title=""
+        title="Error occured while signing up"
         centered
       >
-        <Title c="red" fw={700}>
-          Error occured while signing up
-        </Title>
         <Text c="red" fz="md">
-          Please try again.
+          Email has been taken. Please try again.
         </Text>
       </Modal>
     </>

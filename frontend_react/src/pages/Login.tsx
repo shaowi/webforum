@@ -1,31 +1,30 @@
-import { useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
 import {
-  TextInput,
-  PasswordInput,
-  Checkbox,
-  Paper,
-  Title,
-  Text,
+  Button,
   Container,
   Group,
-  Button,
+  Loader,
   Modal,
+  Paper,
+  PasswordInput,
+  Text,
+  TextInput,
+  Title
 } from '@mantine/core';
-import { API_HOST } from '../utils/constants';
-import '../App.css';
-import { User } from '../types/User';
 import { useForm } from '@mantine/form';
+import { useState } from 'react';
+import { Link, Redirect } from 'react-router-dom';
+import '../App.css';
+import { signIn } from '../utils/user_service';
 
-export default function Login({ setUser }: { setUser: Function }) {
-  const [cacheUser, setCacheUser] = useState(false);
+export default function Login({ history }: { history: any }) {
   const [redirect, setRedirect] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     initialValues: {
       email: '',
-      password: '',
+      password: ''
     },
 
     validate: {
@@ -33,52 +32,35 @@ export default function Login({ setUser }: { setUser: Function }) {
       password: (value) =>
         value.trim().length >= 6
           ? null
-          : 'Password must be at least 6 characters long',
-    },
+          : 'Password must be at least 6 characters long'
+    }
   });
 
-  function submit(_: any) {
-    console.log(process.env.REACT_APP_SERVICE_ID);
+  const submit = async (values: { email: string; password: string }) => {
+    setLoading(true);
+
+    signIn(values).then((content) => {
+      if ('error' in content) {
+        setShowError(true);
+      } else {
+        setRedirect(true);
+      }
+      setLoading(false);
+    });
+  };
+
+  if (redirect) {
+    return <Redirect to="/" />;
   }
 
-  // const submit = async ({
-  //   email,
-  //   password,
-  // }: {
-  //   email: string;
-  //   password: string;
-  // }) => {
-  //   const url = `${API_HOST}/login`;
-
-  //   const response = await fetch(url, {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     credentials: 'include',
-  //     body: JSON.stringify({
-  //       email,
-  //       password,
-  //     }),
-  //   });
-
-  //   const content = await response.json();
-  //   if ('error' in content) {
-  //     setUser(content as User);
-  //     setRedirect(true);
-  //   } else {
-  //     setShowError(true);
-  //   }
-  // };
-
-  return redirect ? (
-    <Redirect to="/" />
-  ) : (
+  return (
     <>
       <Container size={420} my={40}>
         <Title
           align="center"
           sx={(theme) => ({
             fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-            fontWeight: 900,
+            fontWeight: 900
           })}
         >
           Welcome back!
@@ -106,18 +88,12 @@ export default function Login({ setUser }: { setUser: Function }) {
               {...form.getInputProps('password')}
             />
             <Group position="apart" mt="lg">
-              <Checkbox
-                label="Remember me"
-                sx={{ lineHeight: 1 }}
-                checked={cacheUser}
-                onChange={(e) => setCacheUser(e.currentTarget.checked)}
-              />
               <Link to="/resetpassword" className="hyperlinks">
                 Forgot password?
               </Link>
             </Group>
             <Button fullWidth mt="xl" type="submit">
-              Sign in
+              {loading ? <Loader color="white" size="sm" /> : 'Sign in'}
             </Button>
           </form>
         </Paper>
@@ -125,12 +101,9 @@ export default function Login({ setUser }: { setUser: Function }) {
       <Modal
         opened={showError}
         onClose={() => setShowError(false)}
-        title=""
+        title="Error occured while signing in"
         centered
       >
-        <Title c="red" fw={700}>
-          Error occured while signing in
-        </Title>
         <Text c="red" fz="md">
           Invalid email address or password. Please try again.
         </Text>

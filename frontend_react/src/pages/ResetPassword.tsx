@@ -1,51 +1,46 @@
 import {
   Button,
   Container,
+  Loader,
   Modal,
   Paper,
   Text,
   TextInput,
-  Title,
+  Title
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { API_HOST_USER } from '../utils/constants';
 import '../App.css';
+import { resetPassword } from '../utils/user_service';
 
 export default function ResetPassword() {
   const [showError, setShowError] = useState(false);
   const [showChanged, setShowChanged] = useState(false);
   const [redirect, setRedirect] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     initialValues: {
-      email: '',
+      email: ''
     },
 
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-    },
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email')
+    }
   });
 
   const submit = async ({ email }: { email: string }) => {
-    const url = `${API_HOST_USER}/resetpassword`;
+    setLoading(true);
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        email,
-      }),
+    resetPassword(email).then((content) => {
+      if ('error' in content) {
+        setShowError(true);
+      } else {
+        setShowChanged(true);
+      }
+      setLoading(false);
     });
-
-    const content = await response.json();
-    if ('error' in content) {
-      setShowError(true);
-    } else {
-      setShowChanged(true);
-    }
   };
 
   if (redirect) {
@@ -59,7 +54,7 @@ export default function ResetPassword() {
           align="center"
           sx={(theme) => ({
             fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-            fontWeight: 900,
+            fontWeight: 900
           })}
         >
           Reset your password
@@ -74,7 +69,7 @@ export default function ResetPassword() {
               {...form.getInputProps('email')}
             />
             <Button fullWidth mt="xl" type="submit">
-              Reset Password
+              {loading ? <Loader color="white" size="sm" /> : 'Reset Password'}
             </Button>
           </form>
         </Paper>
