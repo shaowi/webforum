@@ -5,6 +5,7 @@ import { User } from '../../types/User';
 import { API_HOST_USER } from '../../utils/constants';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import NavbarLink from './NavbarLink';
+import wfLogo from '../../assets/wf.png';
 
 export default function Nav({
   user,
@@ -44,7 +45,7 @@ export default function Nav({
   return (
     <Navbar className="side-nav" p="md">
       <Center>
-        <Avatar src="../../assets/wj.png" alt="it's me" />
+        <Avatar size="md" src={wfLogo} alt="WebForum" color="white" />
         <Text>{user ? user.name : ''}</Text>
       </Center>
       <Navbar.Section grow mt={50}>

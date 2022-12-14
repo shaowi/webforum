@@ -9,15 +9,14 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { API_HOST_USER } from '../utils/constants';
 import '../App.css';
 
 export default function ResetPassword() {
   const [showError, setShowError] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [showChanged, _] = useState(false);
-  const history = useHistory();
+  const [showChanged, setShowChanged] = useState(false);
+  const [redirect, setRedirect] = useState(false);
 
   const form = useForm({
     initialValues: {
@@ -45,8 +44,13 @@ export default function ResetPassword() {
     if ('error' in content) {
       setShowError(true);
     } else {
+      setShowChanged(true);
     }
   };
+
+  if (redirect) {
+    return <Redirect to="/" />;
+  }
 
   return (
     <>
@@ -91,14 +95,10 @@ export default function ResetPassword() {
       </Modal>
       <Modal
         opened={showChanged}
-        onClose={() => history.push('/')}
-        title=""
-        centered
+        onClose={() => setRedirect(true)}
+        title="Password has been reset"
       >
-        <Title c="red" fw={700}>
-          Password Reset
-        </Title>
-        <Text c="red" fz="md">
+        <Text fz="md">
           Please check your email address for the new password and change it as
           soon as possible.
         </Text>

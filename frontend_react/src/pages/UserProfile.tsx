@@ -1,31 +1,40 @@
 import { Button, createStyles } from '@mantine/core';
+import { useEffect, useState } from 'react';
 import UserCardImage from '../components/user/UserCardImage';
+import { User, UserCardImageProps } from '../types/User';
 
-export default function UserProfile() {
-  const mockdata = {
-    user: {
-      user_id: 1,
-      email: 'bill@test.com',
-      name: 'Bill Headbanger',
-      avatarColor: 'red',
-      access_type: 1,
-    },
+export default function UserProfile({ user }: { user: User }) {
+  const [userInfo, setUserInfo] = useState<UserCardImageProps>({
+    user,
+    stats: [],
+  });
+  useEffect(() => {
+    // Get and set user stats info
+    // API_HOST_USER
+  }, []);
 
-    stats: [
-      {
-        value: '34K',
-        label: 'Viewed',
-      },
-      {
-        value: '187',
-        label: 'Liked',
-      },
-      {
-        value: '1.6K',
-        label: 'Made',
-      },
-    ],
-  };
+  // const userInfo : UserCardImageProps
+  // = {
+  //   user,
+  //   stats: [
+  //     {
+  //       value: '34K',
+  //       label: 'Viewed',
+  //     },
+  //     {
+  //       value: '187',
+  //       label: 'Liked',
+  //     },
+  //     {
+  //       value: '1.6K',
+  //       label: 'Made',
+  //     },
+  //   ],
+  // };
+
+  function changeName() {}
+
+  function changePw() {}
 
   const useStyles = createStyles((theme) => ({
     card: {
@@ -49,13 +58,14 @@ export default function UserProfile() {
         rowGap: '2rem',
       }}
     >
-      <UserCardImage data={mockdata} classes={classes} theme={theme} />
+      <UserCardImage userInfo={userInfo} classes={classes} theme={theme} />
       <Button
         fullWidth
         radius="md"
         mt="xl"
         size="md"
         color={theme.colorScheme === 'dark' ? undefined : 'dark'}
+        onClick={changeName}
       >
         Change Display Name
       </Button>
@@ -65,6 +75,7 @@ export default function UserProfile() {
         mt="xl"
         size="md"
         color={theme.colorScheme === 'dark' ? undefined : 'dark'}
+        onClick={changePw}
       >
         Change Password
       </Button>

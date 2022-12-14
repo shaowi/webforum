@@ -22,25 +22,31 @@ function App({
   activePage: number;
   setActivePage: Function;
 }) {
-  const [user, setUser] = useState<User>();
-
-  useEffect(() => {
-    // Fetch cache cookie user
-    (async () => {
-      const url = API_HOST_USER;
-      const response = await fetch(url, {
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
-
-      const content = await response.json();
-      if (!('error' in content)) {
-        const curUser: User = content;
-        curUser.avatarColor = getRandomColors();
-        setUser(curUser);
-      }
-    })();
+  const [user, setUser] = useState<User>({
+    user_id: 1,
+    email: 'abby@test.com',
+    name: 'abby',
+    access_type: 1,
+    avatarColor: getRandomColors(),
   });
+
+  // useEffect(() => {
+  //   // Fetch cache cookie user
+  //   (async () => {
+  //     const url = API_HOST_USER;
+  //     const response = await fetch(url, {
+  //       headers: { 'Content-Type': 'application/json' },
+  //       credentials: 'include',
+  //     });
+
+  //     const content = await response.json();
+  //     if (!('error' in content)) {
+  //       const curUser: User = content;
+  //       curUser.avatarColor = getRandomColors();
+  //       setUser(curUser);
+  //     }
+  //   })();
+  // });
 
   return (
     <div className="App">

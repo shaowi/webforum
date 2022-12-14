@@ -3,15 +3,15 @@ import { UserCardImageProps } from '../../types/User';
 import { getNameInitials } from '../../utils/constants';
 
 export default function UserCardImage({
-  data,
+  userInfo,
   classes,
   theme,
 }: {
-  data: UserCardImageProps;
+  userInfo: UserCardImageProps;
   classes: any;
   theme: MantineTheme;
 }) {
-  const { user, stats } = data;
+  const { user, stats } = userInfo;
   const { email, name, avatarColor, access_type } = user;
   const authorInitials = getNameInitials(name);
 

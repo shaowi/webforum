@@ -18,6 +18,7 @@ func Setup(app *fiber.App) {
 	user_api.Post("/resetpassword", controllers.ResetPassword)
 	user_api.Post("/changepassword", controllers.ChangePassword)
 	user_api.Post("/changename", controllers.ChangeName)
+	user_api.Post("/userstats", controllers.UserStats)
 
 	// Post API
 	post_api := api.Group("/post")

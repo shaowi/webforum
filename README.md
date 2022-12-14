@@ -111,6 +111,22 @@ Add run commands and examples you think users will find useful. Provide an optio
 }
 ```
 
+## Get User Stats
+
+**GET <http://localhost:3000/api/userstats>**
+
+#
+
+`JSON: Response`
+
+```json
+{
+  "mades": 1,
+  "views": 2,
+  "likes": 3
+}
+```
+
 ## Create User
 
 **POST <http://localhost:3000/api/user/register>**
@@ -153,6 +169,50 @@ Add run commands and examples you think users will find useful. Provide an optio
 
 ```json
 {}
+```
+
+## Reset User Password
+
+**POST <http://localhost:3000/api/user/resetpassword>**
+
+#
+
+`JSON: Request`
+
+```json
+{
+  "email": "abby@test.com"
+}
+```
+
+## Change User Password
+
+**POST <http://localhost:3000/api/user/changepassword>**
+
+#
+
+`JSON: Request`
+
+```json
+{
+  "email": "abby@test.com",
+  "password": "456"
+}
+```
+
+## Change User Name
+
+**POST <http://localhost:3000/api/user/changename>**
+
+#
+
+`JSON: Request`
+
+```json
+{
+  "email": "abby@test.com",
+  "name": "abigail"
+}
 ```
 
 ## Get Posts

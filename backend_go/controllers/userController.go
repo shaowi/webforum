@@ -24,6 +24,32 @@ func User(c *fiber.Ctx) error {
 	return utils.GetRequestResponse(c, user)
 }
 
+func UserStats(c *fiber.Ctx) error {
+	user, err := utils.GetCurrentUser(c, SecretKey)
+
+	if err != nil {
+		c.Status(fiber.StatusNotFound)
+		return utils.ErrorResponse(c, utils.UserNotFound)
+	}
+
+	var mades int
+	var views int
+	var likes int
+
+	madeQuery := "SELECT COUNT(*) FROM post WHERE user_id = ?"
+	viewQuery := "SELECT COUNT(*) FROM popularities WHERE user_id = ?"
+	likeQuery := "SELECT COUNT(*) FROM popularities WHERE user_id = ? AND likes = true"
+	database.DB.Raw(madeQuery, user.UserId).Scan(&mades)
+	database.DB.Raw(viewQuery, user.UserId).Scan(&views)
+	database.DB.Raw(likeQuery, user.UserId).Scan(&likes)
+
+	return utils.GetRequestResponse(c, fiber.Map{
+		"mades": mades,
+		"views": views,
+		"likes": likes,
+	})
+}
+
 func Register(c *fiber.Ctx) error {
 	var data map[string]string
 

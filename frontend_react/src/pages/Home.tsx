@@ -27,7 +27,7 @@ export default function Home({
         activePage={activePage}
         setActivePage={setActivePage}
       />
-      {activePage === 0 ? <PostContainer /> : <UserProfile />}
+      {activePage === 0 ? <PostContainer /> : <UserProfile user={user} />}
     </div>
   );
 }
