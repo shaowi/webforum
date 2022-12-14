@@ -148,9 +148,10 @@ func ResetPassword(c *fiber.Ctx) error {
 	passwordLength := 6
 	newPw := utils.GeneratePassword(passwordLength, minSpecialChar, minNum, minUpperCase)
 	hashedNewPw, _ := bcrypt.GenerateFromPassword([]byte(newPw), 14)
+	emailTo := data["email"]
 
 	// Find user with this email
-	res := database.DB.Where("email = ?", data["email"]).First(&user)
+	res := database.DB.Where("email = ?", emailTo).First(&user)
 	if res.RowsAffected == 0 {
 		return utils.ErrorResponse(c, utils.InvalidEmail)
 	}
@@ -159,7 +160,7 @@ func ResetPassword(c *fiber.Ctx) error {
 	database.DB.Model(&user).Update("password", hashedNewPw)
 
 	// Send an email to the user to give them the new password
-	utils.SendEmail(newPw)
+	utils.SendEmail(newPw, emailTo)
 
 	return utils.ResponseBody(c, newPw)
 }

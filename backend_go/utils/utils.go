@@ -85,11 +85,11 @@ func GeneratePassword(passwordLength, minSpecialChar, minNum, minUpperCase int) 
 	return string(inRune)
 }
 
-func SendEmail(newPw string) {
+func SendEmail(newPw string, emailTo string) {
 	from := config.GoDotEnvVariable("EmailFrom")
 	password := config.GoDotEnvVariable("EmailFromSMTPPw")
 
-	toEmailAddress := config.GoDotEnvVariable("EmailTo")
+	toEmailAddress := emailTo
 	to := []string{toEmailAddress}
 
 	host := "smtp.gmail.com"
