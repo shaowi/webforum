@@ -35,7 +35,6 @@ func GetCurrentUser(c *fiber.Ctx, SecretKey string) (models.User, error) {
 	var user models.User
 
 	if err != nil {
-		c.Status(fiber.StatusUnauthorized)
 		return user, err
 	}
 

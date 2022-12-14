@@ -95,31 +95,26 @@ func Login(c *fiber.Ctx) error {
 	if err := bcrypt.CompareHashAndPassword(user.Password, []byte(data["password"])); err != nil {
 		return utils.ErrorResponse(c, utils.IncorrectPassword)
 	}
-	cacheUser, err := strconv.ParseBool(c.Params("cacheUser"))
-	if err == nil {
-		panic(err)
+
+	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+		Issuer:    strconv.Itoa(int(user.UserId)),
+		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), //1 day
+	})
+
+	token, err := claims.SignedString([]byte(SecretKey))
+
+	if err != nil {
+		return utils.ErrorResponse(c, utils.LogInError)
 	}
-	if cacheUser {
-		claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-			Issuer:    strconv.Itoa(int(user.UserId)),
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), //1 day
-		})
 
-		token, err := claims.SignedString([]byte(SecretKey))
-
-		if err != nil {
-			return utils.ErrorResponse(c, utils.LogInError)
-		}
-
-		cookie := fiber.Cookie{
-			Name:     "jwt",
-			Value:    token,
-			Expires:  time.Now().Add(time.Hour * 24),
-			HTTPOnly: true,
-		}
-
-		c.Cookie(&cookie)
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
+		HTTPOnly: true,
 	}
+
+	c.Cookie(&cookie)
 
 	return utils.ResponseBody(c, utils.UserLoggedIn)
 }
@@ -154,13 +149,14 @@ func ResetPassword(c *fiber.Ctx) error {
 	newPw := utils.GeneratePassword(passwordLength, minSpecialChar, minNum, minUpperCase)
 	hashedNewPw, _ := bcrypt.GenerateFromPassword([]byte(newPw), 14)
 
-	user.Email = data["email"]
 	// Find user with this email
-	if err := database.DB.First(&user).Error; err != nil {
+	res := database.DB.Where("email = ?", data["email"]).First(&user)
+	if res.RowsAffected == 0 {
 		return utils.ErrorResponse(c, utils.InvalidEmail)
 	}
-	user.Password = hashedNewPw
-	database.DB.Save(&user)
+
+	// Update password of this user
+	database.DB.Model(&user).Update("password", hashedNewPw)
 
 	// Send an email to the user to give them the new password
 	utils.SendEmail(newPw)

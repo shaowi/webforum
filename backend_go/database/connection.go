@@ -36,8 +36,8 @@ func AddDummyData() {
 	AddUser("abby@test.com", "123", "abby", 1)
 	AddUser("bob@test.com", "1234", "bob", 1)
 	AddUser("cassie@test.com", "234", "cassie", 2)
-	AddUser("shaogamers@gmail.com", "123", "shao", 1)
-	AddUser("shao.lee@cldcvr.com", "123", "leeshaowee", 1)
+	AddUser("shaogamers@gmail.com", "s9614067c719346", "shao", 1)
+	AddUser("shao.lee@cldcvr.com", "719346", "leeshaowee", 1)
 
 	AddPost(1, "title1", "this is some body 1", "Food,Groceries,Design")
 	AddPost(2, "title2", "this is some body 2", "Food,Groceries,Design")

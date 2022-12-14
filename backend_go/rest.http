@@ -20,12 +20,12 @@ Content-Type: application/json
   "email": "abby@test.com"
 }
 ###
-POST http://localhost:3000/api/user/login 
+POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-  "email": "abby@test.com",
-  "password": "123"
+  "email": "shaogamers@gmail.com",
+  "password": "s9614067c719346"
 }
 ###
 
