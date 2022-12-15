@@ -1,9 +1,10 @@
-import { ActionIcon, Modal, MultiSelect, TextInput } from '@mantine/core';
+import { ActionIcon, Modal, MultiSelect, Text, TextInput } from '@mantine/core';
 import { IconSearch, IconSquarePlus } from '@tabler/icons';
 import { useState } from 'react';
 import '../../App.css';
-import { PostCardProps, NewPost } from '../../types/Post';
+import { PostCardProps } from '../../types/Post';
 import { getRandomColors, lowerCaseStrArrays } from '../../utils/constants';
+import { createPost } from '../../utils/post_service';
 import CreateForm from './CreateForm';
 import PostCard from './PostCard';
 
@@ -13,7 +14,7 @@ export default function PostContainer() {
     email: 'abby@test.com',
     name: 'abby cool',
     access_type: 1,
-    avatarColor: getRandomColors(),
+    avatarColor: getRandomColors()
   };
 
   const items: PostCardProps[] = [
@@ -26,7 +27,7 @@ export default function PostContainer() {
       views: 733,
       comments: 5,
       author: mockUser,
-      description: 'posted 34 minutes ago',
+      description: 'posted 34 minutes ago'
     },
     {
       post_id: 1,
@@ -38,7 +39,7 @@ export default function PostContainer() {
       views: 733,
       comments: 5,
       author: mockUser,
-      description: 'posted 34 minutes ago',
+      description: 'posted 34 minutes ago'
     },
     {
       post_id: 1,
@@ -49,7 +50,7 @@ export default function PostContainer() {
       views: 733,
       comments: 5,
       author: mockUser,
-      description: 'posted 34 minutes ago',
+      description: 'posted 34 minutes ago'
     },
     {
       post_id: 1,
@@ -60,7 +61,7 @@ export default function PostContainer() {
       views: 733,
       comments: 5,
       author: mockUser,
-      description: 'posted 34 minutes ago',
+      description: 'posted 34 minutes ago'
     },
     {
       post_id: 1,
@@ -71,7 +72,7 @@ export default function PostContainer() {
       views: 733,
       comments: 5,
       author: mockUser,
-      description: 'posted 34 minutes ago',
+      description: 'posted 34 minutes ago'
     },
 
     {
@@ -84,7 +85,7 @@ export default function PostContainer() {
       views: 733,
       comments: 5,
       author: mockUser,
-      description: 'posted 34 minutes ago',
+      description: 'posted 34 minutes ago'
     },
     {
       post_id: 1,
@@ -96,7 +97,7 @@ export default function PostContainer() {
       views: 733,
       comments: 5,
       author: mockUser,
-      description: 'posted 34 minutes ago',
+      description: 'posted 34 minutes ago'
     },
     {
       post_id: 1,
@@ -108,8 +109,8 @@ export default function PostContainer() {
       views: 733,
       comments: 5,
       author: mockUser,
-      description: 'posted 34 minutes ago',
-    },
+      description: 'posted 34 minutes ago'
+    }
   ];
 
   const categoriesData = ['Decorations', 'Food', 'Household Appliance'];
@@ -119,6 +120,8 @@ export default function PostContainer() {
   const [searchVal, setSearchVal] = useState('');
   const [categories, setCategories] = useState<Array<string>>([]);
   const [showAddPostModal, setShowAddPostModal] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   function filterPostsByTitle(e: any) {
     const curSearchVal = e.currentTarget.value;
@@ -170,30 +173,36 @@ export default function PostContainer() {
     );
   }
 
-  function addPost(post: NewPost) {
-    console.log(post);
+  function addPost(title: string, body: string, categories: string[]) {
+    const data = {
+      title,
+      body,
+      categories: categories.join(',')
+    };
+    const res = createPost(data).then((content: any) => {
+      if ('error' in content) {
+        setShowError(true);
+      } else {
+        setShowAlert(true);
+        // Add new post to all posts
+      }
+    });
+    return res;
   }
 
   return (
     <>
-      <Modal
-        opened={showAddPostModal}
-        centered
-        onClose={() => setShowAddPostModal(false)}
-      >
-        <CreateForm categoriesData={categoriesData} addPost={addPost} />
-      </Modal>
       <div
         className="flex-col-container"
         style={{
-          margin: '3rem 3rem 5rem 8rem',
+          margin: '3rem 3rem 5rem 8rem'
         }}
       >
         <div
           className="flex-row-container"
           style={{
             justifyContent: 'space-between',
-            width: '85vw',
+            width: '85vw'
           }}
         >
           <div
@@ -201,7 +210,7 @@ export default function PostContainer() {
             style={{
               alignSelf: 'start',
               rowGap: '1rem',
-              alignItems: 'start',
+              alignItems: 'start'
             }}
           >
             <TextInput
@@ -239,6 +248,29 @@ export default function PostContainer() {
           ))}
         </div>
       </div>
+      <Modal
+        opened={showAddPostModal}
+        centered
+        onClose={() => setShowAddPostModal(false)}
+      >
+        <CreateForm categoriesData={categoriesData} addPost={addPost} />
+      </Modal>
+      <Modal
+        opened={showAlert}
+        centered
+        onClose={() => setShowAlert(false)}
+        title="Post created successfully"
+      ></Modal>
+      <Modal
+        opened={showError}
+        centered
+        onClose={() => setShowError(false)}
+        title="Error occured while creating a post"
+      >
+        <Text c="red" fz="md">
+          Something went wrong. Please refresh your browser and try again.
+        </Text>
+      </Modal>
     </>
   );
 }

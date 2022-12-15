@@ -1,19 +1,19 @@
-import { Center, Navbar, Stack, Avatar, Text } from '@mantine/core';
+import { Avatar, Center, Navbar, Stack } from '@mantine/core';
 import { IconHome2, IconLogout, IconUser } from '@tabler/icons';
+import { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import '../../App.css';
+import wfLogo from '../../assets/wf.png';
 import { User } from '../../types/User';
 import { API_HOST_USER } from '../../utils/constants';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import NavbarLink from './NavbarLink';
-import wfLogo from '../../assets/wf.png';
-import { useState } from 'react';
-import { Redirect } from 'react-router-dom';
 
 export default function Nav({
   user,
   setUser,
   activePage,
-  setActivePage,
+  setActivePage
 }: {
   user: User;
   setUser: Function;
@@ -23,7 +23,7 @@ export default function Nav({
   const [redirect, setRedirect] = useState(false);
   const navIcons = [
     { icon: IconHome2, label: 'Home' },
-    { icon: IconUser, label: 'Account' },
+    { icon: IconUser, label: 'Account' }
   ];
 
   const links = navIcons.map((link, index) => (
@@ -40,7 +40,7 @@ export default function Nav({
     fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
+      credentials: 'include'
     }).then((_) => {
       setUser(undefined);
       setRedirect(true);
@@ -54,7 +54,6 @@ export default function Nav({
     <Navbar className="side-nav" p="md">
       <Center>
         <Avatar size="md" src={wfLogo} alt="WebForum" color="white" />
-        <Text>{user ? user.name : ''}</Text>
       </Center>
       <Navbar.Section grow mt={50}>
         <Stack justify="center" spacing={0}>

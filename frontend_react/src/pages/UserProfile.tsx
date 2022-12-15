@@ -17,6 +17,8 @@ export default function UserProfile({
   user: User;
   setUser: Function;
 }) {
+  const [changedMessage, setChangedMessage] = useState('');
+  const [showChanged, setShowChanged] = useState(false);
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showChangePwModal, setShowChangePwModal] = useState(false);
@@ -59,8 +61,6 @@ export default function UserProfile({
   }));
 
   const { classes, theme } = useStyles();
-  const [changedMessage, setChangedMessage] = useState('');
-  const [showChanged, setShowChanged] = useState(false);
 
   async function onChangeConfirm(input: string, type: number): Promise<any> {
     setChangedMessage(
