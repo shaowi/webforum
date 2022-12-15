@@ -29,10 +29,12 @@ const useStyles = createStyles((theme) => ({
 
 export default function PostCard({
   postCardProps,
-  deletePost
+  deletePost,
+  userAccessType
 }: {
   postCardProps: PostCardProps;
   deletePost: Function;
+  userAccessType: number;
 }) {
   const { classes, theme } = useStyles();
   const [opened, setOpened] = useState(false);
@@ -57,6 +59,7 @@ export default function PostCard({
           setOpened={setOpened}
           renderBody={true}
           deletePost={deletePost}
+          userAccessType={userAccessType}
         />
       </Modal>
       <Card withBorder p="lg" radius="md" className={classes.card}>
@@ -67,6 +70,7 @@ export default function PostCard({
           setOpened={setOpened}
           renderBody={false}
           deletePost={deletePost}
+          userAccessType={userAccessType}
         />
       </Card>
     </>

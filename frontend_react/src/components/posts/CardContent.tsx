@@ -21,7 +21,8 @@ export default function CardContent({
   postCardProps,
   setOpened,
   renderBody,
-  deletePost
+  deletePost,
+  userAccessType
 }: {
   postCardProps: PostCardProps;
   theme: MantineTheme;
@@ -29,6 +30,7 @@ export default function CardContent({
   setOpened: Function;
   renderBody: true | false;
   deletePost: Function;
+  userAccessType: number;
 }) {
   const {
     post_id,
@@ -73,15 +75,17 @@ export default function CardContent({
         <Text weight={700} className={classes.title}>
           {title}
         </Text>
-        <Tooltip label="Delete Post">
-          <ActionIcon
-            onClick={onDelete}
-            disabled={renderBody}
-            className="action-icons"
-          >
-            <IconTrash size={20} color={theme.colors.red[8]} stroke={1.5} />
-          </ActionIcon>
-        </Tooltip>
+        {userAccessType === 1 && (
+          <Tooltip label="Delete Post">
+            <ActionIcon
+              onClick={onDelete}
+              disabled={renderBody}
+              className="action-icons"
+            >
+              <IconTrash size={20} color={theme.colors.red[8]} stroke={1.5} />
+            </ActionIcon>
+          </Tooltip>
+        )}
       </div>
 
       {categories.map((cat, i) =>
