@@ -36,7 +36,7 @@ func UserStats(c *fiber.Ctx) error {
 	var views int
 	var likes int
 
-	madeQuery := "SELECT COUNT(*) FROM post WHERE user_id = ?"
+	madeQuery := "SELECT COUNT(*) FROM posts WHERE user_id = ?"
 	viewQuery := "SELECT COUNT(*) FROM popularities WHERE user_id = ?"
 	likeQuery := "SELECT COUNT(*) FROM popularities WHERE user_id = ? AND likes = true"
 	database.DB.Raw(madeQuery, user.UserId).Scan(&mades)
@@ -175,13 +175,14 @@ func ChangePassword(c *fiber.Ctx) error {
 	var user models.User
 	hashedNewPw, _ := bcrypt.GenerateFromPassword([]byte(data["password"]), 14)
 
-	user.Email = data["email"]
 	// Find user with this email
-	if err := database.DB.First(&user).Error; err != nil {
+	res := database.DB.Where("email = ?", data["email"]).First(&user)
+	if res.RowsAffected == 0 {
 		return utils.ErrorResponse(c, utils.InvalidEmail)
 	}
-	user.Password = hashedNewPw
-	database.DB.Save(&user)
+
+	// Update password of this user
+	database.DB.Model(&user).Update("password", hashedNewPw)
 
 	return utils.ResponseBody(c, utils.PasswordChanged)
 }
@@ -195,13 +196,14 @@ func ChangeName(c *fiber.Ctx) error {
 
 	var user models.User
 
-	user.Email = data["email"]
 	// Find user with this email
-	if err := database.DB.First(&user).Error; err != nil {
+	res := database.DB.Where("email = ?", data["email"]).First(&user)
+	if res.RowsAffected == 0 {
 		return utils.ErrorResponse(c, utils.InvalidEmail)
 	}
-	user.Name = data["name"]
-	database.DB.Save(&user)
+
+	// Update name of this user
+	database.DB.Model(&user).Update("name", data["name"])
 
 	return utils.ResponseBody(c, utils.NameChanged)
 }
