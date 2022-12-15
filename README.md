@@ -267,7 +267,8 @@ Add run commands and examples you think users will find useful. Provide an optio
 ```json
 {
   "title": "title1",
-  "body": "this is some body text 1"
+  "body": "this is some body text 1",
+  "category": "food,entertainment,fitness"
 }
 ```
 
