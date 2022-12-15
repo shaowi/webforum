@@ -1,17 +1,18 @@
 import { Loader } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import '../App.css';
 import Nav from '../components/nav/Nav';
 import PostContainer from '../components/posts/PostContainer';
 import { User } from '../types/User';
-import { API_HOST_USER, getRandomColors } from '../utils/constants';
+import { getRandomColors } from '../utils/constants';
+import { getCacheUser } from '../utils/user_service';
 import './UserProfile';
 import UserProfile from './UserProfile';
 
 export default function Home({
   activePage,
-  setActivePage,
+  setActivePage
 }: {
   activePage: number;
   setActivePage: Function;
@@ -19,28 +20,24 @@ export default function Home({
   const [user, setUser] = useState<User>();
   const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(true);
+  const avatarColor = useMemo(() => getRandomColors(), []);
 
   useEffect(() => {
     // Fetch cache cookie user
     (async () => {
-      const url = API_HOST_USER;
-      const response = await fetch(url, {
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      });
-
-      response.json().then((content) => {
-        if (content.hasOwnProperty('error')) {
-          setRedirect(true);
-        } else {
-          const curUser: User = content;
-          curUser.avatarColor = getRandomColors();
-          setUser(curUser);
-        }
-        setLoading(false);
-      });
+      getCacheUser()
+        .then((content) => {
+          if (content.hasOwnProperty('error')) {
+            setRedirect(true);
+          } else {
+            const curUser: User = content;
+            curUser.avatarColor = avatarColor;
+            setUser(curUser);
+          }
+        })
+        .finally(() => setLoading(false));
     })();
-  }, []);
+  }, [avatarColor]);
 
   if (redirect) {
     return <Redirect to="/login" />;
@@ -56,7 +53,11 @@ export default function Home({
         activePage={activePage}
         setActivePage={setActivePage}
       />
-      {activePage === 0 ? <PostContainer /> : <UserProfile user={user!} />}
+      {activePage === 0 ? (
+        <PostContainer />
+      ) : (
+        <UserProfile user={user!} setUser={setUser} />
+      )}
     </div>
   );
 }

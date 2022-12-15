@@ -30,10 +30,10 @@ export default function ResetPassword() {
     }
   });
 
-  const submit = async ({ email }: { email: string }) => {
+  const submit = async (values: { email: string }) => {
     setLoading(true);
 
-    resetPassword(email).then((content) => {
+    resetPassword(values).then((content) => {
       if ('error' in content) {
         setShowError(true);
       } else {
@@ -78,12 +78,9 @@ export default function ResetPassword() {
       <Modal
         opened={showError}
         onClose={() => setShowError(false)}
-        title=""
+        title="Something went wrong"
         centered
       >
-        <Title c="red" fw={700}>
-          Error occured
-        </Title>
         <Text c="red" fz="md">
           Invalid email address. Please try again.
         </Text>

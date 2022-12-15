@@ -105,9 +105,7 @@ export default function Register() {
               placeholder="Enter your email address"
               required
               {...form.getInputProps('email')}
-              style={{
-                marginTop: '16px'
-              }}
+              mt="md"
             />
             <PasswordInput
               label="Password"
