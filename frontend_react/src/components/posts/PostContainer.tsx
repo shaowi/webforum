@@ -12,12 +12,13 @@ import { useEffect, useState } from 'react';
 import '../../App.css';
 import { PostCardProps } from '../../types/Post';
 import { User } from '../../types/User';
-import { lowerCaseStrArrays } from '../../utils/constants';
+import { capitalize, lowerCaseStrArrays } from '../../utils/constants';
 import {
   convertToPostCard,
   createPost,
   getAllPosts,
-  hasOverlap
+  hasOverlap,
+  removePost
 } from '../../utils/post_service';
 import CreateForm from './CreateForm';
 import PostCard from './PostCard';
@@ -25,7 +26,7 @@ import PostCard from './PostCard';
 export default function PostContainer({ user }: { user: User }) {
   const [initPosts, setInitPosts] = useState<PostCardProps[]>();
   const [posts, setPosts] = useState<PostCardProps[]>();
-  const categoriesData = ['Decorations', 'Food', 'Household Appliance'];
+  const [categoriesData, setCategoriesData] = useState<string[]>([]);
 
   const [searchVal, setSearchVal] = useState('');
   const [categories, setCategories] = useState<Array<string>>([]);
@@ -105,14 +106,33 @@ export default function PostContainer({ user }: { user: User }) {
     return res;
   }
 
+  function deletePost(id: number) {
+    const res = removePost(id);
+    res.then(() => {
+      const newAllPosts = initPosts?.filter((post) => post.post_id !== id);
+      setPosts(newAllPosts);
+      setInitPosts(newAllPosts);
+    });
+    return res;
+  }
+
   useEffect(() => {
+    // Fetch all posts from database
     getAllPosts().then((content: any) => {
       if ('error' in content) {
         setShowError(true);
       } else {
-        const finalData = content.map(convertToPostCard);
+        const finalData: PostCardProps[] = content.map(convertToPostCard);
         setPosts(finalData);
         setInitPosts(finalData);
+
+        // Populate the available categories from all the created posts
+        let allCategories: Set<string> = new Set();
+        for (let { categories } of finalData) {
+          const curCat = new Set([...categories]);
+          allCategories = new Set([...allCategories, ...curCat]);
+        }
+        setCategoriesData([...allCategories].map((s) => capitalize(s)));
       }
       setLoading(false);
     });
@@ -181,7 +201,11 @@ export default function PostContainer({ user }: { user: User }) {
           style={{ marginTop: '2rem', alignSelf: 'start' }}
         >
           {posts!.map((post) => (
-            <PostCard key={post.post_id} {...post} />
+            <PostCard
+              key={post.post_id}
+              postCardProps={post}
+              deletePost={deletePost}
+            />
           ))}
         </div>
       </div>

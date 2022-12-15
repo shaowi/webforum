@@ -6,16 +6,16 @@ import CardContent from './CardContent';
 const useStyles = createStyles((theme) => ({
   card: {
     backgroundColor:
-      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
+      theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white
   },
 
   title: {
-    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`
   },
 
   body: {
     marginTop: theme.spacing.md,
-    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`
   },
 
   footer: {
@@ -23,11 +23,17 @@ const useStyles = createStyles((theme) => ({
     marginTop: theme.spacing.md,
     borderTop: `1px solid ${
       theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2]
-    }`,
-  },
+    }`
+  }
 }));
 
-export default function PostCard(postCardProps: PostCardProps) {
+export default function PostCard({
+  postCardProps,
+  deletePost
+}: {
+  postCardProps: PostCardProps;
+  deletePost: Function;
+}) {
   const { classes, theme } = useStyles();
   const [opened, setOpened] = useState(false);
   // const commentOnPost = () => console.log('commenting');
@@ -50,6 +56,7 @@ export default function PostCard(postCardProps: PostCardProps) {
           postCardProps={postCardProps}
           setOpened={setOpened}
           renderBody={true}
+          deletePost={deletePost}
         />
       </Modal>
       <Card withBorder p="lg" radius="md" className={classes.card}>
@@ -59,6 +66,7 @@ export default function PostCard(postCardProps: PostCardProps) {
           postCardProps={postCardProps}
           setOpened={setOpened}
           renderBody={false}
+          deletePost={deletePost}
         />
       </Card>
     </>

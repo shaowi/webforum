@@ -11,7 +11,7 @@ async function createPost(data: any) {
   return response.json();
 }
 
-async function deletePost(id: number) {
+async function removePost(id: number) {
   const response = await postRequest(`${API_HOST_POST}/delete/${id}`, {});
   return response.json();
 }
@@ -66,7 +66,7 @@ function convertToPostCard(d: any) {
 
 export {
   createPost,
-  deletePost,
+  removePost,
   getAllPosts,
   convertUnixTSToDT,
   hasOverlap,
