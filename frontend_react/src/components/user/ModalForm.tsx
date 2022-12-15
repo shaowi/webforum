@@ -62,8 +62,8 @@ export default function ModalForm({
           />
           <PasswordInput
             withAsterisk
-            label="Confirm Password"
-            placeholder="Enter your password again"
+            label="Confirm New Password"
+            placeholder="Please enter your new password again"
             mt="md"
             value={confirmPassword}
             onChange={(e) => {

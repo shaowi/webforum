@@ -127,6 +127,23 @@ Add run commands and examples you think users will find useful. Provide an optio
 }
 ```
 
+## Get User By Id
+
+**GET <http://localhost:3000/api/user/:userId>**
+
+#
+
+`JSON: Response`
+
+```json
+{
+  "user_id": 1,
+  "email": "abby@test.com",
+  "name": "abby",
+  "access_type": 1
+}
+```
+
 ## Create User
 
 **POST <http://localhost:3000/api/user/register>**

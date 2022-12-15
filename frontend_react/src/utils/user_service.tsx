@@ -11,6 +11,11 @@ async function getUserStats(): Promise<any> {
   return res.json();
 }
 
+async function getUserById(id: number): Promise<any> {
+  const res = await getRequest(`${API_HOST_USER}/${id}`);
+  return res.json();
+}
+
 async function signIn(userInfo: {
   email: string;
   password: string;
@@ -54,5 +59,6 @@ export {
   changePassword,
   changeName,
   getCacheUser,
-  getUserStats
+  getUserStats,
+  getUserById
 };

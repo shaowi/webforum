@@ -54,7 +54,7 @@ export default function Home({
         setActivePage={setActivePage}
       />
       {activePage === 0 ? (
-        <PostContainer />
+        <PostContainer user={user!} />
       ) : (
         <UserProfile user={user!} setUser={setUser} />
       )}

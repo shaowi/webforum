@@ -5,19 +5,19 @@ import {
   Card,
   Group,
   MantineTheme,
-  Text,
+  Text
 } from '@mantine/core';
 import { IconEye, IconHeart, IconMessage2 } from '@tabler/icons';
 import { PostCardProps } from '../../types/Post';
 import CommentContainer from '../comments/CommentContainer';
-import { getNameInitials } from './../../utils/constants';
+import { getNameInitials, getRandomColors } from './../../utils/constants';
 
 export default function CardContent({
   classes,
   theme,
   postCardProps,
   setOpened,
-  renderBody,
+  renderBody
 }: {
   postCardProps: PostCardProps;
   theme: MantineTheme;
@@ -26,14 +26,15 @@ export default function CardContent({
   renderBody: true | false;
 }) {
   const {
-    category,
+    categories,
     title,
     body,
     likes,
     views,
     comments,
-    author,
-    description,
+    author_name,
+    author_email,
+    description
   }: PostCardProps = postCardProps;
   const commentOnPost = () => {
     setOpened(true);
@@ -42,7 +43,7 @@ export default function CardContent({
   const likePost = () => {
     console.log('hi');
   };
-  const authorInitials = getNameInitials(author.name);
+  const authorInitials = getNameInitials(author_name);
 
   return (
     <>
@@ -50,14 +51,23 @@ export default function CardContent({
         {title}
       </Text>
 
-      <Badge mt="xs">{category}</Badge>
+      {categories.map((cat, i) =>
+        cat.length > 0 ? (
+          <Badge key={cat + i} mt="xs">
+            {cat}
+          </Badge>
+        ) : (
+          ''
+        )
+      )}
 
       <Group mt="lg">
-        <Avatar src={null} alt={author.name} color={author.avatarColor}>
+        <Avatar src={null} alt={author_name} color={getRandomColors()}>
           {authorInitials}
         </Avatar>
         <div>
-          <Text weight={500}>{author.name}</Text>
+          <Text weight={500}>{author_name}</Text>
+          <Text weight={300}>{author_email}</Text>
           <Text size="xs" color="dimmed">
             {description}
           </Text>

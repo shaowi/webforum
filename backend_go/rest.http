@@ -47,7 +47,8 @@ Content-Type: application/json
 
 {
   "title": "title4",
-  "body": "this is some body text 4" 
+  "body": "this is some body text 4",
+  "category": "food,entertainment,fitness"
 }
 ###
 

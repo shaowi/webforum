@@ -34,13 +34,17 @@ func GetPost(c *fiber.Ctx) error {
 	}
 	var views uint = post.Views
 	var likes uint = post.Likes
+	var comments uint = post.Likes
 	viewQuery := "SELECT SUM(views) FROM popularities WHERE post_id = ?"
 	likeQuery := "SELECT COUNT(likes) FROM popularities WHERE post_id = ? AND likes = true"
+	commentQuery := "SELECT COUNT(comment_id) FROM comments WHERE post_id = ?"
 	database.DB.Raw(viewQuery, postId).Scan(&views)
 	database.DB.Raw(likeQuery, postId).Scan(&likes)
+	database.DB.Raw(commentQuery, postId).Scan(&comments)
 
 	post.Views = views
 	post.Likes = likes
+	post.Comments = comments
 
 	database.DB.Save(&post)
 
@@ -53,19 +57,19 @@ func AddPost(c *fiber.Ctx) error {
 	if err := c.BodyParser(&data); err != nil {
 		return err
 	}
-
-	// Check that user is logged in
 	user, err := utils.GetCurrentUser(c, SecretKey)
 	if err != nil {
 		return utils.ErrorResponse(c, utils.UserNotFound)
 	}
 
 	post := models.Post{
-		UserId:     user.UserId,
-		Title:      data["title"],
-		Body:       data["body"],
-		Categories: data["categories"],
-		CreatedDt:  time.Now().Unix(),
+		AuthorName:  data["author_name"],
+		AuthorEmail: data["author_email"],
+		UserId:      user.UserId,
+		Title:       data["title"],
+		Body:        data["body"],
+		Categories:  data["categories"],
+		CreatedDt:   time.Now().Unix(),
 	}
 
 	if err := database.DB.Create(&post).Error; err != nil {

@@ -33,15 +33,15 @@ func CreateTables(db *gorm.DB) {
 }
 
 func AddDummyData() {
-	AddUser("abby@test.com", "123", "abby", 1)
-	AddUser("bob@test.com", "1234", "bob", 1)
-	AddUser("cassie@test.com", "234", "cassie", 2)
-	AddUser("shaogamers@gmail.com", "s9614067c719346", "shao", 1)
+	AddUser("abby@test.com", "12356", "abby", 1)
+	AddUser("bob@test.com", "123456", "bob", 1)
+	AddUser("cassie@test.com", "456789", "cassie", 2)
+	AddUser("shaogamers@gmail.com", "719346", "shao", 1)
 	AddUser("shao.lee@cldcvr.com", "719346", "leeshaowee", 1)
 
-	AddPost(1, "title1", "this is some body 1", "Food,Groceries,Design")
-	AddPost(2, "title2", "this is some body 2", "Food,Groceries,Design")
-	AddPost(2, "title3", "this is some body 3", "Food,Groceries,Design")
+	AddPost("shao", "shaogamers@gmail.com", 1, "title1", "this is some body 1", "food,groceries,design")
+	AddPost("abby", "abby@test.com", 2, "title2", "this is some body 2", "sports,groceries,design")
+	AddPost("bob", "bob@test.com", 2, "title3", "this is some body 3", "shopping,groceries,entertainment")
 
 	AddComment(1, 1, "this is some content 1")
 	AddComment(2, 1, "this is some content 1")
@@ -66,13 +66,15 @@ func AddUser(email string, password string, name string, access_type uint) {
 	DB.Create(&user)
 }
 
-func AddPost(user_id uint, title string, body string, categories string) {
+func AddPost(author_name string, author_email string, user_id uint, title string, body string, categories string) {
 	post := models.Post{
-		UserId:     user_id,
-		Title:      title,
-		Body:       body,
-		Categories: categories,
-		CreatedDt:  time.Now().Unix(),
+		AuthorName:  author_name,
+		AuthorEmail: author_email,
+		UserId:      user_id,
+		Title:       title,
+		Body:        body,
+		Categories:  categories,
+		CreatedDt:   time.Now().Unix(),
 	}
 
 	DB.Create(&post)
