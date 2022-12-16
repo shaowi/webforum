@@ -39,14 +39,15 @@ export default function Login() {
   const submit = async (values: { email: string; password: string }) => {
     setLoading(true);
 
-    signIn(values).then((content) => {
-      if ('error' in content) {
-        setShowError(true);
-      } else {
-        setRedirect(true);
-      }
-      setLoading(false);
-    });
+    signIn(values)
+      .then((content) => {
+        if ('error' in content) {
+          setShowError(true);
+        } else {
+          setRedirect(true);
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   if (redirect) {

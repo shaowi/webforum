@@ -214,7 +214,7 @@ export default function PostContainer({ user }: { user: User }) {
               key={post.post_id}
               postCardProps={post}
               deletePost={deletePost}
-              userAccessType={user.access_type}
+              userAccessType={user?.access_type}
               curUser={curUser}
             />
           ))}

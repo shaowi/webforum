@@ -43,7 +43,7 @@ export default function CommentHtml({
   const { comment_id, posted_on, content, author } = commentCardProps;
   const { name, email, avatarColor } = author;
   const { classes, theme } = useStyles();
-  const authorInitials = getNameInitials(author.name);
+  const authorInitials = getNameInitials(name);
   const [loading, setLoading] = useState(false);
 
   function onDelete() {

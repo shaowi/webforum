@@ -9,6 +9,7 @@ import {
   Title
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { getHotkeyHandler } from '@mantine/hooks';
 import { IconCirclePlus } from '@tabler/icons';
 import { useState } from 'react';
 import { capitalize } from '../../utils/constants';
@@ -97,6 +98,9 @@ export default function CreateForm({
           minRows={4}
           maxRows={8}
           {...form.getInputProps('body')}
+          onKeyDown={getHotkeyHandler([
+            ['mod+Enter', () => onFormSubmit(form.values)]
+          ])}
         />
 
         <Group position="right" mt="md">

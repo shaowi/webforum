@@ -1,13 +1,18 @@
-import CommentHtml from './CommentHtml';
-import '../../App.css';
-import { ActionIcon, Loader, Textarea, Text } from '@mantine/core';
+import { ActionIcon, Loader, Text, Textarea, Tooltip } from '@mantine/core';
+import { getHotkeyHandler } from '@mantine/hooks';
 import { IconSend } from '@tabler/icons';
 import { useEffect, useState } from 'react';
-import { getHotkeyHandler } from '@mantine/hooks';
-import { Author } from '../../types/User';
+import '../../App.css';
 import { CommentCardProps } from '../../types/Comment';
-import { convertToCommentCard, getComments } from '../../utils/comment_service';
+import { Author } from '../../types/User';
+import {
+  convertToCommentCard,
+  createComment,
+  getComments,
+  removeComment
+} from '../../utils/comment_service';
 import TransitionModal from '../TransitionModal';
+import CommentHtml from './CommentHtml';
 
 export default function CommentContainer({
   post_id,
@@ -18,38 +23,53 @@ export default function CommentContainer({
   userAccessType: number;
   curUser: Author;
 }) {
-  // const mockUser: Author = {
-  //   name: 'abby cool',
-  //   email: 'abby@test.com',
-  // };
-  // const md: Comment[] = [
-  //   {
-  //     posted_on: '11 December 2022',
-  //     body: '<p>I use <a href="https://heroku.com/" rel="noopener noreferrer" target="_blank">Heroku</a> to host my Node.js application, but MongoDB add-on appears to be too <strong>expensive</strong>. I consider switching to <a href="https://www.digitalocean.com/" rel="noopener noreferrer" target="_blank">Digital Ocean</a> VPS to save some cash.</p>',
-  //     author: mockUser
-  //   }
-  // ];
-
   const [commentsInfo, setCommentsInfo] = useState<CommentCardProps[]>([]);
   const [comment, setComment] = useState('');
   const [showError, setShowError] = useState(false);
+  const [showOpError, setShowOpError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isCreating, setIsCreating] = useState(false);
 
   function addComment() {
     if (comment.length === 0) return;
-    // const newComment = {
-    //   posted_on: '11 December 2022',
-    //   body: comment,
-    //   author: mockUser
-    // };
-    // setCommentsInfo((c) => [...c, newComment]);
-    setComment('');
+    setIsCreating(true);
+    createComment(post_id, { content: comment })
+      .then((res: any) => {
+        if ('error' in res) {
+          setShowOpError(true);
+        } else {
+          // Add new comment to all comments
+          const { comment_id, posted_on, content } = res;
+          setCommentsInfo((c) => [
+            ...c,
+            {
+              comment_id,
+              posted_on,
+              content,
+              author: curUser
+            }
+          ]);
+        }
+      })
+      .finally(() => {
+        setComment('');
+        setIsCreating(false);
+      });
   }
 
-  function deleteComment() {}
+  function deleteComment(comment_id: number) {
+    const res = removeComment(post_id, comment_id);
+    res.then((content) => {
+      if ('error' in content) {
+        setShowOpError(true);
+      } else {
+        setCommentsInfo((c) => c.filter((i) => i.comment_id !== comment_id));
+      }
+    });
+    return res;
+  }
 
   useEffect(() => {
-    setLoading(true);
     // Fetch all comments from database relating to this post
     getComments(post_id)
       .then((content: any) => {
@@ -106,19 +126,35 @@ export default function CommentContainer({
             onChange={(e) => setComment(e.currentTarget.value)}
             onKeyDown={getHotkeyHandler([['mod+Enter', addComment]])}
           />
-          <ActionIcon
-            onClick={addComment}
-            disabled={comment.length === 0}
-            className="action-icons"
-          >
-            <IconSend size={25} stroke={1.5} />
-          </ActionIcon>
+          {isCreating ? (
+            <Loader />
+          ) : (
+            <Tooltip label="Send">
+              <ActionIcon
+                onClick={addComment}
+                disabled={comment.length === 0}
+                className="action-icons"
+              >
+                <IconSend size={25} stroke={1.5} />
+              </ActionIcon>
+            </Tooltip>
+          )}
         </div>
       </div>
       <TransitionModal
         opened={showError}
         onClose={() => setShowError(false)}
-        title="Error occured while fetching posts"
+        title="Error occured while fetching comments"
+        InnerComponent={
+          <Text c="red" fz="md">
+            Something went wrong. Please refresh your browser and try again.
+          </Text>
+        }
+      />
+      <TransitionModal
+        opened={showOpError}
+        onClose={() => setShowOpError(false)}
+        title="Error occured while performing this operation"
         InnerComponent={
           <Text c="red" fz="md">
             Something went wrong. Please refresh your browser and try again.
