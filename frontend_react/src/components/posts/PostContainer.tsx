@@ -225,7 +225,6 @@ export default function PostContainer({ user }: { user: User }) {
         opened={showAlert}
         onClose={() => setShowAlert(false)}
         title="Post created successfully"
-        InnerComponent={''}
       />
       <TransitionModal
         opened={showCreateError}
