@@ -24,13 +24,15 @@ type Post struct {
 }
 
 type Comment struct {
-	CommentId uint   `json:"comment_id" gorm:"primaryKey;gorm:autoIncrement"`
-	User      User   `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Post      Post   `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	UserId    uint   `json:"user_id"`
-	PostId    uint   `json:"post_id"`
-	Content   string `json:"content"`
-	CreatedDt int64  `json:"created_dt"`
+	CommentId   uint   `json:"comment_id" gorm:"primaryKey;gorm:autoIncrement"`
+	User        User   `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Post        Post   `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	UserId      uint   `json:"user_id"`
+	AuthorName  string `json:"author_name"`
+	AuthorEmail string `json:"author_email"`
+	PostId      uint   `json:"post_id"`
+	Content     string `json:"content"`
+	CreatedDt   int64  `json:"created_dt"`
 }
 
 // Stores the information of posts that are liked and viewed by a user

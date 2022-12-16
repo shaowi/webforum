@@ -39,13 +39,13 @@ func AddDummyData() {
 	AddUser("shaogamers@gmail.com", "719346", "shao", 1)
 	AddUser("shao.lee@cldcvr.com", "719346", "leeshaowee", 1)
 
-	AddPost("shao", "shaogamers@gmail.com", 1, "title1", "this is some body 1", "food,groceries,design")
-	AddPost("abby", "abby@test.com", 2, "title2", "this is some body 2", "sports,groceries,design")
+	AddPost("shao", "shaogamers@gmail.com", 4, "title1", "this is some body 1", "food,groceries,design")
+	AddPost("abby", "abby@test.com", 1, "title2", "this is some body 2", "sports,groceries,design")
 	AddPost("bob", "bob@test.com", 2, "title3", "this is some body 3", "shopping,groceries,entertainment")
 
-	AddComment(1, 1, "this is some content 1")
-	AddComment(2, 1, "this is some content 1")
-	AddComment(2, 2, "this is some content 1")
+	AddComment("bob", "bob@test.com", 2, 1, "this is some content 1")
+	AddComment("abby", "abby@test.com", 1, 1, "this is some content 2")
+	AddComment("bob", "bob@test.com", 2, 2, "this is some content 3")
 
 	AddPopularity(1, 1, false)
 	AddPopularity(2, 1, true)
@@ -80,12 +80,14 @@ func AddPost(author_name string, author_email string, user_id uint, title string
 	DB.Create(&post)
 }
 
-func AddComment(user_id uint, post_id uint, content string) {
+func AddComment(author_name string, author_email string, user_id uint, post_id uint, content string) {
 	comment := models.Comment{
-		UserId:    user_id,
-		PostId:    post_id,
-		Content:   content,
-		CreatedDt: time.Now().Unix(),
+		AuthorName:  author_name,
+		AuthorEmail: author_email,
+		UserId:      user_id,
+		PostId:      post_id,
+		Content:     content,
+		CreatedDt:   time.Now().Unix(),
 	}
 
 	DB.Create(&comment)

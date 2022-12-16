@@ -14,4 +14,5 @@ const (
 	DeleteError       string = "Error occured when deleting record"
 	DeleteSuccess     string = "Record has been deleted successfully"
 	ForbiddenAction   string = "User cannot perform this operation"
+	Success           string = "Operation success"
 )

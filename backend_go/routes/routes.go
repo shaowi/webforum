@@ -27,6 +27,8 @@ func Setup(app *fiber.App) {
 	post_api.Get("/:postId", controllers.GetPost)
 	post_api.Post("/add", controllers.AddPost)
 	post_api.Post("/delete/:postId", controllers.DeletePost)
+	post_api.Get("/like/:postId", controllers.LikePost)
+	post_api.Get("/view/:postId", controllers.ViewPost)
 
 	// Comment API
 	comment_api := post_api.Group("/:postId/comment")

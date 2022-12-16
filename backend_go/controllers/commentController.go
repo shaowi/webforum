@@ -44,10 +44,12 @@ func AddComment(c *fiber.Ctx) error {
 	}
 
 	comment := models.Comment{
-		UserId:    user.UserId,
-		PostId:    postId,
-		Content:   data["content"],
-		CreatedDt: time.Now().Unix(),
+		AuthorName:  data["author_name"],
+		AuthorEmail: data["author_email"],
+		UserId:      user.UserId,
+		PostId:      postId,
+		Content:     data["content"],
+		CreatedDt:   time.Now().Unix(),
 	}
 
 	if err := database.DB.Create(&comment).Error; err != nil {
