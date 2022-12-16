@@ -1,5 +1,5 @@
 import { getRequest, postRequest } from './request_service';
-import { API_HOST_POST } from './constants';
+import { API_HOST_POST, getRandomColors } from './constants';
 
 async function getAllPosts() {
   const response = await getRequest(API_HOST_POST);
@@ -37,8 +37,7 @@ function convertUnixTSToDT(UNIX_timestamp: number) {
   var date = a.getDate();
   var hour = a.getHours();
   var min = a.getMinutes();
-  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
-  return time;
+  return `${date} ${month} ${year}, ${hour}:${min}`;
 }
 
 function hasOverlap(a1: any, a2: any) {
@@ -59,8 +58,11 @@ function convertToPostCard(d: any) {
     views: d.views,
     comments: d.comments,
     description: `Posted on ${convertUnixTSToDT(d.created_dt)}`,
-    author_name: d.author_name,
-    author_email: d.author_email
+    author: {
+      name: d.author_name,
+      email: d.author_email,
+      avatarColor: getRandomColors()
+    }
   };
 }
 

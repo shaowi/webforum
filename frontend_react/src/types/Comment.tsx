@@ -1,9 +1,10 @@
-import { User } from './User';
+import { Author } from './User';
 
-interface Comment {
+interface CommentCardProps {
+  comment_id: number;
   posted_on: string;
-  body: string;
-  author: User;
+  content: string;
+  author: Author;
 }
 
-export type { Comment };
+export type { CommentCardProps };

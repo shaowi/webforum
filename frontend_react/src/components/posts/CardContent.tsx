@@ -14,6 +14,8 @@ import { useState } from 'react';
 import { PostCardProps } from '../../types/Post';
 import CommentContainer from '../comments/CommentContainer';
 import { getNameInitials, getRandomColors } from './../../utils/constants';
+import '../../App.css';
+import { Author } from '../../types/User';
 
 export default function CardContent({
   classes,
@@ -22,7 +24,8 @@ export default function CardContent({
   setOpened,
   renderBody,
   deletePost,
-  userAccessType
+  userAccessType,
+  curUser
 }: {
   postCardProps: PostCardProps;
   theme: MantineTheme;
@@ -31,6 +34,7 @@ export default function CardContent({
   renderBody: true | false;
   deletePost: Function;
   userAccessType: number;
+  curUser: Author;
 }) {
   const {
     post_id,
@@ -40,8 +44,7 @@ export default function CardContent({
     likes,
     views,
     comments,
-    author_name,
-    author_email,
+    author,
     description
   }: PostCardProps = postCardProps;
   const commentOnPost = () => {
@@ -51,16 +54,17 @@ export default function CardContent({
   const likePost = () => {
     console.log('hi');
   };
-  const authorInitials = getNameInitials(author_name);
+  const { name, email } = author;
+  const authorInitials = getNameInitials(name);
   const [loading, setLoading] = useState(false);
 
   function onDelete() {
     setLoading(true);
-    deletePost(post_id).then(() => setLoading(false));
+    deletePost(post_id).finally(() => setLoading(false));
   }
 
   if (loading) {
-    return <Loader />;
+    return <Loader className="centered" style={{ position: 'relative' }} />;
   }
 
   return (
@@ -75,13 +79,9 @@ export default function CardContent({
         <Text weight={700} className={classes.title}>
           {title}
         </Text>
-        {userAccessType === 1 && (
+        {userAccessType === 1 && !renderBody && (
           <Tooltip label="Delete Post">
-            <ActionIcon
-              onClick={onDelete}
-              disabled={renderBody}
-              className="action-icons"
-            >
+            <ActionIcon onClick={onDelete} className="action-icons">
               <IconTrash size={20} color={theme.colors.red[8]} stroke={1.5} />
             </ActionIcon>
           </Tooltip>
@@ -99,20 +99,15 @@ export default function CardContent({
       )}
 
       <Group mt="lg">
-        <Avatar
-          src={null}
-          alt={author_name}
-          color={getRandomColors()}
-          size="md"
-        >
+        <Avatar src={null} alt={name} color={getRandomColors()} size="md">
           {authorInitials}
         </Avatar>
         <div>
           <Text weight={500} fz="md">
-            {author_name}
+            {name}
           </Text>
           <Text weight={200} fz="xs">
-            {author_email}
+            {email}
           </Text>
           <Text size="xs" color="dimmed">
             {description}
@@ -167,7 +162,13 @@ export default function CardContent({
         </Group>
       </Card.Section>
 
-      {renderBody && <CommentContainer />}
+      {renderBody && (
+        <CommentContainer
+          post_id={post_id}
+          userAccessType={userAccessType}
+          curUser={curUser}
+        />
+      )}
     </>
   );
 }

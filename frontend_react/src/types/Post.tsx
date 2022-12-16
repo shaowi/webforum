@@ -1,3 +1,5 @@
+import { Author } from './User';
+
 interface PostCardProps {
   post_id: number;
   title: string;
@@ -6,8 +8,7 @@ interface PostCardProps {
   views: number;
   comments: number;
   categories: Array<string>;
-  author_name: string;
-  author_email: string;
+  author: Author;
   description: string;
 }
 

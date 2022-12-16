@@ -11,4 +11,10 @@ interface UserCardImageProps {
   stats: { label: string; value: string }[];
 }
 
-export type { User, UserCardImageProps };
+interface Author {
+  name: string;
+  email: string;
+  avatarColor: string;
+}
+
+export type { User, UserCardImageProps, Author };

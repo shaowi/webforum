@@ -1,6 +1,7 @@
 import { Card, createStyles } from '@mantine/core';
 import { useState } from 'react';
 import { PostCardProps } from '../../types/Post';
+import { Author } from '../../types/User';
 import TransitionModal from '../TransitionModal';
 import CardContent from './CardContent';
 
@@ -31,11 +32,13 @@ const useStyles = createStyles((theme) => ({
 export default function PostCard({
   postCardProps,
   deletePost,
-  userAccessType
+  userAccessType,
+  curUser
 }: {
   postCardProps: PostCardProps;
   deletePost: Function;
   userAccessType: number;
+  curUser: Author;
 }) {
   const { classes, theme } = useStyles();
   const [opened, setOpened] = useState(false);
@@ -59,6 +62,7 @@ export default function PostCard({
             renderBody={true}
             deletePost={deletePost}
             userAccessType={userAccessType}
+            curUser={curUser}
           />
         }
       />
@@ -71,6 +75,7 @@ export default function PostCard({
           renderBody={false}
           deletePost={deletePost}
           userAccessType={userAccessType}
+          curUser={curUser}
         />
       </Card>
     </>

@@ -10,7 +10,7 @@ import { IconSearch, IconSquarePlus } from '@tabler/icons';
 import { useEffect, useState } from 'react';
 import '../../App.css';
 import { PostCardProps } from '../../types/Post';
-import { User } from '../../types/User';
+import { Author, User } from '../../types/User';
 import { capitalize, lowerCaseStrArrays } from '../../utils/constants';
 import {
   convertToPostCard,
@@ -24,6 +24,11 @@ import CreateForm from './CreateForm';
 import PostCard from './PostCard';
 
 export default function PostContainer({ user }: { user: User }) {
+  const curUser: Author = {
+    name: user?.name,
+    email: user?.email,
+    avatarColor: user?.avatarColor
+  };
   const [initPosts, setInitPosts] = useState<PostCardProps[]>([]);
   const [posts, setPosts] = useState<PostCardProps[]>([]);
   const [categoriesData, setCategoriesData] = useState<string[]>([]);
@@ -210,6 +215,7 @@ export default function PostContainer({ user }: { user: User }) {
               postCardProps={post}
               deletePost={deletePost}
               userAccessType={user.access_type}
+              curUser={curUser}
             />
           ))}
         </div>
