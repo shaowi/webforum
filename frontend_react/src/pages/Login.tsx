@@ -3,7 +3,6 @@ import {
   Container,
   Group,
   Loader,
-  Modal,
   Paper,
   PasswordInput,
   Text,
@@ -14,9 +13,10 @@ import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import '../App.css';
+import TransitionModal from '../components/TransitionModal';
 import { signIn } from '../utils/user_service';
 
-export default function Login({ history }: { history: any }) {
+export default function Login() {
   const [redirect, setRedirect] = useState(false);
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -98,16 +98,16 @@ export default function Login({ history }: { history: any }) {
           </form>
         </Paper>
       </Container>
-      <Modal
+      <TransitionModal
         opened={showError}
         onClose={() => setShowError(false)}
         title="Error occured while signing in"
-        centered
-      >
-        <Text c="red" fz="md">
-          Invalid email address or password. Please try again.
-        </Text>
-      </Modal>
+        InnerComponent={
+          <Text c="red" fz="md">
+            Invalid email address or password. Please try again.
+          </Text>
+        }
+      />
     </>
   );
 }

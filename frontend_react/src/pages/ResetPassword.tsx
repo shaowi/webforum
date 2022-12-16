@@ -2,7 +2,6 @@ import {
   Button,
   Container,
   Loader,
-  Modal,
   Paper,
   Text,
   TextInput,
@@ -12,6 +11,7 @@ import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import '../App.css';
+import TransitionModal from '../components/TransitionModal';
 import { resetPassword } from '../utils/user_service';
 
 export default function ResetPassword() {
@@ -75,26 +75,27 @@ export default function ResetPassword() {
         </Paper>
       </Container>
 
-      <Modal
+      <TransitionModal
         opened={showError}
         onClose={() => setShowError(false)}
         title="Something went wrong"
-        centered
-      >
-        <Text c="red" fz="md">
-          Invalid email address. Please try again.
-        </Text>
-      </Modal>
-      <Modal
+        InnerComponent={
+          <Text c="red" fz="md">
+            Invalid email address. Please try again.
+          </Text>
+        }
+      />
+      <TransitionModal
         opened={showChanged}
         onClose={() => setRedirect(true)}
         title="Password has been reset"
-      >
-        <Text fz="md">
-          Please check your email address for the new password and change it as
-          soon as possible.
-        </Text>
-      </Modal>
+        InnerComponent={
+          <Text fz="md">
+            Please check your email address for the new password and change it
+            as soon as possible.
+          </Text>
+        }
+      />
     </>
   );
 }

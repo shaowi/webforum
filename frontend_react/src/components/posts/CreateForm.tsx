@@ -40,9 +40,8 @@ export default function CreateForm({
   }
 
   function onFormSubmit({ title, body }: { title: string; body: string }) {
-    console.log(title, body, chosenCategories);
     setLoading(true);
-    addPost(title, body, chosenCategories).then(() => setLoading(false));
+    addPost(title, body, chosenCategories).finally(() => setLoading(false));
   }
 
   return (

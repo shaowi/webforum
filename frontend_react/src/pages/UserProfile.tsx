@@ -1,6 +1,7 @@
-import { Button, createStyles, Loader, Modal, Text } from '@mantine/core';
+import { Button, createStyles, Loader, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import '../App.css';
+import TransitionModal from '../components/TransitionModal';
 import ModalForm from '../components/user/ModalForm';
 import UserCardImage from '../components/user/UserCardImage';
 import { User, UserCardImageProps } from '../types/User';
@@ -131,53 +132,51 @@ export default function UserProfile({
         </Button>
       </div>
 
-      <Modal
+      <TransitionModal
         opened={showChangePwModal}
-        centered
         onClose={() => setShowChangePwModal(false)}
-      >
-        <ModalForm
-          onChangeConfirm={onChangeConfirm}
-          curInput=""
-          validateCondition={{
-            input: (value: string) =>
-              value.trim().length >= 6
-                ? null
-                : 'Password must be at least 6 characters long'
-          }}
-          type={0}
-        />
-      </Modal>
-      <Modal
+        InnerComponent={
+          <ModalForm
+            onChangeConfirm={onChangeConfirm}
+            curInput=""
+            validateCondition={{
+              input: (value: string) =>
+                value.trim().length >= 6
+                  ? null
+                  : 'Password must be at least 6 characters long'
+            }}
+            type={0}
+          />
+        }
+      />
+      <TransitionModal
         opened={showChangeNameModal}
-        centered
         onClose={() => setShowChangeNameModal(false)}
-      >
-        <ModalForm
-          onChangeConfirm={onChangeConfirm}
-          curInput={user?.name}
-          validateCondition={{}}
-          type={1}
-        />
-      </Modal>
-      <Modal
+        InnerComponent={
+          <ModalForm
+            onChangeConfirm={onChangeConfirm}
+            curInput={user?.name}
+            validateCondition={{}}
+            type={1}
+          />
+        }
+      />
+      <TransitionModal
         opened={showError}
         onClose={() => setShowError(false)}
         title="Error occured while fetching user info"
-        centered
-      >
-        <Text c="red" fz="md">
-          Something went wrong. Please refresh your browser and try again.
-        </Text>
-      </Modal>
-      <Modal
+        InnerComponent={
+          <Text c="red" fz="md">
+            Something went wrong. Please refresh your browser and try again.
+          </Text>
+        }
+      />
+      <TransitionModal
         opened={showChanged}
         onClose={() => setShowChanged(false)}
         title="Changed successfully"
-        centered
-      >
-        <Text fz="md">{changedMessage}</Text>
-      </Modal>
+        InnerComponent={<Text fz="md">{changedMessage}</Text>}
+      />
     </>
   );
 }

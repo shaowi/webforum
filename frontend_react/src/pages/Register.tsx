@@ -2,7 +2,6 @@ import {
   Button,
   Container,
   Loader,
-  Modal,
   Paper,
   PasswordInput,
   Text,
@@ -13,6 +12,7 @@ import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import '../App.css';
+import TransitionModal from '../components/TransitionModal';
 import { signIn, signUp } from '../utils/user_service';
 
 export default function Register() {
@@ -136,16 +136,16 @@ export default function Register() {
           </form>
         </Paper>
       </Container>
-      <Modal
+      <TransitionModal
         opened={showError}
         onClose={() => setShowError(false)}
         title="Error occured while signing up"
-        centered
-      >
-        <Text c="red" fz="md">
-          Email has been taken. Please try again.
-        </Text>
-      </Modal>
+        InnerComponent={
+          <Text c="red" fz="md">
+            Email has been taken. Please try again.
+          </Text>
+        }
+      />
     </>
   );
 }

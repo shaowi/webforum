@@ -1,7 +1,6 @@
 import {
   ActionIcon,
   Loader,
-  Modal,
   MultiSelect,
   Text,
   TextInput,
@@ -20,12 +19,13 @@ import {
   hasOverlap,
   removePost
 } from '../../utils/post_service';
+import TransitionModal from '../TransitionModal';
 import CreateForm from './CreateForm';
 import PostCard from './PostCard';
 
 export default function PostContainer({ user }: { user: User }) {
-  const [initPosts, setInitPosts] = useState<PostCardProps[]>();
-  const [posts, setPosts] = useState<PostCardProps[]>();
+  const [initPosts, setInitPosts] = useState<PostCardProps[]>([]);
+  const [posts, setPosts] = useState<PostCardProps[]>([]);
   const [categoriesData, setCategoriesData] = useState<string[]>([]);
 
   const [searchVal, setSearchVal] = useState('');
@@ -85,24 +85,27 @@ export default function PostContainer({ user }: { user: User }) {
 
   function addPost(title: string, body: string, categories: string[]) {
     const data = {
-      author_name: user.name,
-      author_email: user.email,
+      author_name: user?.name,
+      author_email: user?.email,
       title,
       body,
       categories: categories.join(',')
     };
     const res = createPost(data);
-    res.then((content: any) => {
-      if ('error' in content) {
-        setShowError(true);
-      } else {
-        setShowAlert(true);
-        // Add new post to all posts
-        const newAllPosts = initPosts?.concat([convertToPostCard(content)]);
-        setPosts(newAllPosts);
-        setInitPosts(newAllPosts);
-      }
-    });
+    res
+      .then((content: any) => {
+        if ('error' in content) {
+          setShowError(true);
+        } else {
+          setShowAlert(true);
+          // Add new post to all posts
+          const newAllPosts = initPosts?.concat([convertToPostCard(content)]);
+          setPosts(newAllPosts);
+          setInitPosts(newAllPosts);
+        }
+      })
+      .catch(() => setShowCreateError(true));
+
     return res;
   }
 
@@ -118,24 +121,25 @@ export default function PostContainer({ user }: { user: User }) {
 
   useEffect(() => {
     // Fetch all posts from database
-    getAllPosts().then((content: any) => {
-      if ('error' in content) {
-        setShowError(true);
-      } else {
-        const finalData: PostCardProps[] = content.map(convertToPostCard);
-        setPosts(finalData);
-        setInitPosts(finalData);
+    getAllPosts()
+      .then((content: any) => {
+        if ('error' in content) {
+          setShowError(true);
+        } else {
+          const finalData: PostCardProps[] = content.map(convertToPostCard);
+          setPosts(finalData);
+          setInitPosts(finalData);
 
-        // Populate the available categories from all the created posts
-        let allCategories: Set<string> = new Set();
-        for (let { categories } of finalData) {
-          const curCat = new Set([...categories]);
-          allCategories = new Set([...allCategories, ...curCat]);
+          // Populate the available categories from all the created posts
+          let allCategories: Set<string> = new Set();
+          for (let { categories } of finalData) {
+            const curCat = new Set([...categories]);
+            allCategories = new Set([...allCategories, ...curCat]);
+          }
+          setCategoriesData([...allCategories].map((s) => capitalize(s)));
         }
-        setCategoriesData([...allCategories].map((s) => capitalize(s)));
-      }
-      setLoading(false);
-    });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) {
@@ -210,39 +214,39 @@ export default function PostContainer({ user }: { user: User }) {
           ))}
         </div>
       </div>
-      <Modal
+      <TransitionModal
         opened={showAddPostModal}
-        centered
         onClose={() => setShowAddPostModal(false)}
-      >
-        <CreateForm categoriesData={categoriesData} addPost={addPost} />
-      </Modal>
-      <Modal
+        InnerComponent={
+          <CreateForm categoriesData={categoriesData} addPost={addPost} />
+        }
+      />
+      <TransitionModal
         opened={showAlert}
-        centered
         onClose={() => setShowAlert(false)}
         title="Post created successfully"
-      ></Modal>
-      <Modal
+        InnerComponent={''}
+      />
+      <TransitionModal
         opened={showCreateError}
-        centered
         onClose={() => setShowCreateError(false)}
         title="Error occured while creating a post"
-      >
-        <Text c="red" fz="md">
-          Something went wrong. Please refresh your browser and try again.
-        </Text>
-      </Modal>
-      <Modal
+        InnerComponent={
+          <Text c="red" fz="md">
+            Something went wrong. Please refresh your browser and try again.
+          </Text>
+        }
+      />
+      <TransitionModal
         opened={showError}
-        centered
         onClose={() => setShowError(false)}
         title="Error occured while fetching posts"
-      >
-        <Text c="red" fz="md">
-          Something went wrong. Please refresh your browser and try again.
-        </Text>
-      </Modal>
+        InnerComponent={
+          <Text c="red" fz="md">
+            Something went wrong. Please refresh your browser and try again.
+          </Text>
+        }
+      />
     </>
   );
 }

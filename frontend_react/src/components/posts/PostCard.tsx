@@ -1,6 +1,7 @@
-import { Card, createStyles, Modal } from '@mantine/core';
+import { Card, createStyles } from '@mantine/core';
 import { useState } from 'react';
 import { PostCardProps } from '../../types/Post';
+import TransitionModal from '../TransitionModal';
 import CardContent from './CardContent';
 
 const useStyles = createStyles((theme) => ({
@@ -44,24 +45,23 @@ export default function PostCard({
 
   return (
     <>
-      <Modal
-        size="xl"
+      <TransitionModal
         opened={opened}
         onClose={() => setOpened(false)}
+        size="xl"
         transition="rotate-left"
-        transitionDuration={600}
-        transitionTimingFunction="ease"
-      >
-        <CardContent
-          classes={classes}
-          theme={theme}
-          postCardProps={postCardProps}
-          setOpened={setOpened}
-          renderBody={true}
-          deletePost={deletePost}
-          userAccessType={userAccessType}
-        />
-      </Modal>
+        InnerComponent={
+          <CardContent
+            classes={classes}
+            theme={theme}
+            postCardProps={postCardProps}
+            setOpened={setOpened}
+            renderBody={true}
+            deletePost={deletePost}
+            userAccessType={userAccessType}
+          />
+        }
+      />
       <Card withBorder p="lg" radius="md" className={classes.card}>
         <CardContent
           classes={classes}
