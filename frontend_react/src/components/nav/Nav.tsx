@@ -4,18 +4,15 @@ import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import '../../App.css';
 import wfLogo from '../../assets/wf.png';
-import { User } from '../../types/User';
 import { API_HOST_USER } from '../../utils/constants';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import NavbarLink from './NavbarLink';
 
 export default function Nav({
-  user,
   setUser,
   activePage,
   setActivePage
 }: {
-  user: User;
   setUser: Function;
   activePage: Number;
   setActivePage: Function;

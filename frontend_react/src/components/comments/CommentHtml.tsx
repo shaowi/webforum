@@ -41,7 +41,7 @@ export default function CommentHtml({
   deleteComment: Function;
 }) {
   const { comment_id, posted_on, content, author } = commentCardProps;
-  const { name, email, avatarColor } = author;
+  const { name, email, avatar_color } = author;
   const { classes, theme } = useStyles();
   const authorInitials = getNameInitials(name);
   const [loading, setLoading] = useState(false);
@@ -61,7 +61,7 @@ export default function CommentHtml({
     <div style={{ width: '100%' }}>
       <Group position="apart">
         <Group>
-          <Avatar src={null} alt={name} color={avatarColor} radius="xl">
+          <Avatar src={null} alt={name} color={avatar_color} radius="xl">
             {authorInitials}
           </Avatar>
           <div>

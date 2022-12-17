@@ -3,7 +3,7 @@ interface User {
   email: string;
   name: string;
   access_type: number;
-  avatarColor: string;
+  avatar_color: string;
 }
 
 interface UserCardImageProps {
@@ -14,7 +14,7 @@ interface UserCardImageProps {
 interface Author {
   name: string;
   email: string;
-  avatarColor: string;
+  avatar_color: string;
 }
 
 export type { User, UserCardImageProps, Author };

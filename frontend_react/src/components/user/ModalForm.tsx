@@ -38,7 +38,7 @@ export default function ModalForm({
       return;
     }
     setLoading(true);
-    onChangeConfirm(input, type).then(() => setLoading(false));
+    onChangeConfirm(input, type).finally(() => setLoading(false));
   }
 
   return (

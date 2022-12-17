@@ -1,6 +1,6 @@
-import { getRequest, postRequest } from './request_service';
-import { API_HOST_POST, getRandomColors } from './constants';
 import { PostCardProps } from '../types/Post';
+import { API_HOST_POST } from './constants';
+import { getRequest, postRequest } from './request_service';
 
 async function getAllPosts() {
   const response = await getRequest(API_HOST_POST);
@@ -51,12 +51,12 @@ function convertUnixTSToDT(UNIX_timestamp: number) {
   return `${date} ${month} ${year}, ${hour}:${min}`;
 }
 
-function hasOverlap(a1: any, a2: any) {
-  const set1 = new Set(a1);
-  for (let i of a2) {
-    if (set1.has(i)) return true;
+function isSubset(a1: any, a2: any) {
+  const set2 = new Set(a2);
+  for (let i of a1) {
+    if (!set2.has(i)) return false;
   }
-  return false;
+  return true;
 }
 
 function convertToPostCard(d: any) {
@@ -70,9 +70,9 @@ function convertToPostCard(d: any) {
     comments: d.comments,
     description: `Posted on ${convertUnixTSToDT(d.created_dt)}`,
     author: {
-      name: d.author_name,
-      email: d.author_email,
-      avatarColor: getRandomColors()
+      name: d.user.name,
+      email: d.user.email,
+      avatar_color: d.avatar_color
     }
   };
 }
@@ -114,7 +114,7 @@ export {
   likePost,
   viewPost,
   convertUnixTSToDT,
-  hasOverlap,
+  isSubset as hasOverlap,
   convertToPostCard,
   incrementPostView,
   incrDecrPostComments

@@ -17,7 +17,7 @@ import { PostCardProps } from '../../types/Post';
 import { Author } from '../../types/User';
 import { getUserStatsForAPost } from '../../utils/user_service';
 import CommentContainer from '../comments/CommentContainer';
-import { getNameInitials, getRandomColors } from './../../utils/constants';
+import { getNameInitials } from './../../utils/constants';
 
 export default function CardContent({
   classes,
@@ -58,7 +58,7 @@ export default function CardContent({
     description
   }: PostCardProps = postCardProps;
 
-  const { name, email } = author;
+  const { name, email, avatar_color } = author;
   const authorInitials = getNameInitials(name);
   const [loading, setLoading] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
@@ -120,7 +120,7 @@ export default function CardContent({
       )}
 
       <Group mt="lg">
-        <Avatar src={null} alt={name} color={getRandomColors()} size="md">
+        <Avatar src={null} alt={name} color={avatar_color} size="md">
           {authorInitials}
         </Avatar>
         <div>

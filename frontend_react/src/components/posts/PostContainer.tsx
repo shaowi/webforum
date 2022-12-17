@@ -17,7 +17,7 @@ import {
   convertToPostCard,
   createPost,
   getAllPosts,
-  hasOverlap,
+  hasOverlap as isSubset,
   incrDecrPostComments,
   incrementPostView,
   likePost,
@@ -33,7 +33,7 @@ export default function PostContainer({ user }: { user: User }) {
   const curUser: Author = {
     name: user?.name,
     email: user?.email,
-    avatarColor: user?.avatarColor
+    avatar_color: user?.avatar_color
   };
   const [initPosts, setInitPosts] = useState<PostCardProps[]>([]);
   const [posts, setPosts] = useState<PostCardProps[]>([]);
@@ -78,7 +78,7 @@ export default function PostContainer({ user }: { user: User }) {
       setPosts(initPosts);
       return;
     }
-    setPosts(initPosts!.filter((post) => hasOverlap(t, post.categories)));
+    setPosts(initPosts!.filter((post) => isSubset(t, post.categories)));
   }
 
   function filterTitlesAndCategories(curCategories: Array<string>, v: string) {
@@ -86,7 +86,7 @@ export default function PostContainer({ user }: { user: User }) {
     setPosts(
       initPosts!.filter(
         (post) =>
-          post.title.toLowerCase().includes(v) && hasOverlap(t, post.categories)
+          post.title.toLowerCase().includes(v) && isSubset(t, post.categories)
       )
     );
   }
@@ -240,6 +240,8 @@ export default function PostContainer({ user }: { user: User }) {
               transitionDuration={150}
               transition="pop-top-left"
               transitionTimingFunction="ease"
+              clearButtonLabel="Clear selection"
+              clearable
             />
           </div>
           <Tooltip label="Add New Post">

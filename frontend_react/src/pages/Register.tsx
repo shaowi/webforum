@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import '../App.css';
 import TransitionModal from '../components/TransitionModal';
+import { getRandomColors } from '../utils/constants';
 import { signIn, signUp } from '../utils/user_service';
 
 export default function Register() {
@@ -56,7 +57,8 @@ export default function Register() {
       email,
       password,
       name,
-      access_type: '1'
+      access_type: '1',
+      avatar_color: getRandomColors()
     };
 
     signUp(newUser).then((content) => {
@@ -115,7 +117,6 @@ export default function Register() {
               {...form.getInputProps('password')}
             />
             <PasswordInput
-              withAsterisk
               label="Confirm Password"
               placeholder="Enter your password again"
               mt="md"

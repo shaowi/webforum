@@ -5,14 +5,14 @@ import { getNameInitials } from '../../utils/constants';
 export default function UserCardImage({
   userInfo,
   classes,
-  theme,
+  theme
 }: {
   userInfo: UserCardImageProps;
   classes: any;
   theme: MantineTheme;
 }) {
   const { user, stats } = userInfo;
-  const { email, name, avatarColor, access_type } = user;
+  const { email, name, avatar_color, access_type } = user;
   const authorInitials = getNameInitials(name);
 
   const items = stats.map((stat) => (
@@ -30,13 +30,13 @@ export default function UserCardImage({
       <Card.Section
         sx={{
           backgroundColor: theme.colorScheme === 'dark' ? 'white' : 'black',
-          height: 140,
+          height: 140
         }}
       />
       <Avatar
         src={null}
         alt={name}
-        color={avatarColor}
+        color={avatar_color}
         variant="filled"
         size={80}
         radius={80}

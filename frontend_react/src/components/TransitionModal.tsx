@@ -4,7 +4,7 @@ export default function TransitionModal({
   opened,
   onClose,
   title = '',
-  size = 'auto',
+  size = 'sm',
   transition = 'fade',
   InnerComponent
 }: {

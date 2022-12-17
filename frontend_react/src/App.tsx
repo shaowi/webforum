@@ -20,14 +20,6 @@ function App({
   activePage: number;
   setActivePage: Function;
 }) {
-  // const md = {
-  //   user_id: 1,
-  //   email: 'abby@test.com',
-  //   name: 'abby',
-  //   access_type: 1,
-  //   avatarColor: getRandomColors(),
-  // }
-
   return (
     <div className="App">
       <BrowserRouter>
