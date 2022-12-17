@@ -17,7 +17,7 @@ async function removePost(id: number) {
   return response.json();
 }
 
-async function likePost(id: number, like: boolean) {
+async function likePost(id: number, like: string) {
   const response = await postRequest(`${API_HOST_POST}/like/${id}`, { like });
   return response.json();
 }
@@ -89,6 +89,24 @@ function incrementPostView(
   });
 }
 
+function incrDecrPostComments(
+  posts: PostCardProps[],
+  post_id: number,
+  type: number // Increment - 1, Decrement - 0
+): PostCardProps[] {
+  return posts.map((p) => {
+    if (p.post_id === post_id) {
+      p.comments =
+        type === 1
+          ? p.comments + 1
+          : p.comments === 0
+          ? p.comments
+          : p.comments - 1;
+    }
+    return p;
+  });
+}
+
 export {
   createPost,
   removePost,
@@ -98,5 +116,6 @@ export {
   convertUnixTSToDT,
   hasOverlap,
   convertToPostCard,
-  incrementPostView
+  incrementPostView,
+  incrDecrPostComments
 };

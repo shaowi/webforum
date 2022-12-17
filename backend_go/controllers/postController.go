@@ -19,27 +19,28 @@ func Posts(c *fiber.Ctx) error {
 	if err := database.DB.Find(&posts).Error; err != nil {
 		return utils.ErrorResponse(c, utils.GetError)
 	}
+	for i, post := range posts {
+		posts[i] = GetPostStats(post)
+	}
 	return utils.GetRequestResponse(c, posts)
 }
 
-func GetPost(c *fiber.Ctx) error {
-	if _, err := utils.GetCurrentUser(c, SecretKey); err != nil {
-		return utils.ErrorResponse(c, utils.UserNotFound)
-	}
-	post := models.Post{}
-	postId := c.Params("postId")
-	condition := map[string]interface{}{"post_id": postId}
-
-	if err := database.DB.Where(condition).First(&post).Error; err != nil {
-		return utils.ErrorResponse(c, utils.GetError)
-	}
+func GetPostStats(post models.Post) models.Post {
+	postId := post.PostId
 	var views uint = post.Views
 	var likes uint = post.Likes
-	var comments uint = post.Likes
+	var comments uint = post.Comments
 	viewQuery := "SELECT SUM(views) FROM popularities WHERE post_id = ?"
 	likeQuery := "SELECT COUNT(likes) FROM popularities WHERE post_id = ? AND likes = true"
 	commentQuery := "SELECT COUNT(comment_id) FROM comments WHERE post_id = ?"
-	database.DB.Raw(viewQuery, postId).Scan(&views)
+
+	// Check view records exist in popularities
+	var popularity models.Popularity
+	condition := map[string]interface{}{"post_id": postId}
+	viewsRes := database.DB.Where(condition).Limit(1).Find(&popularity)
+	if viewsRes.RowsAffected > 0 {
+		database.DB.Raw(viewQuery, postId).Scan(&views)
+	}
 	database.DB.Raw(likeQuery, postId).Scan(&likes)
 	database.DB.Raw(commentQuery, postId).Scan(&comments)
 
@@ -48,8 +49,7 @@ func GetPost(c *fiber.Ctx) error {
 	post.Comments = comments
 
 	database.DB.Save(&post)
-
-	return utils.GetRequestResponse(c, post)
+	return post
 }
 
 func AddPost(c *fiber.Ctx) error {
@@ -121,7 +121,10 @@ func LikePost(c *fiber.Ctx) error {
 	var post models.Post
 
 	// Search for post
-	postId := c.Params("postId")
+	postId, err := utils.ParseUint(c.Params("postId"))
+	if err != nil {
+		return err
+	}
 	var condition = map[string]interface{}{"post_id": postId}
 	if err := database.DB.Where(condition).First(&post).Error; err != nil {
 		return utils.ErrorResponse(c, utils.GetError)
@@ -138,19 +141,32 @@ func LikePost(c *fiber.Ctx) error {
 	}
 
 	// Update
-	database.DB.Model(&post).Update("likes", newLikeCnt)
+	if err := database.DB.Model(&post).Update("likes", newLikeCnt).Error; err != nil {
+		return utils.ResponseBody(c, utils.UpdateError)
+	}
 
 	// Update the like status of this post for current user based on type
 	var popularity models.Popularity
 
 	// Search
 	condition = map[string]interface{}{"post_id": postId, "user_id": user.UserId}
-	if err := database.DB.Where(condition).First(&popularity).Error; err != nil {
-		return utils.ErrorResponse(c, utils.GetError)
+	res := database.DB.Where(condition).Limit(1).Find(&popularity)
+	if res.RowsAffected == 0 {
+		// Create new record as user info has not been recorded yet for this post
+		popularity = models.Popularity{
+			UserId: user.UserId,
+			PostId: postId,
+			Likes:  like,
+		}
+		if err := database.DB.Create(&popularity).Error; err != nil {
+			return utils.ResponseBody(c, utils.CreateError)
+		}
+	} else {
+		// Update like status
+		if err := database.DB.Model(&popularity).Update("likes", like).Error; err != nil {
+			return utils.ResponseBody(c, utils.UpdateError)
+		}
 	}
-
-	// Update like status
-	database.DB.Model(&popularity).Update("likes", like)
 
 	return utils.ResponseBody(c, utils.Success)
 }
@@ -165,7 +181,10 @@ func ViewPost(c *fiber.Ctx) error {
 	var post models.Post
 
 	// Search for post
-	postId := c.Params("postId")
+	postId, err := utils.ParseUint(c.Params("postId"))
+	if err != nil {
+		return err
+	}
 	var condition = map[string]interface{}{"post_id": postId}
 	if err := database.DB.Where(condition).First(&post).Error; err != nil {
 		return utils.ErrorResponse(c, utils.GetError)
@@ -173,19 +192,31 @@ func ViewPost(c *fiber.Ctx) error {
 	var curViews uint = post.Views
 
 	// Update
-	database.DB.Model(&post).Update("views", curViews+1)
+	if err := database.DB.Model(&post).Update("views", curViews+1).Error; err != nil {
+		return utils.ResponseBody(c, utils.UpdateError)
+	}
 
 	// Update the view count of this post for current user
 	var popularity models.Popularity
 
 	// Search
 	condition = map[string]interface{}{"post_id": postId, "user_id": user.UserId}
-	if err := database.DB.Where(condition).First(&popularity).Error; err != nil {
-		return utils.ErrorResponse(c, utils.GetError)
+	res := database.DB.Where(condition).Limit(1).Find(&popularity)
+	if res.RowsAffected == 0 {
+		// Create new record as user info has not been recorded yet for this post
+		popularity = models.Popularity{
+			UserId: user.UserId,
+			PostId: postId,
+		}
+		if err := database.DB.Create(&popularity).Error; err != nil {
+			return utils.ResponseBody(c, utils.CreateError)
+		}
+	} else {
+		// Update view count
+		if err := database.DB.Model(&popularity).Update("views", popularity.Views+1).Error; err != nil {
+			return utils.ResponseBody(c, utils.UpdateError)
+		}
 	}
-
-	// Update view count
-	database.DB.Model(&popularity).Update("views", popularity.Views+1)
 
 	return utils.ResponseBody(c, utils.Success)
 }

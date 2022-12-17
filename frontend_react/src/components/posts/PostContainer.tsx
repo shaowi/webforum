@@ -6,17 +6,19 @@ import {
   TextInput,
   Tooltip
 } from '@mantine/core';
-import { IconSearch, IconSquarePlus } from '@tabler/icons';
+import { IconBackspace, IconSearch, IconSquarePlus } from '@tabler/icons';
 import { useEffect, useState } from 'react';
 import '../../App.css';
 import { PostCardProps } from '../../types/Post';
 import { Author, User } from '../../types/User';
+import { createComment, removeComment } from '../../utils/comment_service';
 import { capitalize, lowerCaseStrArrays } from '../../utils/constants';
 import {
   convertToPostCard,
   createPost,
   getAllPosts,
   hasOverlap,
+  incrDecrPostComments,
   incrementPostView,
   likePost,
   removePost,
@@ -45,17 +47,14 @@ export default function PostContainer({ user }: { user: User }) {
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  function filterPostsByTitle(e: any) {
-    const curSearchVal = e.currentTarget.value;
-    setSearchVal(curSearchVal);
-
+  function filterPostsByTitle(v: string) {
     // Categories has no selection
     if (categories.length === 0) {
-      filterTitles(curSearchVal);
+      filterTitles(v);
       return;
     }
 
-    filterTitlesAndCategories(categories, curSearchVal);
+    filterTitlesAndCategories(categories, v);
   }
 
   function filterPostsByCategories(categoriesChosen: Array<string>) {
@@ -129,17 +128,33 @@ export default function PostContainer({ user }: { user: User }) {
   }
 
   function likeOrUnlikePost(post_id: number, like: boolean) {
-    likePost(post_id, like).then(() => {
-      setPosts((posts) => accountLikes(posts, post_id, like));
+    const res = likePost(post_id, String(like));
+    res.then(() => {
       setInitPosts((posts) => accountLikes(posts, post_id, like));
     });
+    return res;
   }
 
   function addViewPost(post_id: number) {
     viewPost(post_id).then(() => {
-      setPosts((posts) => incrementPostView(posts, post_id));
       setInitPosts((posts) => incrementPostView(posts, post_id));
     });
+  }
+
+  function addCommentPost(post_id: number, data: any) {
+    const res = createComment(post_id, data);
+    res.then(() => {
+      setInitPosts((posts) => incrDecrPostComments(posts, post_id, 1));
+    });
+    return res;
+  }
+
+  function deleteCommentPost(post_id: number, comment_id: number) {
+    const res = removeComment(post_id, comment_id);
+    res.then(() => {
+      setInitPosts((posts) => incrDecrPostComments(posts, post_id, 0));
+    });
+    return res;
   }
 
   useEffect(() => {
@@ -180,39 +195,53 @@ export default function PostContainer({ user }: { user: User }) {
         <div
           className="flex-row-container"
           style={{
-            justifyContent: posts!.length > 0 ? 'space-between' : 'end',
+            justifyContent: 'space-between',
             width: '82vw'
           }}
         >
-          {posts!.length > 0 && (
-            <div
-              className="flex-col-container"
-              style={{
-                alignSelf: 'start',
-                rowGap: '1rem',
-                alignItems: 'start'
+          <div
+            className="flex-col-container"
+            style={{
+              alignSelf: 'start',
+              rowGap: '1rem',
+              alignItems: 'start'
+            }}
+          >
+            <TextInput
+              className="searchBox"
+              placeholder="Search By Title"
+              value={searchVal}
+              icon={<IconSearch size={16} stroke={1.5} />}
+              rightSection={
+                <ActionIcon
+                  variant="transparent"
+                  onClick={() => {
+                    setSearchVal('');
+                    filterPostsByTitle('');
+                  }}
+                >
+                  <IconBackspace size={16} stroke={1.5} />
+                </ActionIcon>
+              }
+              onChange={(e) => {
+                const curSearchVal = e.currentTarget.value;
+                setSearchVal(curSearchVal);
+                filterPostsByTitle(curSearchVal);
               }}
-            >
-              <TextInput
-                className="searchBox"
-                placeholder="Search By Title"
-                icon={<IconSearch size={16} stroke={1.5} />}
-                onChange={(e) => filterPostsByTitle(e)}
-              />
-              <MultiSelect
-                className="searchBox"
-                data={categoriesData}
-                value={categories}
-                onChange={(cats) => filterPostsByCategories(cats)}
-                searchable
-                label="Filter By Categories"
-                placeholder="Pick Posts Categories"
-                transitionDuration={150}
-                transition="pop-top-left"
-                transitionTimingFunction="ease"
-              />
-            </div>
-          )}
+            />
+            <MultiSelect
+              className="searchBox"
+              data={categoriesData}
+              value={categories}
+              onChange={(cats) => filterPostsByCategories(cats)}
+              searchable
+              label="Filter By Categories"
+              placeholder="Pick Posts Categories"
+              transitionDuration={150}
+              transition="pop-top-left"
+              transitionTimingFunction="ease"
+            />
+          </div>
           <Tooltip label="Add New Post">
             <ActionIcon
               variant="transparent"
@@ -223,22 +252,26 @@ export default function PostContainer({ user }: { user: User }) {
           </Tooltip>
         </div>
 
-        <div
-          className="grid-container"
-          style={{ marginTop: '2rem', alignSelf: 'start' }}
-        >
-          {posts!.map((post) => (
-            <PostCard
-              key={post.post_id}
-              postCardProps={post}
-              deletePost={deletePost}
-              userAccessType={user?.access_type}
-              curUser={curUser}
-              likeOrUnlikePost={likeOrUnlikePost}
-              addViewPost={addViewPost}
-            />
-          ))}
-        </div>
+        {posts!.length > 0 && (
+          <div
+            className="grid-container"
+            style={{ marginTop: '2rem', alignSelf: 'start' }}
+          >
+            {posts!.map((post) => (
+              <PostCard
+                key={post.post_id}
+                postCardProps={post}
+                deletePost={deletePost}
+                userAccessType={user?.access_type}
+                curUser={curUser}
+                likeOrUnlikePost={likeOrUnlikePost}
+                addViewPost={addViewPost}
+                addCommentPost={addCommentPost}
+                deleteCommentPost={deleteCommentPost}
+              />
+            ))}
+          </div>
+        )}
       </div>
       <TransitionModal
         opened={showAddPostModal}

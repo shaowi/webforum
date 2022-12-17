@@ -39,9 +39,6 @@ Content-Type: application/json
 GET http://localhost:3000/api/post
 ###
 
-GET http://localhost:3000/api/post/2
-###
-
 POST http://localhost:3000/api/post/add 
 Content-Type: application/json
 
@@ -63,7 +60,7 @@ POST http://localhost:3000/api/post/like/1
 Content-Type: application/json
 
 {
-  "like": true 
+  "like": "true" 
 }
 
 ###
@@ -93,3 +90,7 @@ Content-Type: application/json
 {
 }
 ###
+
+GET http://localhost:3000/api/popularity/1
+###
+

@@ -29,7 +29,9 @@ export default function CardContent({
   userAccessType,
   curUser,
   likeOrUnlikePost,
-  addViewPost
+  addViewPost,
+  addCommentPost,
+  deleteCommentPost
 }: {
   postCardProps: PostCardProps;
   theme: MantineTheme;
@@ -41,6 +43,8 @@ export default function CardContent({
   curUser: Author;
   likeOrUnlikePost: Function;
   addViewPost: Function;
+  addCommentPost: Function;
+  deleteCommentPost: Function;
 }) {
   const {
     post_id,
@@ -188,6 +192,8 @@ export default function CardContent({
           post_id={post_id}
           userAccessType={userAccessType}
           curUser={curUser}
+          addCommentPost={addCommentPost}
+          deleteCommentPost={deleteCommentPost}
         />
       )}
     </>

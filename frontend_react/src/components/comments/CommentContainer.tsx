@@ -5,23 +5,22 @@ import { useEffect, useState } from 'react';
 import '../../App.css';
 import { CommentCardProps } from '../../types/Comment';
 import { Author } from '../../types/User';
-import {
-  convertToCommentCard,
-  createComment,
-  getComments,
-  removeComment
-} from '../../utils/comment_service';
+import { convertToCommentCard, getComments } from '../../utils/comment_service';
 import TransitionModal from '../TransitionModal';
 import CommentHtml from './CommentHtml';
 
 export default function CommentContainer({
   post_id,
   userAccessType,
-  curUser
+  curUser,
+  addCommentPost,
+  deleteCommentPost
 }: {
   post_id: number;
   userAccessType: number;
   curUser: Author;
+  addCommentPost: Function;
+  deleteCommentPost: Function;
 }) {
   const [commentsInfo, setCommentsInfo] = useState<CommentCardProps[]>([]);
   const [comment, setComment] = useState('');
@@ -33,7 +32,7 @@ export default function CommentContainer({
   function addComment() {
     if (comment.length === 0) return;
     setIsCreating(true);
-    createComment(post_id, { content: comment })
+    addCommentPost(post_id, { content: comment })
       .then((res: any) => {
         if ('error' in res) {
           setShowOpError(true);
@@ -58,8 +57,8 @@ export default function CommentContainer({
   }
 
   function deleteComment(comment_id: number) {
-    const res = removeComment(post_id, comment_id);
-    res.then((content) => {
+    const res = deleteCommentPost(post_id, comment_id);
+    res.then((content: any) => {
       if ('error' in content) {
         setShowOpError(true);
       } else {

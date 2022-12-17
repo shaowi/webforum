@@ -265,6 +265,8 @@ Add run commands and examples you think users will find useful. Provide an optio
   {
     "post_id": 1,
     "user_id": 1,
+    "author_name": "abby",
+    "author_email": "abby@test.com",
     "title": "title1",
     "body": "this is some body 1",
     "created_dt": 1670636188,
@@ -314,6 +316,8 @@ Add run commands and examples you think users will find useful. Provide an optio
   {
     "comment_id": 1,
     "user_id": 1,
+    "author_name": "abby",
+    "author_email": "abby@test.com",
     "post_id": 1,
     "content": "this is some content 1",
     "created_dt": 1670636188
@@ -321,6 +325,8 @@ Add run commands and examples you think users will find useful. Provide an optio
   {
     "comment_id": 2,
     "user_id": 2,
+    "author_name": "bob",
+    "author_email": "bob@test.com",
     "post_id": 1,
     "content": "this is some content 2",
     "created_dt": 1670636188

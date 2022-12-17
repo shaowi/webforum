@@ -65,7 +65,7 @@ function accountLikes(
 ): PostCardProps[] {
   return posts.map((p) => {
     if (p.post_id === id) {
-      p.likes = like ? p.likes + 1 : p.likes - 1;
+      p.likes = like ? p.likes + 1 : p.likes === 0 ? p.likes : p.likes - 1;
     }
     return p;
   });

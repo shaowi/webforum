@@ -35,7 +35,9 @@ export default function PostCard({
   userAccessType,
   curUser,
   likeOrUnlikePost,
-  addViewPost
+  addViewPost,
+  addCommentPost,
+  deleteCommentPost
 }: {
   postCardProps: PostCardProps;
   deletePost: Function;
@@ -43,12 +45,11 @@ export default function PostCard({
   curUser: Author;
   likeOrUnlikePost: Function;
   addViewPost: Function;
+  addCommentPost: Function;
+  deleteCommentPost: Function;
 }) {
   const { classes, theme } = useStyles();
   const [opened, setOpened] = useState(false);
-  // const commentOnPost = () => console.log('commenting');
-  // const viewPost = () => setOpened(true);
-  // const likePost = () => console.log('like');
 
   return (
     <>
@@ -69,6 +70,8 @@ export default function PostCard({
             curUser={curUser}
             likeOrUnlikePost={likeOrUnlikePost}
             addViewPost={addViewPost}
+            addCommentPost={addCommentPost}
+            deleteCommentPost={deleteCommentPost}
           />
         }
       />
@@ -84,6 +87,8 @@ export default function PostCard({
           curUser={curUser}
           likeOrUnlikePost={likeOrUnlikePost}
           addViewPost={addViewPost}
+          addCommentPost={addCommentPost}
+          deleteCommentPost={deleteCommentPost}
         />
       </Card>
     </>
