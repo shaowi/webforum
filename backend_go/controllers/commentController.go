@@ -40,12 +40,12 @@ func AddComment(c *fiber.Ctx) error {
 	}
 	postId, err := utils.ParseUint(c.Params("postId"))
 	if err != nil {
-		return err
+		return utils.ErrorResponse(c, utils.GetError)
 	}
 
 	comment := models.Comment{
-		AuthorName:  data["author_name"],
-		AuthorEmail: data["author_email"],
+		AuthorName:  user.Name,
+		AuthorEmail: user.Email,
 		UserId:      user.UserId,
 		PostId:      postId,
 		Content:     data["content"],

@@ -27,13 +27,17 @@ func Setup(app *fiber.App) {
 	post_api.Get("/:postId", controllers.GetPost)
 	post_api.Post("/add", controllers.AddPost)
 	post_api.Post("/delete/:postId", controllers.DeletePost)
-	post_api.Get("/like/:postId", controllers.LikePost)
-	post_api.Get("/view/:postId", controllers.ViewPost)
+	post_api.Post("/like/:postId", controllers.LikePost)
+	post_api.Post("/view/:postId", controllers.ViewPost)
 
 	// Comment API
 	comment_api := post_api.Group("/:postId/comment")
 	comment_api.Get("", controllers.Comments)
 	comment_api.Post("/add", controllers.AddComment)
 	comment_api.Post("/delete/:commentId", controllers.DeleteComment)
+
+	// Popularity API
+	popularity_api := api.Group("/popularity")
+	popularity_api.Get("/:postId", controllers.GetLikedStatus)
 
 }
