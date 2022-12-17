@@ -33,12 +33,16 @@ export default function PostCard({
   postCardProps,
   deletePost,
   userAccessType,
-  curUser
+  curUser,
+  likeOrUnlikePost,
+  addViewPost
 }: {
   postCardProps: PostCardProps;
   deletePost: Function;
   userAccessType: number;
   curUser: Author;
+  likeOrUnlikePost: Function;
+  addViewPost: Function;
 }) {
   const { classes, theme } = useStyles();
   const [opened, setOpened] = useState(false);
@@ -63,6 +67,8 @@ export default function PostCard({
             deletePost={deletePost}
             userAccessType={userAccessType}
             curUser={curUser}
+            likeOrUnlikePost={likeOrUnlikePost}
+            addViewPost={addViewPost}
           />
         }
       />
@@ -76,6 +82,8 @@ export default function PostCard({
           deletePost={deletePost}
           userAccessType={userAccessType}
           curUser={curUser}
+          likeOrUnlikePost={likeOrUnlikePost}
+          addViewPost={addViewPost}
         />
       </Card>
     </>

@@ -17,8 +17,12 @@ import {
   createPost,
   getAllPosts,
   hasOverlap,
-  removePost
+  incrementPostView,
+  likePost,
+  removePost,
+  viewPost
 } from '../../utils/post_service';
+import { accountLikes } from '../../utils/user_service';
 import TransitionModal from '../TransitionModal';
 import CreateForm from './CreateForm';
 import PostCard from './PostCard';
@@ -124,6 +128,20 @@ export default function PostContainer({ user }: { user: User }) {
     return res;
   }
 
+  function likeOrUnlikePost(post_id: number, like: boolean) {
+    likePost(post_id, like).then(() => {
+      setPosts((posts) => accountLikes(posts, post_id, like));
+      setInitPosts((posts) => accountLikes(posts, post_id, like));
+    });
+  }
+
+  function addViewPost(post_id: number) {
+    viewPost(post_id).then(() => {
+      setPosts((posts) => incrementPostView(posts, post_id));
+      setInitPosts((posts) => incrementPostView(posts, post_id));
+    });
+  }
+
   useEffect(() => {
     // Fetch all posts from database
     getAllPosts()
@@ -216,6 +234,8 @@ export default function PostContainer({ user }: { user: User }) {
               deletePost={deletePost}
               userAccessType={user?.access_type}
               curUser={curUser}
+              likeOrUnlikePost={likeOrUnlikePost}
+              addViewPost={addViewPost}
             />
           ))}
         </div>

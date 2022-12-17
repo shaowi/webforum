@@ -3,6 +3,7 @@ export const API_HOST_USER = `${API_HOST}/user`;
 export const API_HOST_POST = `${API_HOST}/post`;
 export const API_HOST_COMMENT = (postId: number) =>
   `${API_HOST_POST}/${postId}/comment`;
+export const API_HOST_POPULARITY = `${API_HOST}/popularity`;
 
 export function getRandomColors() {
   const colors = [
@@ -18,7 +19,7 @@ export function getRandomColors() {
     'green',
     'lime',
     'yellow',
-    'orange',
+    'orange'
   ];
   return colors[Math.floor(Math.random() * colors.length)];
 }

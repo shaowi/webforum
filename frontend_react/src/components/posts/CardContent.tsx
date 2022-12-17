@@ -9,13 +9,15 @@ import {
   Text,
   Tooltip
 } from '@mantine/core';
-import { IconEye, IconHeart, IconMessage2, IconTrash } from '@tabler/icons';
-import { useState } from 'react';
+import { IconEye, IconMessage2, IconTrash } from '@tabler/icons';
+import { useEffect, useState } from 'react';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import '../../App.css';
 import { PostCardProps } from '../../types/Post';
+import { Author } from '../../types/User';
+import { getUserStatsForAPost } from '../../utils/user_service';
 import CommentContainer from '../comments/CommentContainer';
 import { getNameInitials, getRandomColors } from './../../utils/constants';
-import '../../App.css';
-import { Author } from '../../types/User';
 
 export default function CardContent({
   classes,
@@ -25,7 +27,9 @@ export default function CardContent({
   renderBody,
   deletePost,
   userAccessType,
-  curUser
+  curUser,
+  likeOrUnlikePost,
+  addViewPost
 }: {
   postCardProps: PostCardProps;
   theme: MantineTheme;
@@ -35,6 +39,8 @@ export default function CardContent({
   deletePost: Function;
   userAccessType: number;
   curUser: Author;
+  likeOrUnlikePost: Function;
+  addViewPost: Function;
 }) {
   const {
     post_id,
@@ -47,16 +53,27 @@ export default function CardContent({
     author,
     description
   }: PostCardProps = postCardProps;
-  const commentOnPost = () => {
-    setOpened(true);
-  };
-  const viewPost = () => setOpened(true);
-  const likePost = () => {
-    console.log('hi');
-  };
+
   const { name, email } = author;
   const authorInitials = getNameInitials(name);
   const [loading, setLoading] = useState(false);
+  const [hasLiked, setHasLiked] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    getUserStatsForAPost(post_id)
+      .then(({ likes }) => setHasLiked(likes))
+      .finally(() => setLoading(false));
+  }, [post_id]);
+
+  function viewPost() {
+    setOpened(true);
+    addViewPost(post_id);
+  }
+
+  function likePost() {
+    likeOrUnlikePost(post_id, !hasLiked).then(() => setHasLiked(!hasLiked));
+  }
 
   function onDelete() {
     setLoading(true);
@@ -128,7 +145,11 @@ export default function CardContent({
               {likes}
             </Text>
             <ActionIcon onClick={likePost}>
-              <IconHeart size={20} color={theme.colors.red[6]} stroke={1.5} />
+              {hasLiked ? (
+                <AiFillHeart style={{ color: '#ff2825' }} />
+              ) : (
+                <AiOutlineHeart style={{ color: '#ff2825' }} />
+              )}
             </ActionIcon>
           </Group>
           <Group spacing={0}>
@@ -148,7 +169,7 @@ export default function CardContent({
               {comments}
             </Text>
             <ActionIcon
-              onClick={commentOnPost}
+              onClick={viewPost}
               disabled={renderBody}
               className="action-icons"
             >

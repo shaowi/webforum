@@ -1,5 +1,6 @@
 import { getRequest, postRequest } from './request_service';
 import { API_HOST_POST, getRandomColors } from './constants';
+import { PostCardProps } from '../types/Post';
 
 async function getAllPosts() {
   const response = await getRequest(API_HOST_POST);
@@ -13,6 +14,16 @@ async function createPost(data: any) {
 
 async function removePost(id: number) {
   const response = await postRequest(`${API_HOST_POST}/delete/${id}`, {});
+  return response.json();
+}
+
+async function likePost(id: number, like: boolean) {
+  const response = await postRequest(`${API_HOST_POST}/like/${id}`, { like });
+  return response.json();
+}
+
+async function viewPost(id: number) {
+  const response = await postRequest(`${API_HOST_POST}/view/${id}`, {});
   return response.json();
 }
 
@@ -66,11 +77,26 @@ function convertToPostCard(d: any) {
   };
 }
 
+function incrementPostView(
+  posts: PostCardProps[],
+  post_id: number
+): PostCardProps[] {
+  return posts.map((p) => {
+    if (p.post_id === post_id) {
+      p.views++;
+    }
+    return p;
+  });
+}
+
 export {
   createPost,
   removePost,
   getAllPosts,
+  likePost,
+  viewPost,
   convertUnixTSToDT,
   hasOverlap,
-  convertToPostCard
+  convertToPostCard,
+  incrementPostView
 };

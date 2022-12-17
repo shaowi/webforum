@@ -1,4 +1,5 @@
-import { API_HOST_USER } from './constants';
+import { PostCardProps } from '../types/Post';
+import { API_HOST_POPULARITY, API_HOST_USER } from './constants';
 import { getRequest, postRequest } from './request_service';
 
 async function getCacheUser(): Promise<any> {
@@ -8,6 +9,11 @@ async function getCacheUser(): Promise<any> {
 
 async function getUserStats(): Promise<any> {
   const res = await getRequest(`${API_HOST_USER}/userstats`);
+  return res.json();
+}
+
+async function getUserStatsForAPost(post_id: number): Promise<any> {
+  const res = await getRequest(`${API_HOST_POPULARITY}/${post_id}`);
   return res.json();
 }
 
@@ -52,6 +58,19 @@ async function changeName(data: { email: string; name: string }): Promise<any> {
   return response.json();
 }
 
+function accountLikes(
+  posts: PostCardProps[],
+  id: number,
+  like: boolean
+): PostCardProps[] {
+  return posts.map((p) => {
+    if (p.post_id === id) {
+      p.likes = like ? p.likes + 1 : p.likes - 1;
+    }
+    return p;
+  });
+}
+
 export {
   signIn,
   signUp,
@@ -60,5 +79,7 @@ export {
   changeName,
   getCacheUser,
   getUserStats,
-  getUserById
+  getUserStatsForAPost,
+  getUserById,
+  accountLikes
 };
