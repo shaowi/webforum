@@ -16,4 +16,5 @@ const (
 	DeleteSuccess     string = "Record has been deleted successfully"
 	ForbiddenAction   string = "User cannot perform this operation"
 	Success           string = "Operation success"
+	RecordNotFound    string = "No record is found"
 )

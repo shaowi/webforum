@@ -18,8 +18,12 @@ func GetLikedStatus(c *fiber.Ctx) error {
 	var popularity models.Popularity
 	postId := c.Params("postId")
 	var condition = map[string]interface{}{"post_id": postId, "user_id": user.UserId}
-	if err := database.DB.Where(condition).Limit(1).Find(&popularity).Error; err != nil {
+	res := database.DB.Where(condition).Limit(1).Find(&popularity)
+	if err := res.Error; err != nil {
 		utils.ErrorResponse(c, utils.GetError)
+	}
+	if popularity.UserId == 0 {
+		utils.ErrorResponse(c, utils.RecordNotFound)
 	}
 
 	return utils.GetRequestResponse(c, popularity)

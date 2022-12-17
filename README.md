@@ -157,7 +157,8 @@ Add run commands and examples you think users will find useful. Provide an optio
   "email": "abby@test.com",
   "password": "1234",
   "name": "abby",
-  "access_type": "1"
+  "access_type": "1",
+  "avatar_color": "red"
 }
 ```
 
@@ -244,12 +245,20 @@ Add run commands and examples you think users will find useful. Provide an optio
 [
   {
     "post_id": 1,
-    "user_id": 1,
+    "user": {
+      "user_id": 4,
+      "email": "shaogamers@gmail.com",
+      "name": "shao",
+      "access_type": 1,
+      "avatar_color": "grape"
+    },
     "title": "title1",
     "body": "this is some body 1",
-    "created_dt": 1670636188,
-    "views": 0,
-    "likes": 0
+    "categories": "food,groceries,design",
+    "created_dt": 1671283391,
+    "views": 2,
+    "likes": 1,
+    "comments": 2
   }
 ]
 ```
@@ -314,22 +323,30 @@ Add run commands and examples you think users will find useful. Provide an optio
 ```json
 [
   {
-    "comment_id": 1,
-    "user_id": 1,
-    "author_name": "abby",
-    "author_email": "abby@test.com",
-    "post_id": 1,
-    "content": "this is some content 1",
-    "created_dt": 1670636188
-  },
-  {
     "comment_id": 2,
-    "user_id": 2,
-    "author_name": "bob",
-    "author_email": "bob@test.com",
+    "user": {
+      "user_id": 1,
+      "email": "abby@test.com",
+      "name": "abby",
+      "access_type": 1,
+      "avatar_color": "dark"
+    },
     "post_id": 1,
     "content": "this is some content 2",
-    "created_dt": 1670636188
+    "created_dt": 1671284028
+  },
+  {
+    "comment_id": 1,
+    "user": {
+      "user_id": 2,
+      "email": "bob@test.com",
+      "name": "bob",
+      "access_type": 1,
+      "avatar_color": "red"
+    },
+    "post_id": 1,
+    "content": "this is some content 1",
+    "created_dt": 1671284028
   }
 ]
 ```

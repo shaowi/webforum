@@ -33,19 +33,19 @@ func CreateTables(db *gorm.DB) {
 }
 
 func AddDummyData() {
-	AddUser("abby@test.com", "12356", "abby", 1)
-	AddUser("bob@test.com", "123456", "bob", 1)
-	AddUser("cassie@test.com", "456789", "cassie", 2)
-	AddUser("shaogamers@gmail.com", "719346", "shao", 1)
-	AddUser("shao.lee@cldcvr.com", "719346", "leeshaowee", 1)
+	AddUser("abby@test.com", "12356", "abby", 1, "dark")
+	AddUser("bob@test.com", "123456", "bob", 1, "red")
+	AddUser("cassie@test.com", "456789", "cassie", 2, "pink")
+	AddUser("shaogamers@gmail.com", "719346", "shao", 1, "grape")
+	AddUser("shao.lee@cldcvr.com", "719346", "leeshaowee", 1, "violet")
 
-	AddPost("shao", "shaogamers@gmail.com", 4, "title1", "this is some body 1", "food,groceries,design")
-	AddPost("abby", "abby@test.com", 1, "title2", "this is some body 2", "sports,groceries,design")
-	AddPost("bob", "bob@test.com", 2, "title3", "this is some body 3", "shopping,groceries,entertainment")
+	AddPost(4, "title1", "this is some body 1", "food,groceries,design")
+	AddPost(1, "title2", "this is some body 2", "sports,groceries,design")
+	AddPost(2, "title3", "this is some body 3", "shopping,groceries,entertainment")
 
-	AddComment("bob", "bob@test.com", 2, 1, "this is some content 1")
-	AddComment("abby", "abby@test.com", 1, 1, "this is some content 2")
-	AddComment("bob", "bob@test.com", 2, 2, "this is some content 3")
+	AddComment(2, 1, "this is some content 1")
+	AddComment(1, 1, "this is some content 2")
+	AddComment(2, 2, "this is some content 3")
 
 	AddPopularity(1, 1, false)
 	AddPopularity(2, 1, true)
@@ -53,41 +53,38 @@ func AddDummyData() {
 
 }
 
-func AddUser(email string, password string, name string, access_type uint) {
+func AddUser(email string, password string, name string, access_type uint, avatar_color string) {
 	pw, _ := bcrypt.GenerateFromPassword([]byte(password), 14)
 
 	user := models.User{
-		Email:      email,
-		Password:   pw,
-		Name:       name,
-		AccessType: access_type,
+		Email:       email,
+		Password:    pw,
+		Name:        name,
+		AccessType:  access_type,
+		AvatarColor: avatar_color,
 	}
 
 	DB.Create(&user)
 }
 
-func AddPost(author_name string, author_email string, user_id uint, title string, body string, categories string) {
+func AddPost(user_id uint, title string, body string, categories string) {
 	post := models.Post{
-		AuthorName:  author_name,
-		AuthorEmail: author_email,
-		UserId:      user_id,
-		Title:       title,
-		Body:        body,
-		Categories:  categories,
-		CreatedDt:   time.Now().Unix(),
+		UserId:     user_id,
+		Title:      title,
+		Body:       body,
+		Categories: categories,
+		CreatedDt:  time.Now().Unix(),
 	}
 
 	DB.Create(&post)
 }
 
-func AddComment(author_name string, author_email string, user_id uint, post_id uint, content string) {
+func AddComment(user_id uint, post_id uint, content string) {
 	comment := models.Comment{
-		AuthorName:  author_name,
-		AuthorEmail: author_email,
-		UserId:      user_id,
-		PostId:      post_id,
-		Content:     content,
-		CreatedDt:   time.Now().Unix(),
+		UserId:    user_id,
+		PostId:    post_id,
+		Content:   content,
+		CreatedDt: time.Now().Unix(),
 	}
 
 	DB.Create(&comment)

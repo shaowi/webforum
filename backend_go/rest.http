@@ -91,6 +91,6 @@ Content-Type: application/json
 }
 ###
 
-GET http://localhost:3000/api/popularity/1
+GET http://localhost:3000/api/popularity/2
 ###
 

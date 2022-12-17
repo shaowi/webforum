@@ -19,7 +19,7 @@ func Comments(c *fiber.Ctx) error {
 	postId := c.Params("postId")
 	condition := map[string]interface{}{"post_id": postId}
 
-	if err := database.DB.Where(condition).Find(&comments).Error; err != nil {
+	if err := database.DB.Joins("User").Where(condition).Find(&comments).Error; err != nil {
 		return utils.ErrorResponse(c, utils.GetError)
 	}
 
@@ -44,12 +44,10 @@ func AddComment(c *fiber.Ctx) error {
 	}
 
 	comment := models.Comment{
-		AuthorName:  user.Name,
-		AuthorEmail: user.Email,
-		UserId:      user.UserId,
-		PostId:      postId,
-		Content:     data["content"],
-		CreatedDt:   time.Now().Unix(),
+		UserId:    user.UserId,
+		PostId:    postId,
+		Content:   data["content"],
+		CreatedDt: time.Now().Unix(),
 	}
 
 	if err := database.DB.Create(&comment).Error; err != nil {

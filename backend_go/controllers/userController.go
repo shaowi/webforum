@@ -70,10 +70,11 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	user := models.User{
-		Email:      data["email"],
-		Password:   password,
-		Name:       data["name"],
-		AccessType: access_type,
+		Email:       data["email"],
+		Password:    password,
+		Name:        data["name"],
+		AccessType:  access_type,
+		AvatarColor: data["avatar_color"],
 	}
 
 	if err := database.DB.Create(&user).Error; err != nil {

@@ -16,9 +16,10 @@ func Posts(c *fiber.Ctx) error {
 		return utils.ErrorResponse(c, utils.UserNotFound)
 	}
 	posts := []models.Post{}
-	if err := database.DB.Find(&posts).Error; err != nil {
+	if err := database.DB.Joins("User").Find(&posts).Error; err != nil {
 		return utils.ErrorResponse(c, utils.GetError)
 	}
+	// JOIN users ON users.user_id = posts.user_id
 	for i, post := range posts {
 		posts[i] = GetPostStats(post)
 	}
@@ -64,13 +65,11 @@ func AddPost(c *fiber.Ctx) error {
 	}
 
 	post := models.Post{
-		AuthorName:  data["author_name"],
-		AuthorEmail: data["author_email"],
-		UserId:      user.UserId,
-		Title:       data["title"],
-		Body:        data["body"],
-		Categories:  data["categories"],
-		CreatedDt:   time.Now().Unix(),
+		UserId:     user.UserId,
+		Title:      data["title"],
+		Body:       data["body"],
+		Categories: data["categories"],
+		CreatedDt:  time.Now().Unix(),
 	}
 
 	if err := database.DB.Create(&post).Error; err != nil {
