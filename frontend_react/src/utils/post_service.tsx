@@ -1,9 +1,24 @@
 import { PostCardProps } from '../types/Post';
-import { API_HOST_POST } from './constants';
+import { API_HOST_POST, API_HOST_POST_HISTORY } from './constants';
 import { getRequest, postRequest } from './request_service';
 
 async function getAllPosts() {
   const response = await getRequest(API_HOST_POST);
+  return response.json();
+}
+
+async function getViewedPosts() {
+  const response = await getRequest(`${API_HOST_POST_HISTORY}/view`);
+  return response.json();
+}
+
+async function getLikedPosts() {
+  const response = await getRequest(`${API_HOST_POST_HISTORY}/like`);
+  return response.json();
+}
+
+async function getCommentedPosts() {
+  const response = await getRequest(`${API_HOST_POST_HISTORY}/comment`);
   return response.json();
 }
 
@@ -117,5 +132,8 @@ export {
   isSubset as hasOverlap,
   convertToPostCard,
   incrementPostView,
-  incrDecrPostComments
+  incrDecrPostComments,
+  getViewedPosts,
+  getLikedPosts,
+  getCommentedPosts
 };

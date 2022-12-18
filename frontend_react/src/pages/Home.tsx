@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import '../App.css';
 import Nav from '../components/nav/Nav';
+import HistoryPostContainer from '../components/posts/HistoryPostContainer';
 import PostContainer from '../components/posts/PostContainer';
 import { User } from '../types/User';
 import { getCacheUser } from '../utils/user_service';
@@ -52,8 +53,10 @@ export default function Home({
       />
       {activePage === 0 ? (
         <PostContainer user={user!} />
-      ) : (
+      ) : activePage === 1 ? (
         <UserProfile user={user!} setUser={setUser} />
+      ) : (
+        <HistoryPostContainer user={user!} />
       )}
     </div>
   );

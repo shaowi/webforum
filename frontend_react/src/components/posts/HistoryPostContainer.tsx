@@ -4,18 +4,17 @@ import {
   Group,
   Loader,
   MultiSelect,
+  SegmentedControl,
   Select,
   Switch,
   Text,
-  TextInput,
-  Tooltip
+  TextInput
 } from '@mantine/core';
 import {
   IconBackspace,
   IconSearch,
   IconSortAscending2,
-  IconSortDescending2,
-  IconSquarePlus
+  IconSortDescending2
 } from '@tabler/icons';
 import { useEffect, useState } from 'react';
 import '../../App.css';
@@ -25,8 +24,9 @@ import { createComment, removeComment } from '../../utils/comment_service';
 import { capitalize, lowerCaseStrArrays } from '../../utils/constants';
 import {
   convertToPostCard,
-  createPost,
-  getAllPosts,
+  getCommentedPosts,
+  getLikedPosts,
+  getViewedPosts,
   hasOverlap as isSubset,
   incrDecrPostComments,
   incrementPostView,
@@ -36,10 +36,9 @@ import {
 } from '../../utils/post_service';
 import { accountLikes } from '../../utils/user_service';
 import TransitionModal from '../TransitionModal';
-import CreateForm from './CreateForm';
 import PostCard from './PostCard';
 
-export default function PostContainer({ user }: { user: User }) {
+export default function HistoryPostContainer({ user }: { user: User }) {
   const useStyles = createStyles((_) => ({}));
   const { theme } = useStyles();
   const curUser: Author = {
@@ -53,13 +52,29 @@ export default function PostContainer({ user }: { user: User }) {
   const [categoriesData, setCategoriesData] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string | null>(null);
   const [orderByAsc, setOrderByAsc] = useState<boolean>(true);
+  const [type, setType] = useState<string>('viewed');
 
   const [searchVal, setSearchVal] = useState('');
-  const [showAddPostModal, setShowAddPostModal] = useState(false);
   const [showError, setShowError] = useState(false);
-  const [showCreateError, setShowCreateError] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  function validateAndPopulatePosts(content: any) {
+    if ('error' in content) {
+      setShowError(true);
+    } else {
+      const finalData: PostCardProps[] = content.map(convertToPostCard);
+      setPosts(finalData);
+      setInitPosts(finalData);
+
+      // Populate the available categories from all the created posts
+      let allCategories: Set<string> = new Set();
+      for (let { categories } of finalData) {
+        const curCat = new Set([...categories]);
+        allCategories = new Set([...allCategories, ...curCat]);
+      }
+      setCategoriesData([...allCategories].map((s) => capitalize(s)));
+    }
+  }
 
   function filterPostsByTitle(v: string) {
     // Categories has no selection
@@ -103,32 +118,6 @@ export default function PostContainer({ user }: { user: User }) {
           post.title.toLowerCase().includes(v) && isSubset(t, post.categories)
       )
     );
-  }
-
-  function addPost(title: string, body: string, categories: string[]) {
-    const data = {
-      author_name: user?.name,
-      author_email: user?.email,
-      title,
-      body,
-      categories: categories.join(',')
-    };
-    const res = createPost(data);
-    res
-      .then((content: any) => {
-        if ('error' in content) {
-          setShowError(true);
-        } else {
-          setShowAlert(true);
-          // Add new post to all posts
-          const newAllPosts = initPosts?.concat([convertToPostCard(content)]);
-          setPosts(newAllPosts);
-          setInitPosts(newAllPosts);
-        }
-      })
-      .catch(() => setShowCreateError(true));
-
-    return res;
   }
 
   function deletePost(id: number) {
@@ -195,27 +184,28 @@ export default function PostContainer({ user }: { user: User }) {
   }
 
   useEffect(() => {
-    // Fetch all posts from database
-    getAllPosts()
-      .then((content: any) => {
-        if ('error' in content) {
-          setShowError(true);
-        } else {
-          const finalData: PostCardProps[] = content.map(convertToPostCard);
-          setPosts(finalData);
-          setInitPosts(finalData);
-
-          // Populate the available categories from all the created posts
-          let allCategories: Set<string> = new Set();
-          for (let { categories } of finalData) {
-            const curCat = new Set([...categories]);
-            allCategories = new Set([...allCategories, ...curCat]);
-          }
-          setCategoriesData([...allCategories].map((s) => capitalize(s)));
-        }
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    // Fetch only posts that this user has viewed/liked/commented before from database
+    setLoading(true);
+    switch (type) {
+      case 'viewed':
+        getViewedPosts()
+          .then(validateAndPopulatePosts)
+          .finally(() => setLoading(false));
+        break;
+      case 'liked':
+        getLikedPosts()
+          .then(validateAndPopulatePosts)
+          .finally(() => setLoading(false));
+        break;
+      case 'commented':
+        getCommentedPosts()
+          .then(validateAndPopulatePosts)
+          .finally(() => setLoading(false));
+        break;
+      default:
+        break;
+    }
+  }, [type]);
 
   if (loading) {
     return <Loader className="centered" />;
@@ -314,14 +304,15 @@ export default function PostContainer({ user }: { user: User }) {
               />
             </Group>
           </div>
-          <Tooltip label="Add New Post">
-            <ActionIcon
-              variant="transparent"
-              onClick={() => setShowAddPostModal(true)}
-            >
-              <IconSquarePlus size={36} />
-            </ActionIcon>
-          </Tooltip>
+          <SegmentedControl
+            value={type}
+            onChange={(t) => setType(t)}
+            data={[
+              { label: 'Viewed', value: 'viewed' },
+              { label: 'Liked', value: 'liked' },
+              { label: 'Commented', value: 'commented' }
+            ]}
+          />
         </div>
 
         {posts!.length > 0 && (
@@ -345,28 +336,6 @@ export default function PostContainer({ user }: { user: User }) {
           </div>
         )}
       </div>
-      <TransitionModal
-        opened={showAddPostModal}
-        onClose={() => setShowAddPostModal(false)}
-        InnerComponent={
-          <CreateForm categoriesData={categoriesData} addPost={addPost} />
-        }
-      />
-      <TransitionModal
-        opened={showAlert}
-        onClose={() => setShowAlert(false)}
-        title="Post created successfully"
-      />
-      <TransitionModal
-        opened={showCreateError}
-        onClose={() => setShowCreateError(false)}
-        title="Error occured while creating a post"
-        InnerComponent={
-          <Text c="red" fz="md">
-            Something went wrong. Please refresh your browser and try again.
-          </Text>
-        }
-      />
       <TransitionModal
         opened={showError}
         onClose={() => setShowError(false)}

@@ -42,7 +42,7 @@ function App({
 }
 
 function WrapperApp() {
-  const [activePage, setActivePage] = useState(0);
+  const [activePage, setActivePage] = useState(0); // 0 - Home, 1 - User Profile, 2 - Viewed Posts
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'mantine-color-scheme',
     defaultValue: 'light',

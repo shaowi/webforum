@@ -68,3 +68,7 @@
 .children-w-max > * {
   width: 100%;
 }
+
+.hand {
+  cursor: pointer !important;
+}

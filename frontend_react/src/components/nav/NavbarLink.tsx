@@ -18,20 +18,20 @@ const useStyles = createStyles((theme) => ({
       backgroundColor:
         theme.colorScheme === 'dark'
           ? theme.colors.dark[5]
-          : theme.colors.gray[0],
-    },
+          : theme.colors.gray[0]
+    }
   },
 
   active: {
     '&, &:hover': {
       backgroundColor: theme.fn.variant({
         variant: 'light',
-        color: theme.primaryColor,
+        color: theme.primaryColor
       }).background,
       color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
-        .color,
-    },
-  },
+        .color
+    }
+  }
 }));
 
 interface NavbarLinkProps {
@@ -45,7 +45,7 @@ export default function NavbarLink({
   icon: Icon,
   label,
   active,
-  onClick,
+  onClick
 }: NavbarLinkProps) {
   const { classes, cx } = useStyles();
   return (

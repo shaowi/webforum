@@ -1,5 +1,5 @@
 import { Avatar, Center, Navbar, Stack } from '@mantine/core';
-import { IconHome2, IconLogout, IconUser } from '@tabler/icons';
+import { IconHistory, IconHome2, IconLogout, IconUser } from '@tabler/icons';
 import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import '../../App.css';
@@ -20,7 +20,8 @@ export default function Nav({
   const [redirect, setRedirect] = useState(false);
   const navIcons = [
     { icon: IconHome2, label: 'Home' },
-    { icon: IconUser, label: 'Account' }
+    { icon: IconUser, label: 'Account' },
+    { icon: IconHistory, label: 'Viewed Posts' }
   ];
 
   const links = navIcons.map((link, index) => (
@@ -50,7 +51,7 @@ export default function Nav({
   return (
     <Navbar className="side-nav" p="md">
       <Center>
-        <Avatar size="md" src={wfLogo} alt="WebForum" color="white" />
+        <Avatar size="md" src={wfLogo} alt="WebForum" />
       </Center>
       <Navbar.Section grow mt={50}>
         <Stack justify="center" spacing={0}>
