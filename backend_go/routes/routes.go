@@ -23,12 +23,16 @@ func Setup(app *fiber.App) {
 
 	// Post API
 	post_api := api.Group("/post")
+	post_api_history := post_api.Group("/history")
 	post_api.Get("", controllers.Posts)
 	// post_api.Get("/:postId", controllers.GetPost)
 	post_api.Post("/add", controllers.AddPost)
 	post_api.Post("/delete/:postId", controllers.DeletePost)
 	post_api.Post("/like/:postId", controllers.LikePost)
 	post_api.Post("/view/:postId", controllers.ViewPost)
+	post_api_history.Get("/view", controllers.ViewSeenPosts)
+	post_api_history.Get("/like", controllers.ViewLikedPosts)
+	post_api_history.Get("/comment", controllers.ViewCommentedPosts)
 
 	// Comment API
 	comment_api := post_api.Group("/:postId/comment")

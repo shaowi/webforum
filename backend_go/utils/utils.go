@@ -108,3 +108,43 @@ func SendEmail(newPw string, emailTo string) {
 	}
 
 }
+
+func GetHistoryPosts(c *fiber.Ctx, condition map[string]interface{}, joinCondition string) error {
+	posts := []models.Post{}
+	joinUserCondition := "JOIN users ON users.user_id = posts.user_id"
+	if err := database.DB.Joins(joinCondition).Joins(joinUserCondition).Where(condition).Find(&posts).Error; err != nil {
+		return ErrorResponse(c, GetError)
+	}
+
+	for i, post := range posts {
+		posts[i] = GetPostStats(post)
+	}
+	return GetRequestResponse(c, posts)
+}
+
+func GetPostStats(post models.Post) models.Post {
+	postId := post.PostId
+	var views uint = post.Views
+	var likes uint = post.Likes
+	var comments uint = post.Comments
+	viewQuery := "SELECT SUM(views) FROM popularities WHERE post_id = ?"
+	likeQuery := "SELECT COUNT(likes) FROM popularities WHERE post_id = ? AND likes = true"
+	commentQuery := "SELECT COUNT(comment_id) FROM comments WHERE post_id = ?"
+
+	// Check view records exist in popularities
+	var popularity models.Popularity
+	condition := map[string]interface{}{"post_id": postId}
+	viewsRes := database.DB.Where(condition).Limit(1).Find(&popularity)
+	if viewsRes.RowsAffected > 0 {
+		database.DB.Raw(viewQuery, postId).Scan(&views)
+	}
+	database.DB.Raw(likeQuery, postId).Scan(&likes)
+	database.DB.Raw(commentQuery, postId).Scan(&comments)
+
+	post.Views = views
+	post.Likes = likes
+	post.Comments = comments
+
+	database.DB.Save(&post)
+	return post
+}

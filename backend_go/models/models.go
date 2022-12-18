@@ -25,9 +25,9 @@ type Post struct {
 type Comment struct {
 	CommentId uint   `json:"comment_id" gorm:"primaryKey;gorm:autoIncrement"`
 	User      User   `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Post      Post   `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Post      Post   `json:"post" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	UserId    uint   `json:"-"`
-	PostId    uint   `json:"post_id"`
+	PostId    uint   `json:"-"`
 	Content   string `json:"content"`
 	CreatedDt int64  `json:"created_dt"`
 }
@@ -35,9 +35,9 @@ type Comment struct {
 // Stores the information of posts that are liked and viewed by a user
 type Popularity struct {
 	User   User `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Post   Post `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Post   Post `json:"post" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	UserId uint `json:"user_id" gorm:"primaryKey"`
-	PostId uint `json:"post_id" gorm:"primaryKey"`
+	PostId uint `json:"-" gorm:"primaryKey"`
 	Views  uint `json:"views" gorm:"default:1"`
 	Likes  bool `json:"likes" gorm:"default:false"`
 }

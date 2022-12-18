@@ -24,8 +24,8 @@ POST http://localhost:3000/api/user/login
 Content-Type: application/json
 
 {
-  "email": "shaogamers@gmail.com",
-  "password": "719346"
+  "email": "bob@test.com",
+  "password": "123456"
 }
 ###
 
@@ -39,6 +39,14 @@ Content-Type: application/json
 GET http://localhost:3000/api/post
 ###
 
+GET http://localhost:3000/api/post/history/view
+###
+
+GET http://localhost:3000/api/post/history/like
+###
+
+GET http://localhost:3000/api/post/history/comment
+###
 POST http://localhost:3000/api/post/add 
 Content-Type: application/json
 

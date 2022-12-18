@@ -19,38 +19,44 @@ func Posts(c *fiber.Ctx) error {
 	if err := database.DB.Joins("User").Find(&posts).Error; err != nil {
 		return utils.ErrorResponse(c, utils.GetError)
 	}
-	// JOIN users ON users.user_id = posts.user_id
+
 	for i, post := range posts {
-		posts[i] = GetPostStats(post)
+		posts[i] = utils.GetPostStats(post)
 	}
 	return utils.GetRequestResponse(c, posts)
 }
 
-func GetPostStats(post models.Post) models.Post {
-	postId := post.PostId
-	var views uint = post.Views
-	var likes uint = post.Likes
-	var comments uint = post.Comments
-	viewQuery := "SELECT SUM(views) FROM popularities WHERE post_id = ?"
-	likeQuery := "SELECT COUNT(likes) FROM popularities WHERE post_id = ? AND likes = true"
-	commentQuery := "SELECT COUNT(comment_id) FROM comments WHERE post_id = ?"
-
-	// Check view records exist in popularities
-	var popularity models.Popularity
-	condition := map[string]interface{}{"post_id": postId}
-	viewsRes := database.DB.Where(condition).Limit(1).Find(&popularity)
-	if viewsRes.RowsAffected > 0 {
-		database.DB.Raw(viewQuery, postId).Scan(&views)
+func ViewSeenPosts(c *fiber.Ctx) error {
+	/// Check that user is logged in
+	user, err := utils.GetCurrentUser(c, SecretKey)
+	if err != nil {
+		return utils.ErrorResponse(c, utils.UserNotFound)
 	}
-	database.DB.Raw(likeQuery, postId).Scan(&likes)
-	database.DB.Raw(commentQuery, postId).Scan(&comments)
+	condition := map[string]interface{}{"popularities.user_id": user.UserId}
+	joinPopularityCondition := "JOIN popularities ON popularities.post_id = posts.post_id"
+	return utils.GetHistoryPosts(c, condition, joinPopularityCondition)
+}
 
-	post.Views = views
-	post.Likes = likes
-	post.Comments = comments
+func ViewLikedPosts(c *fiber.Ctx) error {
+	/// Check that user is logged in
+	user, err := utils.GetCurrentUser(c, SecretKey)
+	if err != nil {
+		return utils.ErrorResponse(c, utils.UserNotFound)
+	}
+	condition := map[string]interface{}{"popularities.user_id": user.UserId, "popularities.likes": true}
+	joinPopularityCondition := "JOIN popularities ON popularities.post_id = posts.post_id"
+	return utils.GetHistoryPosts(c, condition, joinPopularityCondition)
+}
 
-	database.DB.Save(&post)
-	return post
+func ViewCommentedPosts(c *fiber.Ctx) error {
+	/// Check that user is logged in
+	user, err := utils.GetCurrentUser(c, SecretKey)
+	if err != nil {
+		return utils.ErrorResponse(c, utils.UserNotFound)
+	}
+	condition := map[string]interface{}{"comments.user_id": user.UserId}
+	joinCommentCondition := "JOIN comments ON comments.post_id = posts.post_id"
+	return utils.GetHistoryPosts(c, condition, joinCommentCondition)
 }
 
 func AddPost(c *fiber.Ctx) error {

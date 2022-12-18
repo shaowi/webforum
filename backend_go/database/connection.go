@@ -46,10 +46,12 @@ func AddDummyData() {
 	AddComment(2, 1, "this is some content 1")
 	AddComment(1, 1, "this is some content 2")
 	AddComment(2, 2, "this is some content 3")
+	AddComment(4, 2, "this is some content 4")
 
-	AddPopularity(1, 1, false)
-	AddPopularity(2, 1, true)
-	AddPopularity(3, 2, true)
+	AddPopularity(1, 1, 1, false)
+	AddPopularity(2, 1, 1, true)
+	AddPopularity(3, 2, 1, true)
+	AddPopularity(4, 2, 2, true)
 
 }
 
@@ -90,10 +92,11 @@ func AddComment(user_id uint, post_id uint, content string) {
 	DB.Create(&comment)
 }
 
-func AddPopularity(user_id uint, post_id uint, like bool) {
+func AddPopularity(user_id uint, post_id uint, view uint, like bool) {
 	popularity := models.Popularity{
 		UserId: user_id,
 		PostId: post_id,
+		Views:  view,
 		Likes:  like,
 	}
 
