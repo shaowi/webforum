@@ -8,6 +8,7 @@ import {
   Switch,
   Text,
   TextInput,
+  Title,
   Tooltip
 } from '@mantine/core';
 import {
@@ -324,7 +325,11 @@ export default function PostContainer({ user }: { user: User }) {
           </Tooltip>
         </div>
 
-        {posts!.length > 0 && (
+        {posts.length === 0 ? (
+          <Title order={1} className="centered">
+            No posts found
+          </Title>
+        ) : (
           <div
             className="grid-container"
             style={{ marginTop: '2rem', alignSelf: 'start' }}

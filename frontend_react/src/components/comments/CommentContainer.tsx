@@ -75,6 +75,8 @@ export default function CommentContainer({
         if ('error' in content) {
           setShowError(true);
         } else {
+          // Sort the comments in ascending time from top to bottom
+          content.sort((a: any, b: any) => a.created_dt - b.created_dt);
           const finalData: CommentCardProps[] =
             content.map(convertToCommentCard);
           setCommentsInfo(finalData);

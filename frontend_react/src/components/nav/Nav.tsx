@@ -21,7 +21,7 @@ export default function Nav({
   const navIcons = [
     { icon: IconHome2, label: 'Home' },
     { icon: IconUser, label: 'Account' },
-    { icon: IconHistory, label: 'Viewed Posts' }
+    { icon: IconHistory, label: 'History' }
   ];
 
   const links = navIcons.map((link, index) => (

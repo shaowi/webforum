@@ -87,7 +87,7 @@ function convertToPostCard(d: any) {
     author: {
       name: d.user.name,
       email: d.user.email,
-      avatar_color: d.avatar_color
+      avatar_color: d.user.avatar_color
     }
   };
 }

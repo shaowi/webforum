@@ -7,6 +7,7 @@ import {
   Loader,
   MantineTheme,
   Text,
+  Title,
   Tooltip
 } from '@mantine/core';
 import { IconEye, IconMessage2, IconTrash } from '@tabler/icons';
@@ -97,9 +98,9 @@ export default function CardContent({
           marginBottom: '1rem'
         }}
       >
-        <Text weight={700} className={classes.title}>
+        <Title order={3} className={classes.title}>
           {title}
-        </Text>
+        </Title>
         {userAccessType === 1 && !renderBody && (
           <Tooltip label="Delete Post">
             <ActionIcon onClick={onDelete} className="action-icons">

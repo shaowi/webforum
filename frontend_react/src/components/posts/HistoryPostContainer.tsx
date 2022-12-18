@@ -8,7 +8,8 @@ import {
   Select,
   Switch,
   Text,
-  TextInput
+  TextInput,
+  Title
 } from '@mantine/core';
 import {
   IconBackspace,
@@ -315,7 +316,11 @@ export default function HistoryPostContainer({ user }: { user: User }) {
           />
         </div>
 
-        {posts!.length > 0 && (
+        {posts.length === 0 ? (
+          <Title order={1} className="centered">
+            No posts found
+          </Title>
+        ) : (
           <div
             className="grid-container"
             style={{ marginTop: '2rem', alignSelf: 'start' }}

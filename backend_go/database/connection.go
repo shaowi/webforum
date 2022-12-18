@@ -47,9 +47,11 @@ func AddDummyData() {
 	AddComment(1, 1, "this is some content 2")
 	AddComment(2, 2, "this is some content 3")
 	AddComment(4, 2, "this is some content 4")
+	AddComment(4, 1, "this is some content 5")
 
 	AddPopularity(1, 1, 1, false)
 	AddPopularity(2, 1, 1, true)
+	AddPopularity(2, 2, 1, false)
 	AddPopularity(3, 2, 1, true)
 	AddPopularity(4, 2, 2, true)
 

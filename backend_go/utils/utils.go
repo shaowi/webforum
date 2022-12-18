@@ -111,8 +111,7 @@ func SendEmail(newPw string, emailTo string) {
 
 func GetHistoryPosts(c *fiber.Ctx, condition map[string]interface{}, joinCondition string) error {
 	posts := []models.Post{}
-	joinUserCondition := "JOIN users ON users.user_id = posts.user_id"
-	if err := database.DB.Joins(joinCondition).Joins(joinUserCondition).Where(condition).Find(&posts).Error; err != nil {
+	if err := database.DB.Joins(joinCondition).Joins("User").Where(condition).Find(&posts).Error; err != nil {
 		return ErrorResponse(c, GetError)
 	}
 
