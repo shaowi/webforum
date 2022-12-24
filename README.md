@@ -13,9 +13,9 @@ Before you begin, ensure you have met the following requirements:
 - You have installed the latest version of `Node Package Manager, React, Golang, Docker`
 - You have a `<Windows/Mac>` machine.
 
-## Using <Web_Forum>
+## Using Web Forum
 
-To use <Web_Forum>, follow these steps:
+To use Web Forum, follow these steps:
 
 - Clone the repository from the master branch to your local machine
 - Navigate to the respective directories to initialise the frontend/backend
@@ -46,13 +46,21 @@ password: 123
 ## API Definitions
 
 - [Get User](#get-logged-in-user)
+- [Get User Stats](#get-user-stats)
 - [Create User](#create-user)
 - [Log In User](#log-in-user)
 - [Log Out User](#log-out-user)
+- [Reset User Password](#reset-user-password)
+- [Change User Password](#change-user-password)
+- [Change User Name](#change-user-name)
 - [Get Posts](#get-posts)
 - [Create Post](#create-post)
 - [Delete Post](#delete-post)
+- [Get Viewed Posts](#get-viewed-posts)
+- [Get Liked Posts](#get-liked-posts)
+- [Get Commented Posts](#get-commented-posts)
 - [Get Comments For Post](#get-comments-for-post)
+- [Get Liked Status For User on Posts](#get-liked-status-for-user-on-posts)
 
 ---
 
@@ -84,23 +92,6 @@ password: 123
   "mades": 1,
   "views": 2,
   "likes": 3
-}
-```
-
----
-
-## Get User By Id
-
-**GET <http://localhost:3000/api/user/:userId>**
-
-`JSON: Response`
-
-```json
-{
-  "user_id": 1,
-  "email": "abby@test.com",
-  "name": "abby",
-  "access_type": 1
 }
 ```
 
@@ -272,6 +263,118 @@ password: 123
 
 ---
 
+## View Post
+
+**POST <http://localhost:3000/api/post/view/1>** `(post_id = 1)`
+
+`JSON: Request`
+
+```json
+{}
+```
+
+---
+
+## Like Post
+
+**POST <http://localhost:3000/api/post/like/1>** `(post_id = 1)`
+
+`JSON: Request`
+
+```json
+{ "like": true }
+```
+
+---
+
+## Get Viewed Posts
+
+**GET <http://localhost:3000/api/post/history/view>** `(post_id = 1)`
+
+`JSON: Response`
+
+```json
+[
+  {
+    "post_id": 1,
+    "user": {
+      "user_id": 4,
+      "email": "shaogamers@gmail.com",
+      "name": "shao",
+      "access_type": 1,
+      "avatar_color": "grape"
+    },
+    "title": "title1",
+    "body": "this is some body 1",
+    "categories": "food,groceries,design",
+    "created_dt": 1671283391,
+    "views": 2,
+    "likes": 1,
+    "comments": 2
+  }
+]
+```
+
+---
+
+## Get Liked Posts
+
+**GET <http://localhost:3000/api/post/history/like>** `(post_id = 1)`
+
+`JSON: Response`
+
+```json
+[
+  {
+    "post_id": 1,
+    "user": {
+      "user_id": 4,
+      "email": "shaogamers@gmail.com",
+      "name": "shao",
+      "access_type": 1,
+      "avatar_color": "grape"
+    },
+    "title": "title1",
+    "body": "this is some body 1",
+    "categories": "food,groceries,design",
+    "created_dt": 1671283391,
+    "views": 2,
+    "likes": 1,
+    "comments": 2
+  }
+]
+```
+
+## Get Commented Posts
+
+**GET <http://localhost:3000/api/post/history/comment>** `(post_id = 1)`
+
+`JSON: Response`
+
+```json
+[
+  {
+    "post_id": 1,
+    "user": {
+      "user_id": 4,
+      "email": "shaogamers@gmail.com",
+      "name": "shao",
+      "access_type": 1,
+      "avatar_color": "grape"
+    },
+    "title": "title1",
+    "body": "this is some body 1",
+    "categories": "food,groceries,design",
+    "created_dt": 1671283391,
+    "views": 2,
+    "likes": 1,
+    "comments": 2
+  }
+]
+```
+
+---
+
 ## Get Comments For Post
 
 **GET <http://localhost:3000/api/post/1/comment>** `(post_id = 1)`
@@ -311,6 +414,49 @@ password: 123
 
 ---
 
+## Create Comment
+
+**POST <http://localhost:3000/api/post/1/comment/add>**
+
+`JSON: Request`
+
+```json
+{
+  "content": "This is some content for comment"
+}
+```
+
+---
+
+## Delete Comment
+
+**POST <http://localhost:3000/api/post/1/comment/delete/2>** `(comment_id = 2)`
+
+`JSON: Request`
+
+```json
+{}
+```
+
+---
+
+## Get Liked Status For User on Posts
+
+**GET <http://localhost:3000/api/popularity/1>** `(post_id = 1)`
+
+`JSON: Response`
+
+```json
+{
+  "post": {},
+  "user_id": 2,
+  "views": 1,
+  "likes": false
+}
+```
+
+---
+
 ## Contributing to Web Forum
 
 To contribute to Web Forum, follow these steps:
@@ -329,7 +475,7 @@ Alternatively see the GitHub documentation on [creating a pull request](https://
 
 👤 **Lee Shao Wee**
 
-- Portfolio Website: https://leeshaowee.netlify.app/
+- Portfolio Website: [URL](https://leeshaowee.netlify.app/)
 - Github: [@shaowi](https://github.com/shaowi)
 
 ---
