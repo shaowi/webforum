@@ -10,78 +10,40 @@ Before you begin, ensure you have met the following requirements:
 
 <!--- These are just example requirements. Add, duplicate or remove as required --->
 
-- You have installed the latest version of `Golang, Docker`
-- You have a `<Windows/Linux/Mac>` machine. State which OS is supported/which is not.
-- You have read `<guide/link/documentation_related_to_project>`.
+- You have installed the latest version of `Node Package Manager, React, Golang, Docker`
+- You have a `<Windows/Mac>` machine.
 
-## Installing <project_name>
+## Using <Web_Forum>
 
-To install <project_name>, follow these steps:
+To use <Web_Forum>, follow these steps:
 
-Linux and macOS:
+- Clone the repository from the master branch to your local machine
+- Navigate to the respective directories to initialise the frontend/backend
 
-```
-<install_command>
-```
+### Instructions to initialize PostgreSQL database
 
-Windows:
+1. Open Docker.
+2. In a terminal, run docker command: `docker compose up -d` from ./backend_go directory. After the container is up, the database will be listening on [http://localhost:5000](http://localhost:5000).
 
-```
-<install_command>
-```
-
-## Using <project_name>
-
-To use <project_name>, follow these steps:
-
-<!--
-# Instructions to initialize PostgreSQL database
-
-To initialize the database, you can either:
-
-- Use `psql` CLI to execute [init.sql](init.sql) on the database that psql is connected to, or
-- Run docker command: `docker compose up` from the root directory. After the container is up, the database will be listening on localhost:5000 with
-
-  - server: localhost
-  - database name: dev
-  - port: 5000
-  - username: postgres
-  - password: 123
-
-  You can use PgAdmin to connect to the database.
-
-# Instructions to initialize frontend
-
-Instructions for mac
-
-- open terminal
-- yarn start
-
----
-
-Instructions for windows
-download node.js
-
-- npm install -g yarn
-
-- yarn add vite (delete yarn.lock if any issues, worked for me)
-  yarn --version (check if yarn is successfully installed)
-
-  1)Pull branch from overview-page
-
-  2)open terminal (windows)
-
-- yarn start (opens at localhost:8080)
-
-- in overview page now -->
-
-```
-<usage_example>
+```env
+server: localhost
+database name: dev
+port: 5000
+username: postgres
+password: 123
 ```
 
-Add run commands and examples you think users will find useful. Provide an options reference for bonus points!
+### Instructions to initialize Backend services
 
-# API Definitions
+1. In a terminal, run command `go run main.go` from the same directory to start the backend service.
+
+### Instructions to initialize Frontend
+
+1. Navigate to ./frontend_react directory from the terminal.
+2. Execute command `npm install` to install all the project dependencies.
+3. Once completed, run `npm start` to start the app in development mode in [http://localhost:3000](http://localhost:3000).
+
+## API Definitions
 
 - [Get User](#get-logged-in-user)
 - [Create User](#create-user)
@@ -92,13 +54,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 - [Delete Post](#delete-post)
 - [Get Comments For Post](#get-comments-for-post)
 
-#
+---
 
 ## Get Logged-In User
 
 **GET <http://localhost:3000/api/user>**
-
-#
 
 `JSON: Response`
 
@@ -111,11 +71,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 }
 ```
 
+---
+
 ## Get User Stats
 
 **GET <http://localhost:3000/api/userstats>**
-
-#
 
 `JSON: Response`
 
@@ -127,11 +87,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 }
 ```
 
+---
+
 ## Get User By Id
 
 **GET <http://localhost:3000/api/user/:userId>**
-
-#
 
 `JSON: Response`
 
@@ -144,11 +104,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 }
 ```
 
+---
+
 ## Create User
 
 **POST <http://localhost:3000/api/user/register>**
-
-#
 
 `JSON: Request`
 
@@ -162,11 +122,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 }
 ```
 
+---
+
 ## Log In User
 
 **POST <http://localhost:3000/api/user/login>**
-
-#
 
 `JSON: Request`
 
@@ -177,11 +137,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 }
 ```
 
+---
+
 ## Log Out User
 
 **POST <http://localhost:3000/api/user/logout>**
-
-#
 
 `JSON: Request`
 
@@ -189,11 +149,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 {}
 ```
 
+---
+
 ## Reset User Password
 
 **POST <http://localhost:3000/api/user/resetpassword>**
-
-#
 
 `JSON: Request`
 
@@ -203,11 +163,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 }
 ```
 
+---
+
 ## Change User Password
 
 **POST <http://localhost:3000/api/user/changepassword>**
-
-#
 
 `JSON: Request`
 
@@ -218,11 +178,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 }
 ```
 
+---
+
 ## Change User Name
 
 **POST <http://localhost:3000/api/user/changename>**
-
-#
 
 `JSON: Request`
 
@@ -233,11 +193,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 }
 ```
 
+---
+
 ## Get Posts
 
 **GET <http://localhost:3000/api/post>**
-
-#
 
 `JSON: Response`
 
@@ -266,8 +226,6 @@ Add run commands and examples you think users will find useful. Provide an optio
 **GET <http://localhost:3000/api/post/1>**
 `(by post_id)`
 
-#
-
 `JSON: Response`
 
 ```json
@@ -284,11 +242,11 @@ Add run commands and examples you think users will find useful. Provide an optio
   },
 ```
 
+---
+
 ## Create Post
 
 **POST <http://localhost:3000/api/post/add>**
-
-#
 
 `JSON: Request`
 
@@ -300,11 +258,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 }
 ```
 
+---
+
 ## Delete Post
 
 **POST <http://localhost:3000/api/post/delete/1>** `(post_id = 1)`
-
-#
 
 `JSON: Request`
 
@@ -312,11 +270,11 @@ Add run commands and examples you think users will find useful. Provide an optio
 {}
 ```
 
+---
+
 ## Get Comments For Post
 
 **GET <http://localhost:3000/api/post/1/comment>** `(post_id = 1)`
-
-#
 
 `JSON: Response`
 
@@ -351,36 +309,33 @@ Add run commands and examples you think users will find useful. Provide an optio
 ]
 ```
 
-## Contributing to <project_name>
+---
 
-<!--- If your README is long or you have some specific process or steps you want contributors to follow, consider creating a separate CONTRIBUTING.md file--->
+## Contributing to Web Forum
 
-To contribute to <project_name>, follow these steps:
+To contribute to Web Forum, follow these steps:
 
 1. Fork this repository.
-2. Create a branch: `git checkout -b <branch_name>`.
+2. Create a branch: `git checkout -b master`.
 3. Make your changes and commit them: `git commit -m '<commit_message>'`
-4. Push to the original branch: `git push origin <project_name>/<location>`
+4. Push to the original branch: `git push origin web_forum/master`
 5. Create the pull request.
 
 Alternatively see the GitHub documentation on [creating a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
-## Contributors
+---
 
-Thanks to the following people who have contributed to this project:
+## Author Info
 
-- [@scottydocs](https://github.com/scottydocs) 📖
-- [@cainwatson](https://github.com/cainwatson) 🐛
-- [@calchuchesta](https://github.com/calchuchesta) 🐛
+👤 **Lee Shao Wee**
 
-You might want to consider using something like the [All Contributors](https://github.com/all-contributors/all-contributors) specification and its [emoji key](https://allcontributors.org/docs/en/emoji-key).
+- Portfolio Website: https://leeshaowee.netlify.app/
+- Github: [@shaowi](https://github.com/shaowi)
 
-## Contact
+---
 
-If you want to contact me you can reach me at <your_email@address.com>.
+## Show your support
 
-## License
+Give a ⭐️ if this project helped you!
 
-<!--- If you're not sure which open license to use see https://choosealicense.com/--->
-
-This project uses the following license: [<license_name>](link).
+[Back To The Top](#web-forum)

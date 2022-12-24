@@ -50,12 +50,6 @@ func UserStats(c *fiber.Ctx) error {
 	})
 }
 
-// func UserById(c *fiber.Ctx) error {
-// 	var user models.User
-// 	database.DB.Where("user_id = ?", c.Params("userid")).First(&user)
-// 	return utils.GetRequestResponse(c, user)
-// }
-
 func Register(c *fiber.Ctx) error {
 	var data map[string]string
 
