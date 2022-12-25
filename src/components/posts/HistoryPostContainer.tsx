@@ -235,9 +235,9 @@ export default function HistoryPostContainer({ user }: { user: User }) {
           <div
             className="flex-col-container"
             style={{
-              alignSelf: 'start',
+              alignSelf: 'flex-start',
               rowGap: '1rem',
-              alignItems: 'start'
+              alignItems: 'flex-start'
             }}
           >
             <TextInput
@@ -328,7 +328,7 @@ export default function HistoryPostContainer({ user }: { user: User }) {
         ) : (
           <div
             className="grid-container"
-            style={{ marginTop: '2rem', alignSelf: 'start' }}
+            style={{ marginTop: '2rem', alignSelf: 'flex-start' }}
           >
             {posts!.map((post) => (
               <PostCard

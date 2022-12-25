@@ -99,7 +99,7 @@ export default function CommentContainer({
       <div
         className="flex-col-container"
         style={{
-          alignItems: 'start',
+          alignItems: 'flex-start',
           rowGap: '1.5rem'
         }}
       >
