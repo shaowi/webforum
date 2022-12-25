@@ -43,6 +43,7 @@ export default function HistoryPostContainer({ user }: { user: User }) {
   const useStyles = createStyles((_) => ({}));
   const { theme } = useStyles();
   const curUser: Author = {
+    user_id: user?.user_id,
     name: user?.name,
     email: user?.email,
     avatar_color: user?.avatar_color
@@ -132,7 +133,11 @@ export default function HistoryPostContainer({ user }: { user: User }) {
   }
 
   function likeOrUnlikePost(post_id: number, like: boolean) {
-    const res = likePost(post_id, String(like));
+    const data = {
+      like: String(like),
+      user_id: String(user.user_id)
+    };
+    const res = likePost(post_id, data);
     res.then(() => {
       setInitPosts((posts) => accountLikes(posts, post_id, like));
     });
@@ -140,7 +145,7 @@ export default function HistoryPostContainer({ user }: { user: User }) {
   }
 
   function addViewPost(post_id: number) {
-    viewPost(post_id).then(() => {
+    viewPost(post_id, { user_id: String(user.user_id) }).then(() => {
       setInitPosts((posts) => incrementPostView(posts, post_id));
     });
   }
@@ -189,24 +194,24 @@ export default function HistoryPostContainer({ user }: { user: User }) {
     setLoading(true);
     switch (type) {
       case 'viewed':
-        getViewedPosts()
+        getViewedPosts(user.user_id)
           .then(validateAndPopulatePosts)
           .finally(() => setLoading(false));
         break;
       case 'liked':
-        getLikedPosts()
+        getLikedPosts(user.user_id)
           .then(validateAndPopulatePosts)
           .finally(() => setLoading(false));
         break;
       case 'commented':
-        getCommentedPosts()
+        getCommentedPosts(user.user_id)
           .then(validateAndPopulatePosts)
           .finally(() => setLoading(false));
         break;
       default:
         break;
     }
-  }, [type]);
+  }, [type, user.user_id]);
 
   if (loading) {
     return <Loader className="centered" />;

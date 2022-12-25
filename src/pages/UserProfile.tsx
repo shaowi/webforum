@@ -31,21 +31,28 @@ export default function UserProfile({
 
   useEffect(() => {
     // Get and set user stats info
-    getUserStats().then((content) => {
-      if ('error' in content) {
-        setShowError(true);
-      } else {
-        setUserInfo({
-          user,
-          stats: [
-            { value: content.views, label: 'Viewed' },
-            { value: content.likes, label: 'Liked' },
-            { value: content.mades, label: 'Made' }
-          ]
-        });
-      }
-      setLoading(false);
-    });
+    const token = localStorage.getItem('jwt-token');
+    if (token !== null) {
+      setLoading(true);
+      getUserStats({ jwt_token: JSON.parse(token) })
+        .then((content) => {
+          if ('error' in content) {
+            setShowError(true);
+          } else {
+            setUserInfo({
+              user,
+              stats: [
+                { value: content.views, label: 'Viewed' },
+                { value: content.likes, label: 'Liked' },
+                { value: content.mades, label: 'Made' }
+              ]
+            });
+          }
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setShowError(true);
+    }
   }, [user]);
 
   const useStyles = createStyles((theme) => ({

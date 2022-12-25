@@ -289,7 +289,7 @@ password: 123
 
 ## Get Viewed Posts
 
-**GET <http://localhost:3000/api/post/history/view>** `(post_id = 1)`
+**GET <http://localhost:3000/api/post/history/view/1>** `(user_id = 1)`
 
 `JSON: Response`
 
@@ -319,7 +319,7 @@ password: 123
 
 ## Get Liked Posts
 
-**GET <http://localhost:3000/api/post/history/like>** `(post_id = 1)`
+**GET <http://localhost:3000/api/post/history/like/1>** `(user_id = 1)`
 
 `JSON: Response`
 
@@ -347,7 +347,7 @@ password: 123
 
 ## Get Commented Posts
 
-**GET <http://localhost:3000/api/post/history/comment>** `(post_id = 1)`
+**GET <http://localhost:3000/api/post/history/comment/1>** `(user_id = 1)`
 
 `JSON: Response`
 
@@ -442,7 +442,7 @@ password: 123
 
 ## Get Liked Status For User on Posts
 
-**GET <http://localhost:3000/api/popularity/1>** `(post_id = 1)`
+**GET <http://localhost:3000/api/popularity/1/2>** `(post_id = 1, user_id = 2)`
 
 `JSON: Response`
 

@@ -44,6 +44,7 @@ export default function PostContainer({ user }: { user: User }) {
   const useStyles = createStyles((_) => ({}));
   const { theme } = useStyles();
   const curUser: Author = {
+    user_id: user?.user_id,
     name: user?.name,
     email: user?.email,
     avatar_color: user?.avatar_color
@@ -108,6 +109,7 @@ export default function PostContainer({ user }: { user: User }) {
 
   function addPost(title: string, body: string, categories: string[]) {
     const data = {
+      user_id: String(user?.user_id),
       author_name: user?.name,
       author_email: user?.email,
       title,
@@ -143,7 +145,11 @@ export default function PostContainer({ user }: { user: User }) {
   }
 
   function likeOrUnlikePost(post_id: number, like: boolean) {
-    const res = likePost(post_id, String(like));
+    const data = {
+      like: String(like),
+      user_id: String(user.user_id)
+    };
+    const res = likePost(post_id, data);
     res.then(() => {
       setInitPosts((posts) => accountLikes(posts, post_id, like));
     });
@@ -151,7 +157,7 @@ export default function PostContainer({ user }: { user: User }) {
   }
 
   function addViewPost(post_id: number) {
-    viewPost(post_id).then(() => {
+    viewPost(post_id, { user_id: String(user.user_id) }).then(() => {
       setInitPosts((posts) => incrementPostView(posts, post_id));
     });
   }

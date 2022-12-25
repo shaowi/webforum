@@ -1,10 +1,8 @@
 import { Avatar, Center, Navbar, Stack } from '@mantine/core';
 import { IconHistory, IconHome2, IconLogout, IconUser } from '@tabler/icons';
-import { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import '../../App.css';
 import wfLogo from '../../assets/wf.png';
-import { API_HOST_USER } from '../../utils/constants';
 import ColorSchemeToggle from './ColorSchemeToggle';
 import NavbarLink from './NavbarLink';
 
@@ -15,14 +13,14 @@ export default function Nav({
 }: {
   setUser: Function;
   activePage: Number;
-  setActivePage: Function;
+  setActivePage: any;
 }) {
-  const [redirect, setRedirect] = useState(false);
   const navIcons = [
     { icon: IconHome2, label: 'Home' },
     { icon: IconUser, label: 'Account' },
     { icon: IconHistory, label: 'History' }
   ];
+  const navigate = useNavigate();
 
   const links = navIcons.map((link, index) => (
     <NavbarLink
@@ -33,21 +31,12 @@ export default function Nav({
     />
   ));
 
-  const logout = async () => {
-    const url = `${API_HOST_USER}/logout`;
-    fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include'
-    }).then((_) => {
-      setUser(undefined);
-      setRedirect(true);
-    });
+  const logout = () => {
+    localStorage.removeItem('jwt-token');
+    setUser(undefined);
+    navigate('/login');
   };
 
-  if (redirect) {
-    return <Redirect to="/login" />;
-  }
   return (
     <Navbar className="side-nav" p="md">
       <Center>

@@ -7,18 +7,20 @@ async function getAllPosts() {
   return response.json();
 }
 
-async function getViewedPosts() {
-  const response = await getRequest(`${API_HOST_POST_HISTORY}/view`);
+async function getViewedPosts(userId: number) {
+  const response = await getRequest(`${API_HOST_POST_HISTORY}/view/${userId}`);
   return response.json();
 }
 
-async function getLikedPosts() {
-  const response = await getRequest(`${API_HOST_POST_HISTORY}/like`);
+async function getLikedPosts(userId: number) {
+  const response = await getRequest(`${API_HOST_POST_HISTORY}/like/${userId}`);
   return response.json();
 }
 
-async function getCommentedPosts() {
-  const response = await getRequest(`${API_HOST_POST_HISTORY}/comment`);
+async function getCommentedPosts(userId: number) {
+  const response = await getRequest(
+    `${API_HOST_POST_HISTORY}/comment/${userId}`
+  );
   return response.json();
 }
 
@@ -32,13 +34,13 @@ async function removePost(id: number) {
   return response.json();
 }
 
-async function likePost(id: number, like: string) {
-  const response = await postRequest(`${API_HOST_POST}/like/${id}`, { like });
+async function likePost(id: number, data: any) {
+  const response = await postRequest(`${API_HOST_POST}/like/${id}`, data);
   return response.json();
 }
 
-async function viewPost(id: number) {
-  const response = await postRequest(`${API_HOST_POST}/view/${id}`, {});
+async function viewPost(id: number, data: any) {
+  const response = await postRequest(`${API_HOST_POST}/view/${id}`, data);
   return response.json();
 }
 
@@ -85,6 +87,7 @@ function convertToPostCard(d: any) {
     comments: d.comments,
     description: `Posted on ${convertUnixTSToDT(d.created_dt)}`,
     author: {
+      user_id: d.user.user_id,
       name: d.user.name,
       email: d.user.email,
       avatar_color: d.user.avatar_color

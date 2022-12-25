@@ -10,7 +10,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import '../App.css';
 import TransitionModal from '../components/TransitionModal';
 import { getRandomColors } from '../utils/constants';
@@ -77,7 +77,7 @@ export default function Register() {
   };
 
   return redirect ? (
-    <Redirect to="/" />
+    <Navigate to="/" />
   ) : (
     <>
       <Container size={420} my={40}>

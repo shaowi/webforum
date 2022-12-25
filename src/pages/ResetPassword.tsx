@@ -9,7 +9,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import '../App.css';
 import TransitionModal from '../components/TransitionModal';
 import { resetPassword } from '../utils/user_service';
@@ -44,7 +44,7 @@ export default function ResetPassword() {
   };
 
   if (redirect) {
-    return <Redirect to="/" />;
+    return <Navigate to="/" />;
   }
 
   return (

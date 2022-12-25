@@ -5,10 +5,10 @@ import {
   Image,
   SimpleGrid,
   Text,
-  Title,
+  Title
 } from '@mantine/core';
 import { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import image from '../assets/image.svg';
 
 const useStyles = createStyles((theme) => ({
@@ -21,27 +21,27 @@ const useStyles = createStyles((theme) => ({
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
 
     [theme.fn.smallerThan('sm')]: {
-      fontSize: 32,
-    },
+      fontSize: 32
+    }
   },
 
   control: {
     [theme.fn.smallerThan('sm')]: {
-      width: '100%',
-    },
+      width: '100%'
+    }
   },
 
   mobileImage: {
     [theme.fn.largerThan('sm')]: {
-      display: 'none',
-    },
+      display: 'none'
+    }
   },
 
   desktopImage: {
     [theme.fn.smallerThan('sm')]: {
-      display: 'none',
-    },
-  },
+      display: 'none'
+    }
+  }
 }));
 
 export default function NotFound() {
@@ -49,7 +49,7 @@ export default function NotFound() {
   const [redirectToHome, setRedirectToHome] = useState(false);
 
   return redirectToHome ? (
-    <Redirect to="/" />
+    <Navigate to="/" />
   ) : (
     <div className="centered">
       <Container className={classes.root}>

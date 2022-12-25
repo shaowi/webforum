@@ -66,10 +66,10 @@ export default function CardContent({
 
   useEffect(() => {
     setLoading(true);
-    getUserStatsForAPost(post_id)
+    getUserStatsForAPost(post_id, curUser.user_id)
       .then(({ likes }) => setHasLiked(likes))
       .finally(() => setLoading(false));
-  }, [post_id]);
+  }, [curUser.user_id, post_id]);
 
   function viewPost() {
     setOpened(true);

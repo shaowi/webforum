@@ -12,6 +12,7 @@ interface UserCardImageProps {
 }
 
 interface Author {
+  user_id: number;
   name: string;
   email: string;
   avatar_color: string;

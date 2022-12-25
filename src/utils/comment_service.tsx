@@ -38,6 +38,7 @@ function convertToCommentCard({
     comment_id,
     content,
     author: {
+      user_id: user.user_id,
       name: user.name,
       email: user.email,
       avatar_color: user.avatar_color

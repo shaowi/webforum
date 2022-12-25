@@ -32,7 +32,10 @@ export default function CommentContainer({
   function addComment() {
     if (comment.length === 0) return;
     setIsCreating(true);
-    addCommentPost(post_id, { content: comment })
+    addCommentPost(post_id, {
+      user_id: String(curUser.user_id),
+      content: comment
+    })
       .then((res: any) => {
         if ('error' in res) {
           setShowOpError(true);

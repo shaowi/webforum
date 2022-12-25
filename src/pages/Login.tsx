@@ -11,15 +11,15 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../App.css';
 import TransitionModal from '../components/TransitionModal';
 import { signIn } from '../utils/user_service';
 
 export default function Login() {
-  const [redirect, setRedirect] = useState(false);
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {
@@ -44,15 +44,12 @@ export default function Login() {
         if ('error' in content) {
           setShowError(true);
         } else {
-          setRedirect(true);
+          localStorage.setItem('jwt-token', JSON.stringify(content.jwt_token));
+          navigate('/');
         }
       })
       .finally(() => setLoading(false));
   };
-
-  if (redirect) {
-    return <Redirect to="/" />;
-  }
 
   return (
     <>

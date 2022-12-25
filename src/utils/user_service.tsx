@@ -2,23 +2,21 @@ import { PostCardProps } from '../types/Post';
 import { API_HOST_POPULARITY, API_HOST_USER } from './constants';
 import { getRequest, postRequest } from './request_service';
 
-async function getCacheUser(): Promise<any> {
-  const res = await getRequest(API_HOST_USER);
+async function getCacheUser(token: any): Promise<any> {
+  const res = await postRequest(API_HOST_USER, token);
   return res.json();
 }
 
-async function getUserStats(): Promise<any> {
-  const res = await getRequest(`${API_HOST_USER}/userstats`);
+async function getUserStats(token: any): Promise<any> {
+  const res = await postRequest(`${API_HOST_USER}/userstats`, token);
   return res.json();
 }
 
-async function getUserStatsForAPost(post_id: number): Promise<any> {
-  const res = await getRequest(`${API_HOST_POPULARITY}/${post_id}`);
-  return res.json();
-}
-
-async function getUserById(id: number): Promise<any> {
-  const res = await getRequest(`${API_HOST_USER}/${id}`);
+async function getUserStatsForAPost(
+  post_id: number,
+  user_id: number
+): Promise<any> {
+  const res = await getRequest(`${API_HOST_POPULARITY}/${post_id}/${user_id}`);
   return res.json();
 }
 
@@ -35,6 +33,7 @@ async function signUp(newUser: {
   password: string;
   name: string;
   access_type: string;
+  avatar_color: string;
 }): Promise<any> {
   const response = await postRequest(`${API_HOST_USER}/register`, newUser);
   return response.json();
@@ -80,6 +79,5 @@ export {
   getCacheUser,
   getUserStats,
   getUserStatsForAPost,
-  getUserById,
   accountLikes
 };

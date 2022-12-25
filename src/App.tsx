@@ -5,13 +5,14 @@ import {
 } from '@mantine/core';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
 import { useState } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Register from './pages/Register';
 import ResetPassword from './pages/ResetPassword';
+import { User } from './types/User';
 
 function App({
   activePage,
@@ -23,19 +24,18 @@ function App({
   return (
     <div className="App">
       <BrowserRouter>
-        <Switch>
+        <Routes>
           <Route
             path="/"
-            exact
-            component={() => (
+            element={
               <Home activePage={activePage} setActivePage={setActivePage} />
-            )}
+            }
           />
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
-          <Route path="/resetpassword" component={ResetPassword} />
-          <Route component={NotFound} />
-        </Switch>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/resetpassword" element={<ResetPassword />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </BrowserRouter>
     </div>
   );

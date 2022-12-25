@@ -1,6 +1,6 @@
 import { Loader } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import '../App.css';
 import Nav from '../components/nav/Nav';
 import HistoryPostContainer from '../components/posts/HistoryPostContainer';
@@ -18,29 +18,32 @@ export default function Home({
   setActivePage: Function;
 }) {
   const [user, setUser] = useState<User>();
-  const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch cache cookie user
-    (async () => {
-      getCacheUser()
+    const token = localStorage.getItem('jwt-token');
+    if (token !== null) {
+      getCacheUser({ jwt_token: JSON.parse(token) })
         .then((content) => {
           if (content.hasOwnProperty('error')) {
-            setRedirect(true);
+            navigate('/login');
           } else {
             const curUser: User = content;
             setUser(curUser);
           }
         })
-        .catch(() => setRedirect(true))
+        .catch((err) => {
+          console.log(err);
+          navigate('/login');
+        })
         .finally(() => setLoading(false));
-    })();
-  }, []);
+    } else {
+      navigate('/login');
+    }
+  }, [navigate]);
 
-  if (redirect) {
-    return <Redirect to="/login" />;
-  }
   if (loading) {
     return <Loader className="centered" />;
   }
