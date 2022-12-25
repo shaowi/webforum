@@ -9,7 +9,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import TransitionModal from '../components/TransitionModal';
 import { resetPassword } from '../utils/user_service';
@@ -17,8 +17,8 @@ import { resetPassword } from '../utils/user_service';
 export default function ResetPassword() {
   const [showError, setShowError] = useState(false);
   const [showChanged, setShowChanged] = useState(false);
-  const [redirect, setRedirect] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {
@@ -33,19 +33,16 @@ export default function ResetPassword() {
   const submit = async (values: { email: string }) => {
     setLoading(true);
 
-    resetPassword(values).then((content) => {
-      if ('error' in content) {
-        setShowError(true);
-      } else {
-        setShowChanged(true);
-      }
-      setLoading(false);
-    });
+    resetPassword(values)
+      .then((content) => {
+        if ('error' in content) {
+          setShowError(true);
+        } else {
+          setShowChanged(true);
+        }
+      })
+      .finally(() => setLoading(false));
   };
-
-  if (redirect) {
-    return <Navigate to="/" />;
-  }
 
   return (
     <>
@@ -87,7 +84,7 @@ export default function ResetPassword() {
       />
       <TransitionModal
         opened={showChanged}
-        onClose={() => setRedirect(true)}
+        onClose={() => navigate('/login')}
         title="Password has been reset"
         InnerComponent={
           <Text fz="md">

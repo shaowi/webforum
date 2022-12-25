@@ -61,27 +61,28 @@ export default function Register() {
       avatar_color: getRandomColors()
     };
 
-    signUp(newUser).then((content) => {
-      if ('error' in content) {
-        setShowError(true);
-        setLoading(false);
-      } else {
-        signIn({
-          email,
-          password
-        }).then((content) => {
-          if ('error' in content) {
-            navigate('/login');
-          } else {
-            localStorage.setItem(
-              'jwt-token',
-              JSON.stringify(content.jwt_token)
-            );
-            navigate('/');
-          }
-        });
-      }
-    });
+    signUp(newUser)
+      .then((content) => {
+        if ('error' in content) {
+          setShowError(true);
+        } else {
+          signIn({
+            email,
+            password
+          }).then((content) => {
+            if ('error' in content) {
+              navigate('/login');
+            } else {
+              localStorage.setItem(
+                'jwt-token',
+                JSON.stringify(content.jwt_token)
+              );
+              navigate('/');
+            }
+          });
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   return (

@@ -48,6 +48,7 @@ export default function Login() {
           navigate('/');
         }
       })
+      .catch(() => setShowError(true))
       .finally(() => setLoading(false));
   };
 
