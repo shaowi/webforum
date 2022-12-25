@@ -246,7 +246,7 @@ export default function PostContainer({ user }: { user: User }) {
           className="flex-row-container"
           style={{
             justifyContent: 'space-between',
-            width: '82vw'
+            width: '100%'
           }}
         >
           <div

@@ -28,6 +28,7 @@ export default function Home({
       getCacheUser({ jwt_token: JSON.parse(token) })
         .then((content) => {
           if (content.hasOwnProperty('error')) {
+            localStorage.removeItem('jwt-token');
             navigate('/login');
           } else {
             const curUser: User = content;
@@ -36,6 +37,7 @@ export default function Home({
         })
         .catch((err) => {
           console.log(err);
+          localStorage.removeItem('jwt-token');
           navigate('/login');
         })
         .finally(() => setLoading(false));

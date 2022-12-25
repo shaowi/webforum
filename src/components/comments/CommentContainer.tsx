@@ -6,6 +6,7 @@ import '../../App.css';
 import { CommentCardProps } from '../../types/Comment';
 import { Author } from '../../types/User';
 import { convertToCommentCard, getComments } from '../../utils/comment_service';
+import { convertUnixTSToDT } from '../../utils/post_service';
 import TransitionModal from '../TransitionModal';
 import CommentHtml from './CommentHtml';
 
@@ -41,12 +42,12 @@ export default function CommentContainer({
           setShowOpError(true);
         } else {
           // Add new comment to all comments
-          const { comment_id, posted_on, content } = res;
+          const { comment_id, created_dt, content } = res;
           setCommentsInfo((c) => [
             ...c,
             {
               comment_id,
-              posted_on,
+              posted_on: convertUnixTSToDT(created_dt),
               content,
               author: curUser
             }

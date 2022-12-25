@@ -98,7 +98,7 @@ export default function CardContent({
           marginBottom: '1rem'
         }}
       >
-        <Title order={3} className={classes.title}>
+        <Title order={4} className={classes.title}>
           {title}
         </Title>
         {userAccessType === 1 && !renderBody && (
@@ -112,7 +112,7 @@ export default function CardContent({
 
       {categories.map((cat, i) =>
         cat.length > 0 ? (
-          <Badge key={cat + i} mt="xs">
+          <Badge key={cat + i} mt="xs" mr="xs">
             {cat}
           </Badge>
         ) : (
