@@ -12,7 +12,6 @@ import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Register from './pages/Register';
 import ResetPassword from './pages/ResetPassword';
-import { User } from './types/User';
 
 function App({
   activePage,
