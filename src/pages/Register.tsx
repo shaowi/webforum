@@ -10,18 +10,18 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { Navigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import '../App.css';
 import TransitionModal from '../components/TransitionModal';
 import { getRandomColors } from '../utils/constants';
 import { signIn, signUp } from '../utils/user_service';
 
 export default function Register() {
-  const [redirect, setRedirect] = useState(false);
   const [showError, setShowError] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showCpError, setShowCpError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm({
     initialValues: {
@@ -69,16 +69,22 @@ export default function Register() {
         signIn({
           email,
           password
-        }).then(() => {
-          setRedirect(true);
+        }).then((content) => {
+          if ('error' in content) {
+            navigate('/login');
+          } else {
+            localStorage.setItem(
+              'jwt-token',
+              JSON.stringify(content.jwt_token)
+            );
+            navigate('/');
+          }
         });
       }
     });
   };
 
-  return redirect ? (
-    <Navigate to="/" />
-  ) : (
+  return (
     <>
       <Container size={420} my={40}>
         <Title
