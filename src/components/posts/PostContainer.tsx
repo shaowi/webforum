@@ -127,6 +127,8 @@ export default function PostContainer({ user }: { user: User }) {
           const newAllPosts = initPosts?.concat([convertToPostCard(content)]);
           setPosts(newAllPosts);
           setInitPosts(newAllPosts);
+
+          setAvailableCategoriesFromPosts(newAllPosts);
         }
       })
       .catch(() => setShowCreateError(true));
@@ -201,6 +203,15 @@ export default function PostContainer({ user }: { user: User }) {
     if (sortBy) sortPosts(sortBy, orderByAsc);
   }
 
+  function setAvailableCategoriesFromPosts(posts: PostCardProps[]) {
+    let allCategories: Set<string> = new Set();
+    for (let { categories } of posts) {
+      const curCat = new Set([...categories]);
+      allCategories = new Set([...allCategories, ...curCat]);
+    }
+    setCategoriesData([...allCategories].map(capitalize));
+  }
+
   useEffect(() => {
     // Fetch all posts from database
     getAllPosts()
@@ -213,12 +224,7 @@ export default function PostContainer({ user }: { user: User }) {
           setInitPosts(finalData);
 
           // Populate the available categories from all the created posts
-          let allCategories: Set<string> = new Set();
-          for (let { categories } of finalData) {
-            const curCat = new Set([...categories]);
-            allCategories = new Set([...allCategories, ...curCat]);
-          }
-          setCategoriesData([...allCategories].map((s) => capitalize(s)));
+          setAvailableCategoriesFromPosts(finalData);
         }
       })
       .finally(() => setLoading(false));
