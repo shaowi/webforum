@@ -11,12 +11,12 @@ import {
   Tooltip
 } from '@mantine/core';
 import { IconEye, IconMessage2, IconTrash } from '@tabler/icons';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import Swal from 'sweetalert2';
 import '../../App.css';
 import { PostCardProps } from '../../types/Post';
 import { Author } from '../../types/User';
-import { getUserStatsForAPost } from '../../utils/user_service';
 import CommentContainer from '../comments/CommentContainer';
 import { getNameInitials } from './../../utils/constants';
 
@@ -29,10 +29,11 @@ export default function CardContent({
   deletePost,
   userAccessType,
   curUser,
-  likeOrUnlikePost,
   addViewPost,
   addCommentPost,
-  deleteCommentPost
+  deleteCommentPost,
+  hasLiked,
+  likePost
 }: {
   postCardProps: PostCardProps;
   theme: MantineTheme;
@@ -42,10 +43,11 @@ export default function CardContent({
   deletePost: Function;
   userAccessType: number;
   curUser: Author;
-  likeOrUnlikePost: Function;
   addViewPost: Function;
   addCommentPost: Function;
   deleteCommentPost: Function;
+  hasLiked: boolean;
+  likePost: Function;
 }) {
   const {
     post_id,
@@ -62,27 +64,24 @@ export default function CardContent({
   const { name, email, avatar_color } = author;
   const authorInitials = getNameInitials(name);
   const [loading, setLoading] = useState(false);
-  const [hasLiked, setHasLiked] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    getUserStatsForAPost(post_id, curUser.user_id)
-      .then(({ likes }) => setHasLiked(likes))
-      .finally(() => setLoading(false));
-  }, [curUser.user_id, post_id]);
 
   function viewPost() {
     setOpened(true);
     addViewPost(post_id);
   }
 
-  function likePost() {
-    likeOrUnlikePost(post_id, !hasLiked).then(() => setHasLiked(!hasLiked));
-  }
-
   function onDelete() {
-    setLoading(true);
-    deletePost(post_id).finally(() => setLoading(false));
+    Swal.fire({
+      title: 'Are you sure that you want to delete the post?',
+      showDenyButton: true,
+      confirmButtonText: 'Yes',
+      denyButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setLoading(true);
+        deletePost(post_id).finally(() => setLoading(false));
+      }
+    });
   }
 
   if (loading) {
@@ -98,9 +97,19 @@ export default function CardContent({
           marginBottom: '1rem'
         }}
       >
-        <Title order={4} className={classes.title}>
-          {title}
-        </Title>
+        {renderBody ? (
+          <Title order={4} className={classes.title}>
+            {title}
+          </Title>
+        ) : (
+          <Title
+            order={4}
+            className={classes.title && classes.titleHover}
+            onClick={viewPost}
+          >
+            {title}
+          </Title>
+        )}
         {userAccessType === 1 && !renderBody && (
           <Tooltip label="Delete Post">
             <ActionIcon onClick={onDelete} className="action-icons">
@@ -145,27 +154,25 @@ export default function CardContent({
 
       <Card.Section className={classes.footer}>
         <Group position="right">
-          <Group spacing={0}>
-            <Text size="sm" color="dimmed">
-              {likes}
-            </Text>
-            <ActionIcon onClick={likePost}>
-              {hasLiked ? (
-                <AiFillHeart style={{ color: '#ff2825' }} />
-              ) : (
-                <AiOutlineHeart style={{ color: '#ff2825' }} />
-              )}
-            </ActionIcon>
-          </Group>
+          <Tooltip label={hasLiked ? 'Unlike this' : 'Like this'}>
+            <Group spacing={0}>
+              <Text size="sm" color="dimmed">
+                {likes}
+              </Text>
+              <ActionIcon onClick={() => likePost()}>
+                {hasLiked ? (
+                  <AiFillHeart size={20} style={{ color: '#ff2825' }} />
+                ) : (
+                  <AiOutlineHeart size={20} style={{ color: '#ff2825' }} />
+                )}
+              </ActionIcon>
+            </Group>
+          </Tooltip>
           <Group spacing={0}>
             <Text size="sm" color="dimmed">
               {views}
             </Text>
-            <ActionIcon
-              onClick={viewPost}
-              disabled={renderBody}
-              className="action-icons"
-            >
+            <ActionIcon disabled className="action-icons">
               <IconEye size={20} color={theme.colors.yellow[8]} stroke={1.5} />
             </ActionIcon>
           </Group>
@@ -173,11 +180,7 @@ export default function CardContent({
             <Text size="sm" color="dimmed">
               {comments}
             </Text>
-            <ActionIcon
-              onClick={viewPost}
-              disabled={renderBody}
-              className="action-icons"
-            >
+            <ActionIcon disabled className="action-icons">
               <IconMessage2
                 size={20}
                 color={theme.colors.blue[6]}

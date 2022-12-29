@@ -1,7 +1,8 @@
-import { Card, createStyles } from '@mantine/core';
-import { useState } from 'react';
+import { Card, createStyles, Loader } from '@mantine/core';
+import { useEffect, useState } from 'react';
 import { PostCardProps } from '../../types/Post';
 import { Author } from '../../types/User';
+import { getUserStatsForAPost } from '../../utils/user_service';
 import TransitionModal from '../TransitionModal';
 import CardContent from './CardContent';
 
@@ -13,6 +14,13 @@ const useStyles = createStyles((theme) => ({
 
   title: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`
+  },
+
+  titleHover: {
+    '&:hover': {
+      textDecoration: 'underline',
+      cursor: 'pointer'
+    }
   },
 
   body: {
@@ -50,6 +58,24 @@ export default function PostCard({
 }) {
   const { classes, theme } = useStyles();
   const [opened, setOpened] = useState(false);
+  const { post_id } = postCardProps;
+  const [loading, setLoading] = useState(false);
+  const [hasLiked, setHasLiked] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    getUserStatsForAPost(post_id, curUser.user_id)
+      .then(({ likes }) => setHasLiked(likes))
+      .finally(() => setLoading(false));
+  }, [curUser.user_id, post_id]);
+
+  function likePost() {
+    likeOrUnlikePost(post_id, !hasLiked).then(() => setHasLiked(!hasLiked));
+  }
+
+  if (loading) {
+    return <Loader className="centered" style={{ position: 'relative' }} />;
+  }
 
   return (
     <>
@@ -68,10 +94,11 @@ export default function PostCard({
             deletePost={deletePost}
             userAccessType={userAccessType}
             curUser={curUser}
-            likeOrUnlikePost={likeOrUnlikePost}
             addViewPost={addViewPost}
             addCommentPost={addCommentPost}
             deleteCommentPost={deleteCommentPost}
+            hasLiked={hasLiked}
+            likePost={likePost}
           />
         }
       />
@@ -85,10 +112,11 @@ export default function PostCard({
           deletePost={deletePost}
           userAccessType={userAccessType}
           curUser={curUser}
-          likeOrUnlikePost={likeOrUnlikePost}
           addViewPost={addViewPost}
           addCommentPost={addCommentPost}
           deleteCommentPost={deleteCommentPost}
+          hasLiked={hasLiked}
+          likePost={likePost}
         />
       </Card>
     </>
