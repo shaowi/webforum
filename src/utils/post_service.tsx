@@ -65,7 +65,8 @@ function convertUnixTSToDT(UNIX_timestamp: number) {
   var date = a.getDate();
   var hour = a.getHours();
   var min = a.getMinutes();
-  return `${date} ${month} ${year}, ${hour}:${min}`;
+  const padZero = (n: number): unknown => (n < 10 ? `0${n}` : n);
+  return `${date} ${month} ${year}, ${padZero(hour)}:${padZero(min)}`;
 }
 
 function isSubset(a1: any, a2: any) {
