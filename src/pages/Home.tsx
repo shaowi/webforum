@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import '../App.css';
 import Nav from '../components/nav/Nav';
-import HistoryPostContainer from '../components/posts/HistoryPostContainer';
 import PostContainer from '../components/posts/PostContainer';
 import { CurrentUser } from '../types/User';
 import { isError } from '../utils/constants';
@@ -21,6 +20,7 @@ export default function Home({
   const [user, setUser] = useState<CurrentUser>();
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [postsType, setPostsType] = useState('');
 
   useEffect(() => {
     // Fetch cache cookie user
@@ -56,13 +56,24 @@ export default function Home({
         setUser={setUser}
         activePage={activePage}
         setActivePage={setActivePage}
+        setPostsType={setPostsType}
       />
       {activePage === 0 ? (
-        <PostContainer user={user!} />
+        <PostContainer
+          user={user!}
+          isHistory={false}
+          postsType={postsType}
+          setPostsType={setPostsType}
+        />
       ) : activePage === 1 ? (
         <UserProfile user={user!} setUser={setUser} />
       ) : (
-        <HistoryPostContainer user={user!} />
+        <PostContainer
+          user={user!}
+          isHistory={true}
+          postsType={postsType}
+          setPostsType={setPostsType}
+        />
       )}
     </div>
   );

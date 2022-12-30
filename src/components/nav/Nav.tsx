@@ -9,11 +9,13 @@ import NavbarLink from './NavbarLink';
 export default function Nav({
   setUser,
   activePage,
-  setActivePage
+  setActivePage,
+  setPostsType
 }: {
   setUser: Function;
   activePage: Number;
   setActivePage: Function;
+  setPostsType: Function;
 }) {
   const navIcons = [
     { icon: IconHome2, label: 'Home' },
@@ -27,7 +29,11 @@ export default function Nav({
       {...link}
       key={link.label}
       active={index === activePage}
-      onClick={() => setActivePage(index)}
+      onClick={() => {
+        if (link.label === 'Home') setPostsType('');
+        if (link.label === 'History') setPostsType('viewed');
+        setActivePage(index);
+      }}
     />
   ));
 

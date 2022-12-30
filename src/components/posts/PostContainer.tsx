@@ -4,6 +4,7 @@ import {
   Group,
   Loader,
   MultiSelect,
+  SegmentedControl,
   Select,
   Switch,
   Text,
@@ -28,6 +29,9 @@ import {
   convertToPostCard,
   createPost,
   getAllPosts,
+  getCommentedPosts,
+  getLikedPosts,
+  getViewedPosts,
   hasOverlap as isSubset,
   incrDecrPostComments,
   incrementPostView,
@@ -40,7 +44,17 @@ import TransitionModal from '../TransitionModal';
 import CreateForm from './CreateForm';
 import PostCard from './PostCard';
 
-export default function PostContainer({ user }: { user: CurrentUser }) {
+export default function PostContainer({
+  user,
+  isHistory,
+  postsType,
+  setPostsType
+}: {
+  user: CurrentUser;
+  isHistory: boolean;
+  postsType: string;
+  setPostsType: Function;
+}) {
   const useStyles = createStyles((_) => ({}));
   const { theme } = useStyles();
   const curUser: Author = {
@@ -57,11 +71,25 @@ export default function PostContainer({ user }: { user: CurrentUser }) {
   const [orderByAsc, setOrderByAsc] = useState<boolean>(true);
 
   const [searchVal, setSearchVal] = useState('');
-  const [showAddPostModal, setShowAddPostModal] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Only applicable to main container
+  const [showAddPostModal, setShowAddPostModal] = useState(false);
   const [showCreateError, setShowCreateError] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [loading, setLoading] = useState(true);
+
+  function validateAndPopulatePosts(content: any) {
+    if ('error' in content) {
+      setShowError(true);
+    } else {
+      const finalData: PostCardProps[] = content.map(convertToPostCard);
+      setPosts(finalData);
+      setInitPosts(finalData);
+
+      setAvailableCategoriesFromPosts(finalData);
+    }
+  }
 
   function filterPostsByTitle(v: string) {
     // Categories has no selection
@@ -213,22 +241,32 @@ export default function PostContainer({ user }: { user: CurrentUser }) {
   }
 
   useEffect(() => {
-    // Fetch all posts from database
-    getAllPosts()
-      .then((content: any) => {
-        if ('error' in content) {
-          setShowError(true);
-        } else {
-          const finalData: PostCardProps[] = content.map(convertToPostCard);
-          setPosts(finalData);
-          setInitPosts(finalData);
-
-          // Populate the available categories from all the created posts
-          setAvailableCategoriesFromPosts(finalData);
-        }
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    // Fetch only posts that this user has viewed/liked/commented before from database
+    setLoading(true);
+    switch (postsType) {
+      case 'viewed':
+        getViewedPosts(user.user_id)
+          .then(validateAndPopulatePosts)
+          .finally(() => setLoading(false));
+        break;
+      case 'liked':
+        getLikedPosts(user.user_id)
+          .then(validateAndPopulatePosts)
+          .finally(() => setLoading(false));
+        break;
+      case 'commented':
+        getCommentedPosts(user.user_id)
+          .then(validateAndPopulatePosts)
+          .finally(() => setLoading(false));
+        break;
+      default:
+        getAllPosts()
+          .then(validateAndPopulatePosts)
+          .finally(() => setLoading(false));
+        break;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postsType]);
 
   if (loading) {
     return <Loader className="centered" />;
@@ -327,14 +365,26 @@ export default function PostContainer({ user }: { user: CurrentUser }) {
               />
             </Group>
           </div>
-          <Tooltip label="Add New Post">
-            <ActionIcon
-              variant="transparent"
-              onClick={() => setShowAddPostModal(true)}
-            >
-              <IconSquarePlus size={36} />
-            </ActionIcon>
-          </Tooltip>
+          {isHistory ? (
+            <SegmentedControl
+              value={postsType}
+              onChange={(t) => setPostsType(t)}
+              data={[
+                { label: 'Viewed', value: 'viewed' },
+                { label: 'Liked', value: 'liked' },
+                { label: 'Commented', value: 'commented' }
+              ]}
+            />
+          ) : (
+            <Tooltip label="Add New Post">
+              <ActionIcon
+                variant="transparent"
+                onClick={() => setShowAddPostModal(true)}
+              >
+                <IconSquarePlus size={36} />
+              </ActionIcon>
+            </Tooltip>
+          )}
         </div>
 
         {posts.length === 0 ? (
@@ -362,28 +412,32 @@ export default function PostContainer({ user }: { user: CurrentUser }) {
           </div>
         )}
       </div>
-      <TransitionModal
-        opened={showAddPostModal}
-        onClose={() => setShowAddPostModal(false)}
-        InnerComponent={
-          <CreateForm categoriesData={categoriesData} addPost={addPost} />
-        }
-      />
-      <TransitionModal
-        opened={showAlert}
-        onClose={() => setShowAlert(false)}
-        title="Post created successfully"
-      />
-      <TransitionModal
-        opened={showCreateError}
-        onClose={() => setShowCreateError(false)}
-        title="Error occured while creating a post"
-        InnerComponent={
-          <Text c="red" fz="md">
-            Something went wrong. Please refresh your browser and try again.
-          </Text>
-        }
-      />
+      {!isHistory && (
+        <>
+          <TransitionModal
+            opened={showAddPostModal}
+            onClose={() => setShowAddPostModal(false)}
+            InnerComponent={
+              <CreateForm categoriesData={categoriesData} addPost={addPost} />
+            }
+          />
+          <TransitionModal
+            opened={showAlert}
+            onClose={() => setShowAlert(false)}
+            title="Post created successfully"
+          />
+          <TransitionModal
+            opened={showCreateError}
+            onClose={() => setShowCreateError(false)}
+            title="Error occured while creating a post"
+            InnerComponent={
+              <Text c="red" fz="md">
+                Something went wrong. Please refresh your browser and try again.
+              </Text>
+            }
+          />
+        </>
+      )}
       <TransitionModal
         opened={showError}
         onClose={() => setShowError(false)}
