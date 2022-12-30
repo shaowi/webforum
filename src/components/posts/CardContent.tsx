@@ -111,7 +111,7 @@ export default function CardContent({
           </Title>
         )}
         {userAccessType === 1 && !renderBody && (
-          <Tooltip label="Delete Post">
+          <Tooltip label="Delete Post" transitionDuration={0}>
             <ActionIcon onClick={onDelete} className="action-icons">
               <IconTrash size={20} color={theme.colors.red[8]} stroke={1.5} />
             </ActionIcon>
@@ -154,7 +154,11 @@ export default function CardContent({
 
       <Card.Section className={classes.footer}>
         <Group position="right">
-          <Tooltip label={hasLiked ? 'Unlike this' : 'Like this'}>
+          <Tooltip
+            label={hasLiked ? 'Unlike this' : 'Like this'}
+            position="left"
+            transitionDuration={0}
+          >
             <Group spacing={0}>
               <Text size="sm" color="dimmed">
                 {likes}
