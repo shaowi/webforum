@@ -5,7 +5,7 @@ async function getRequest(url: string) {
   });
 }
 
-async function postRequest(url: string, data: any) {
+async function postRequest(url: string, data: unknown) {
   return await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -16,7 +16,7 @@ import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import '../../App.css';
 import { PostCardProps } from '../../types/Post';
-import { Author } from '../../types/User';
+import { CurrentUser } from '../../types/User';
 import CommentContainer from '../comments/CommentContainer';
 import { getNameInitials } from './../../utils/constants';
 
@@ -42,7 +42,7 @@ export default function CardContent({
   renderBody: true | false;
   deletePost: Function;
   userAccessType: number;
-  curUser: Author;
+  curUser: CurrentUser;
   addViewPost: Function;
   addCommentPost: Function;
   deleteCommentPost: Function;
@@ -57,11 +57,11 @@ export default function CardContent({
     likes,
     views,
     comments,
-    author,
+    user,
     description
   }: PostCardProps = postCardProps;
 
-  const { name, email, avatar_color } = author;
+  const { name, email, avatar_color } = user;
   const authorInitials = getNameInitials(name);
   const [loading, setLoading] = useState(false);
 

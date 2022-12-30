@@ -22,11 +22,8 @@ interface UserCardImageProps {
   stats: { label: string; value: string }[];
 }
 
-interface Author {
-  user_id: number;
-  name: string;
-  email: string;
-  avatar_color: string;
+interface UserPostLikeState {
+  likes: boolean;
 }
 
 interface Token {
@@ -45,6 +42,6 @@ export type {
   UserSignIn,
   UserSignUp,
   UserCardImageProps,
-  Author,
+  UserPostLikeState,
   Token
 };

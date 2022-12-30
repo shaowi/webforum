@@ -16,7 +16,7 @@ async function getUserStats(token: Token): Promise<unknown> {
 async function getUserStatsForAPost(
   post_id: number,
   user_id: number
-): Promise<any> {
+): Promise<unknown> {
   const res = await getRequest(`${API_HOST_POPULARITY}/${post_id}/${user_id}`);
   return res.json();
 }

@@ -8,10 +8,10 @@ import {
   Tooltip,
   TypographyStylesProvider
 } from '@mantine/core';
-import { getNameInitials } from '../../utils/constants';
-import { CommentCardProps } from '../../types/Comment';
 import { IconTrash } from '@tabler/icons';
 import { useState } from 'react';
+import { CommentShow } from '../../types/Comment';
+import { getNameInitials } from '../../utils/constants';
 
 const useStyles = createStyles((theme) => ({
   comment: {
@@ -36,12 +36,12 @@ export default function CommentHtml({
   userAccessType,
   deleteComment
 }: {
-  commentCardProps: CommentCardProps;
+  commentCardProps: CommentShow;
   userAccessType: number;
   deleteComment: Function;
 }) {
-  const { comment_id, posted_on, content, author } = commentCardProps;
-  const { name, email, avatar_color } = author;
+  const { comment_id, created_dt, content, user } = commentCardProps;
+  const { name, email, avatar_color } = user;
   const { classes, theme } = useStyles();
   const authorInitials = getNameInitials(name);
   const [loading, setLoading] = useState(false);
@@ -72,7 +72,7 @@ export default function CommentHtml({
               {email}
             </Text>
             <Text size="xs" color="dimmed">
-              {posted_on}
+              {created_dt}
             </Text>
           </div>
         </Group>

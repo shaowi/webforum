@@ -1,7 +1,8 @@
-import { Card, createStyles, Loader } from '@mantine/core';
+import { Card, createStyles, Loader, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { PostCardProps } from '../../types/Post';
-import { Author } from '../../types/User';
+import { CurrentUser, UserPostLikeState } from '../../types/User';
+import { isError } from '../../utils/constants';
 import { getUserStatsForAPost } from '../../utils/user_service';
 import TransitionModal from '../TransitionModal';
 import CardContent from './CardContent';
@@ -50,7 +51,7 @@ export default function PostCard({
   postCardProps: PostCardProps;
   deletePost: Function;
   userAccessType: number;
-  curUser: Author;
+  curUser: CurrentUser;
   likeOrUnlikePost: Function;
   addViewPost: Function;
   addCommentPost: Function;
@@ -61,11 +62,18 @@ export default function PostCard({
   const { post_id } = postCardProps;
   const [loading, setLoading] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     getUserStatsForAPost(post_id, curUser.user_id)
-      .then(({ likes }) => setHasLiked(likes))
+      .then((content) => {
+        if (isError(content)) {
+          setShowError(true);
+        } else {
+          setHasLiked((content as UserPostLikeState).likes);
+        }
+      })
       .finally(() => setLoading(false));
   }, [curUser.user_id, post_id]);
 
@@ -119,6 +127,16 @@ export default function PostCard({
           likePost={likePost}
         />
       </Card>
+      <TransitionModal
+        opened={showError}
+        onClose={() => setShowError(false)}
+        title="Error occured while fetching posts details"
+        InnerComponent={
+          <Text c="red" fz="md">
+            Something went wrong. Please refresh your browser and try again.
+          </Text>
+        }
+      />
     </>
   );
 }

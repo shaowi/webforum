@@ -3,9 +3,14 @@ import { getHotkeyHandler } from '@mantine/hooks';
 import { IconSend } from '@tabler/icons';
 import { useEffect, useState } from 'react';
 import '../../App.css';
-import { CommentCardProps } from '../../types/Comment';
-import { Author } from '../../types/User';
+import {
+  CommentCreate,
+  CommentFetched,
+  CommentShow
+} from '../../types/Comment';
+import { CurrentUser } from '../../types/User';
 import { convertToCommentCard, getComments } from '../../utils/comment_service';
+import { isError } from '../../utils/constants';
 import { convertUnixTSToDT } from '../../utils/post_service';
 import TransitionModal from '../TransitionModal';
 import CommentHtml from './CommentHtml';
@@ -19,11 +24,11 @@ export default function CommentContainer({
 }: {
   post_id: number;
   userAccessType: number;
-  curUser: Author;
+  curUser: CurrentUser;
   addCommentPost: Function;
   deleteCommentPost: Function;
 }) {
-  const [commentsInfo, setCommentsInfo] = useState<CommentCardProps[]>([]);
+  const [commentsInfo, setCommentsInfo] = useState<CommentShow[]>([]);
   const [comment, setComment] = useState('');
   const [showError, setShowError] = useState(false);
   const [showOpError, setShowOpError] = useState(false);
@@ -37,19 +42,19 @@ export default function CommentContainer({
       user_id: String(curUser.user_id),
       content: comment
     })
-      .then((res: any) => {
-        if ('error' in res) {
+      .then((res: unknown) => {
+        if (isError(res)) {
           setShowOpError(true);
         } else {
           // Add new comment to all comments
-          const { comment_id, created_dt, content } = res;
+          const { comment_id, created_dt, content } = res as CommentCreate;
           setCommentsInfo((c) => [
             ...c,
             {
               comment_id,
-              posted_on: convertUnixTSToDT(created_dt),
+              created_dt: convertUnixTSToDT(created_dt),
               content,
-              author: curUser
+              user: curUser
             }
           ]);
         }
@@ -62,8 +67,8 @@ export default function CommentContainer({
 
   function deleteComment(comment_id: number) {
     const res = deleteCommentPost(post_id, comment_id);
-    res.then((content: any) => {
-      if ('error' in content) {
+    res.then((content: unknown) => {
+      if (isError(content)) {
         setShowOpError(true);
       } else {
         setCommentsInfo((c) => c.filter((i) => i.comment_id !== comment_id));
@@ -75,14 +80,14 @@ export default function CommentContainer({
   useEffect(() => {
     // Fetch all comments from database relating to this post
     getComments(post_id)
-      .then((content: any) => {
-        if ('error' in content) {
+      .then((content) => {
+        if (isError(content)) {
           setShowError(true);
         } else {
+          const commentsFetched = content as CommentFetched[];
           // Sort the comments in ascending time from top to bottom
-          content.sort((a: any, b: any) => a.created_dt - b.created_dt);
-          const finalData: CommentCardProps[] =
-            content.map(convertToCommentCard);
+          commentsFetched.sort((a, b) => a.created_dt - b.created_dt);
+          const finalData = commentsFetched.map(convertToCommentCard);
           setCommentsInfo(finalData);
         }
       })

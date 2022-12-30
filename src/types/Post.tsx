@@ -1,21 +1,37 @@
-import { Author } from './User';
+import { CurrentUser } from './User';
 
-interface PostCardProps {
-  post_id: number;
+interface Post {
   title: string;
   body: string;
-  likes: number;
-  views: number;
-  comments: number;
-  categories: Array<string>;
-  author: Author;
-  description: string;
 }
 
-interface NewPost {
-  title: string;
-  body: string;
+interface NewPost extends Post {
   category: Array<string>;
 }
 
-export type { PostCardProps, NewPost };
+interface PostCard extends Post {
+  post_id: number;
+  likes: number;
+  views: number;
+  comments: number;
+  user: CurrentUser;
+}
+
+interface PostFetched extends PostCard {
+  categories: string;
+  created_dt: number;
+}
+
+interface PostCardProps extends PostCard {
+  categories: Array<string>;
+  description: string;
+}
+
+interface PostCreate extends Post {
+  user_id: string;
+  categories: string;
+  author_name: string;
+  author_email: string;
+}
+
+export type { PostFetched, PostCardProps, NewPost, PostCreate };

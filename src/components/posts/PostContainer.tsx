@@ -21,10 +21,10 @@ import {
 } from '@tabler/icons';
 import { useEffect, useState } from 'react';
 import '../../App.css';
-import { PostCardProps } from '../../types/Post';
-import { Author, CurrentUser } from '../../types/User';
+import { PostCardProps, PostCreate, PostFetched } from '../../types/Post';
+import { CurrentUser } from '../../types/User';
 import { createComment, removeComment } from '../../utils/comment_service';
-import { capitalize, lowerCaseStrArrays } from '../../utils/constants';
+import { capitalize, isError, lowerCaseStrArrays } from '../../utils/constants';
 import {
   convertToPostCard,
   createPost,
@@ -32,9 +32,9 @@ import {
   getCommentedPosts,
   getLikedPosts,
   getViewedPosts,
-  hasOverlap as isSubset,
   incrDecrPostComments,
   incrementPostView,
+  isSubset,
   likePost,
   removePost,
   viewPost
@@ -57,12 +57,6 @@ export default function PostContainer({
 }) {
   const useStyles = createStyles((_) => ({}));
   const { theme } = useStyles();
-  const curUser: Author = {
-    user_id: user?.user_id,
-    name: user?.name,
-    email: user?.email,
-    avatar_color: user?.avatar_color
-  };
   const [initPosts, setInitPosts] = useState<PostCardProps[]>([]);
   const [posts, setPosts] = useState<PostCardProps[]>([]);
   const [categories, setCategories] = useState<Array<string>>([]);
@@ -73,23 +67,12 @@ export default function PostContainer({
   const [searchVal, setSearchVal] = useState('');
   const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showDeleteError, setShowDeleteError] = useState(false);
 
   // Only applicable to main container
   const [showAddPostModal, setShowAddPostModal] = useState(false);
   const [showCreateError, setShowCreateError] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-
-  function validateAndPopulatePosts(content: any) {
-    if ('error' in content) {
-      setShowError(true);
-    } else {
-      const finalData: PostCardProps[] = content.map(convertToPostCard);
-      setPosts(finalData);
-      setInitPosts(finalData);
-
-      setAvailableCategoriesFromPosts(finalData);
-    }
-  }
 
   function filterPostsByTitle(v: string) {
     // Categories has no selection
@@ -136,7 +119,7 @@ export default function PostContainer({
   }
 
   function addPost(title: string, body: string, categories: string[]) {
-    const data = {
+    const data: PostCreate = {
       user_id: String(user?.user_id),
       author_name: user?.name,
       author_email: user?.email,
@@ -146,13 +129,15 @@ export default function PostContainer({
     };
     const res = createPost(data);
     res
-      .then((content: any) => {
-        if ('error' in content) {
-          setShowError(true);
+      .then((content) => {
+        if (isError(content)) {
+          setShowCreateError(true);
         } else {
           setShowAlert(true);
           // Add new post to all posts
-          const newAllPosts = initPosts?.concat([convertToPostCard(content)]);
+          const newAllPosts = initPosts?.concat([
+            convertToPostCard(content as PostFetched)
+          ]);
           setPosts(newAllPosts);
           setInitPosts(newAllPosts);
 
@@ -166,44 +151,62 @@ export default function PostContainer({
 
   function deletePost(id: number) {
     const res = removePost(id);
-    res.then(() => {
-      const newAllPosts = initPosts?.filter((post) => post.post_id !== id);
-      setPosts(newAllPosts);
-      setInitPosts(newAllPosts);
+    res.then((content) => {
+      if (isError(content)) {
+        setShowDeleteError(true);
+      } else {
+        const newAllPosts = initPosts?.filter((post) => post.post_id !== id);
+        setPosts(newAllPosts);
+        setInitPosts(newAllPosts);
+      }
     });
     return res;
   }
 
   function likeOrUnlikePost(post_id: number, like: boolean) {
-    const data = {
+    const res = likePost(post_id, {
       like: String(like),
       user_id: String(user.user_id)
-    };
-    const res = likePost(post_id, data);
-    res.then(() => {
-      setInitPosts((posts) => accountLikes(posts, post_id, like));
+    });
+    res.then((content) => {
+      if (isError(content)) {
+        setShowError(true);
+      } else {
+        setInitPosts((posts) => accountLikes(posts, post_id, like));
+      }
     });
     return res;
   }
 
   function addViewPost(post_id: number) {
-    viewPost(post_id, { user_id: String(user.user_id) }).then(() => {
-      setInitPosts((posts) => incrementPostView(posts, post_id));
+    viewPost(post_id, { user_id: String(user.user_id) }).then((content) => {
+      if (isError(content)) {
+        setShowError(true);
+      } else {
+        setInitPosts((posts) => incrementPostView(posts, post_id));
+      }
     });
   }
 
-  function addCommentPost(post_id: number, data: any) {
+  function addCommentPost(
+    post_id: number,
+    data: { user_id: string; content: string }
+  ) {
     const res = createComment(post_id, data);
-    res.then(() => {
-      setInitPosts((posts) => incrDecrPostComments(posts, post_id, 1));
+    res.then((content) => {
+      if (!isError(content)) {
+        setInitPosts((posts) => incrDecrPostComments(posts, post_id, 1));
+      }
     });
     return res;
   }
 
   function deleteCommentPost(post_id: number, comment_id: number) {
     const res = removeComment(post_id, comment_id);
-    res.then(() => {
-      setInitPosts((posts) => incrDecrPostComments(posts, post_id, 0));
+    res.then((content) => {
+      if (!isError(content)) {
+        setInitPosts((posts) => incrDecrPostComments(posts, post_id, 0));
+      }
     });
     return res;
   }
@@ -229,6 +232,17 @@ export default function PostContainer({
   function reorderPosts(orderByAsc: boolean) {
     setOrderByAsc(orderByAsc);
     if (sortBy) sortPosts(sortBy, orderByAsc);
+  }
+
+  function validateAndPopulatePosts(content: unknown) {
+    if (isError(content)) {
+      setShowError(true);
+    } else {
+      const finalData = (content as PostFetched[]).map(convertToPostCard);
+      setPosts(finalData);
+      setInitPosts(finalData);
+      setAvailableCategoriesFromPosts(finalData);
+    }
   }
 
   function setAvailableCategoriesFromPosts(posts: PostCardProps[]) {
@@ -333,7 +347,7 @@ export default function PostContainer({
             />
             <Group position="apart">
               <Select
-                label="Sort by"
+                label="Sort By"
                 placeholder="Pick one"
                 value={sortBy}
                 onChange={(v: string) => sortPosts(v, orderByAsc)}
@@ -396,13 +410,13 @@ export default function PostContainer({
             className="grid-container"
             style={{ marginTop: '2rem', alignSelf: 'flex-start' }}
           >
-            {posts!.map((post) => (
+            {posts.map((post) => (
               <PostCard
                 key={post.post_id}
                 postCardProps={post}
                 deletePost={deletePost}
                 userAccessType={user?.access_type}
-                curUser={curUser}
+                curUser={user}
                 likeOrUnlikePost={likeOrUnlikePost}
                 addViewPost={addViewPost}
                 addCommentPost={addCommentPost}
@@ -430,6 +444,16 @@ export default function PostContainer({
             opened={showCreateError}
             onClose={() => setShowCreateError(false)}
             title="Error occured while creating a post"
+            InnerComponent={
+              <Text c="red" fz="md">
+                Something went wrong. Please refresh your browser and try again.
+              </Text>
+            }
+          />
+          <TransitionModal
+            opened={showDeleteError}
+            onClose={() => setShowDeleteError(false)}
+            title="Error occured while deleting a post"
             InnerComponent={
               <Text c="red" fz="md">
                 Something went wrong. Please refresh your browser and try again.

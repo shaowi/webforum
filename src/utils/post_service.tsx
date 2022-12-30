@@ -1,45 +1,51 @@
-import { PostCardProps } from '../types/Post';
+import { PostCardProps, PostCreate, PostFetched } from '../types/Post';
 import { API_HOST_POST, API_HOST_POST_HISTORY } from './constants';
 import { getRequest, postRequest } from './request_service';
 
-async function getAllPosts() {
+async function getAllPosts(): Promise<unknown> {
   const response = await getRequest(API_HOST_POST);
   return response.json();
 }
 
-async function getViewedPosts(userId: number) {
+async function getViewedPosts(userId: number): Promise<unknown> {
   const response = await getRequest(`${API_HOST_POST_HISTORY}/view/${userId}`);
   return response.json();
 }
 
-async function getLikedPosts(userId: number) {
+async function getLikedPosts(userId: number): Promise<unknown> {
   const response = await getRequest(`${API_HOST_POST_HISTORY}/like/${userId}`);
   return response.json();
 }
 
-async function getCommentedPosts(userId: number) {
+async function getCommentedPosts(userId: number): Promise<unknown> {
   const response = await getRequest(
     `${API_HOST_POST_HISTORY}/comment/${userId}`
   );
   return response.json();
 }
 
-async function createPost(data: any) {
+async function createPost(data: PostCreate): Promise<unknown> {
   const response = await postRequest(`${API_HOST_POST}/add`, data);
   return response.json();
 }
 
-async function removePost(id: number) {
+async function removePost(id: number): Promise<unknown> {
   const response = await postRequest(`${API_HOST_POST}/delete/${id}`, {});
   return response.json();
 }
 
-async function likePost(id: number, data: any) {
+async function likePost(
+  id: number,
+  data: { like: string; user_id: string }
+): Promise<unknown> {
   const response = await postRequest(`${API_HOST_POST}/like/${id}`, data);
   return response.json();
 }
 
-async function viewPost(id: number, data: any) {
+async function viewPost(
+  id: number,
+  data: { user_id: string }
+): Promise<unknown> {
   const response = await postRequest(`${API_HOST_POST}/view/${id}`, data);
   return response.json();
 }
@@ -69,7 +75,7 @@ function convertUnixTSToDT(UNIX_timestamp: number) {
   return `${date} ${month} ${year}, ${padZero(hour)}:${padZero(min)}`;
 }
 
-function isSubset(a1: any, a2: any) {
+function isSubset(a1: string[], a2: string[]) {
   const set2 = new Set(a2);
   for (let i of a1) {
     if (!set2.has(i)) return false;
@@ -77,22 +83,28 @@ function isSubset(a1: any, a2: any) {
   return true;
 }
 
-function convertToPostCard(d: any) {
+function convertToPostCard(data: PostFetched): PostCardProps {
+  const {
+    post_id,
+    title,
+    categories,
+    body,
+    likes,
+    views,
+    comments,
+    created_dt,
+    user
+  } = data;
   return {
-    post_id: d.post_id,
-    title: d.title,
-    categories: d.categories.toLowerCase().split(','),
-    body: d.body,
-    likes: d.likes,
-    views: d.views,
-    comments: d.comments,
-    description: `Posted on ${convertUnixTSToDT(d.created_dt)}`,
-    author: {
-      user_id: d.user.user_id,
-      name: d.user.name,
-      email: d.user.email,
-      avatar_color: d.user.avatar_color
-    }
+    post_id,
+    title,
+    categories: categories.toLowerCase().split(','),
+    body,
+    likes,
+    views,
+    comments,
+    description: `Posted on ${convertUnixTSToDT(created_dt)}`,
+    user
   };
 }
 
@@ -133,7 +145,7 @@ export {
   likePost,
   viewPost,
   convertUnixTSToDT,
-  isSubset as hasOverlap,
+  isSubset,
   convertToPostCard,
   incrementPostView,
   incrDecrPostComments,

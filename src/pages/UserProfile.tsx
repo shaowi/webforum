@@ -72,7 +72,10 @@ export default function UserProfile({
 
   const { classes, theme } = useStyles();
 
-  async function onChangeConfirm(input: string, type: number): Promise<any> {
+  async function onChangeConfirm(
+    input: string,
+    type: number
+  ): Promise<unknown> {
     setChangedMessage(
       `${type === 1 ? 'Name' : `Password`} has been changed successfully`
     );

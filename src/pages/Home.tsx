@@ -7,7 +7,6 @@ import PostContainer from '../components/posts/PostContainer';
 import { CurrentUser } from '../types/User';
 import { isError } from '../utils/constants';
 import { getCacheUser } from '../utils/user_service';
-import './UserProfile';
 import UserProfile from './UserProfile';
 
 export default function Home({
