@@ -5,7 +5,8 @@ import '../App.css';
 import Nav from '../components/nav/Nav';
 import HistoryPostContainer from '../components/posts/HistoryPostContainer';
 import PostContainer from '../components/posts/PostContainer';
-import { User } from '../types/User';
+import { CurrentUser } from '../types/User';
+import { isError } from '../utils/constants';
 import { getCacheUser } from '../utils/user_service';
 import './UserProfile';
 import UserProfile from './UserProfile';
@@ -17,7 +18,7 @@ export default function Home({
   activePage: number;
   setActivePage: Function;
 }) {
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<CurrentUser>();
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -27,11 +28,11 @@ export default function Home({
     if (token !== null) {
       getCacheUser({ jwt_token: JSON.parse(token) })
         .then((content) => {
-          if (content.hasOwnProperty('error')) {
+          if (isError(content)) {
             localStorage.removeItem('jwt-token');
             navigate('/login');
           } else {
-            const curUser: User = content;
+            const curUser = content as CurrentUser;
             setUser(curUser);
           }
         })

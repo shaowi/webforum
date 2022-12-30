@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import TransitionModal from '../components/TransitionModal';
+import { isError } from '../utils/constants';
 import { resetPassword } from '../utils/user_service';
 
 export default function ResetPassword() {
@@ -35,7 +36,7 @@ export default function ResetPassword() {
 
     resetPassword(values)
       .then((content) => {
-        if ('error' in content) {
+        if (isError(content)) {
           setShowError(true);
         } else {
           setShowChanged(true);

@@ -1,13 +1,14 @@
 import { PostCardProps } from '../types/Post';
+import { Token, UserSignIn, UserSignUp } from '../types/User';
 import { API_HOST_POPULARITY, API_HOST_USER } from './constants';
 import { getRequest, postRequest } from './request_service';
 
-async function getCacheUser(token: any): Promise<any> {
+async function getCacheUser(token: Token): Promise<unknown> {
   const res = await postRequest(API_HOST_USER, token);
   return res.json();
 }
 
-async function getUserStats(token: any): Promise<any> {
+async function getUserStats(token: Token): Promise<unknown> {
   const res = await postRequest(`${API_HOST_USER}/userstats`, token);
   return res.json();
 }
@@ -20,39 +21,30 @@ async function getUserStatsForAPost(
   return res.json();
 }
 
-async function signIn(userInfo: {
-  email: string;
-  password: string;
-}): Promise<any> {
-  const response = await postRequest(`${API_HOST_USER}/login`, userInfo);
+async function signIn(user: UserSignIn): Promise<unknown> {
+  const response = await postRequest(`${API_HOST_USER}/login`, user);
   return response.json();
 }
 
-async function signUp(newUser: {
-  email: string;
-  password: string;
-  name: string;
-  access_type: string;
-  avatar_color: string;
-}): Promise<any> {
+async function signUp(newUser: UserSignUp): Promise<unknown> {
   const response = await postRequest(`${API_HOST_USER}/register`, newUser);
   return response.json();
 }
 
-async function resetPassword(data: { email: string }): Promise<any> {
+async function resetPassword(data: { email: string }): Promise<unknown> {
   const response = await postRequest(`${API_HOST_USER}/resetpassword`, data);
   return response.json();
 }
 
-async function changePassword(data: {
-  email: string;
-  password: string;
-}): Promise<any> {
-  const response = await postRequest(`${API_HOST_USER}/changepassword`, data);
+async function changePassword(user: UserSignIn): Promise<unknown> {
+  const response = await postRequest(`${API_HOST_USER}/changepassword`, user);
   return response.json();
 }
 
-async function changeName(data: { email: string; name: string }): Promise<any> {
+async function changeName(data: {
+  email: string;
+  name: string;
+}): Promise<unknown> {
   const response = await postRequest(`${API_HOST_USER}/changename`, data);
   return response.json();
 }

@@ -4,7 +4,8 @@ import '../App.css';
 import TransitionModal from '../components/TransitionModal';
 import ModalForm from '../components/user/ModalForm';
 import UserCardImage from '../components/user/UserCardImage';
-import { User, UserCardImageProps } from '../types/User';
+import { CurrentUser, UserCardImageProps, UserStats } from '../types/User';
+import { isError } from '../utils/constants';
 import {
   changeName,
   changePassword,
@@ -15,7 +16,7 @@ export default function UserProfile({
   user,
   setUser
 }: {
-  user: User;
+  user: CurrentUser;
   setUser: Function;
 }) {
   const [changedMessage, setChangedMessage] = useState('');
@@ -36,15 +37,16 @@ export default function UserProfile({
       setLoading(true);
       getUserStats({ jwt_token: JSON.parse(token) })
         .then((content) => {
-          if ('error' in content) {
+          if (isError(content)) {
             setShowError(true);
           } else {
+            const userStats = content as UserStats;
             setUserInfo({
               user,
               stats: [
-                { value: content.views, label: 'Viewed' },
-                { value: content.likes, label: 'Liked' },
-                { value: content.mades, label: 'Made' }
+                { value: userStats.views, label: 'Viewed' },
+                { value: userStats.likes, label: 'Liked' },
+                { value: userStats.mades, label: 'Made' }
               ]
             });
           }
@@ -78,8 +80,8 @@ export default function UserProfile({
     let res;
     if (type === 0) {
       res = changePassword(Object.assign(data, { password: input }));
-      res.then((content: any) => {
-        if ('error' in content) {
+      res.then((content) => {
+        if (isError(content)) {
           setShowError(true);
         } else {
           setShowChanged(true);
@@ -88,11 +90,11 @@ export default function UserProfile({
       });
     } else {
       res = changeName(Object.assign(data, { name: input }));
-      res.then((content: any) => {
-        if ('error' in content) {
+      res.then((content) => {
+        if (isError(content)) {
           setShowError(true);
         } else {
-          setUser((curUser: User) => {
+          setUser((curUser: CurrentUser) => {
             curUser.name = input;
             return curUser;
           });

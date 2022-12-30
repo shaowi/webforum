@@ -13,7 +13,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import '../App.css';
 import TransitionModal from '../components/TransitionModal';
-import { getRandomColors } from '../utils/constants';
+import { Token } from '../types/User';
+import { getRandomColors, isError } from '../utils/constants';
 import { signIn, signUp } from '../utils/user_service';
 
 export default function Register() {
@@ -63,19 +64,19 @@ export default function Register() {
 
     signUp(newUser)
       .then((content) => {
-        if ('error' in content) {
+        if (isError(content)) {
           setShowError(true);
         } else {
           signIn({
             email,
             password
           }).then((content) => {
-            if ('error' in content) {
+            if (isError(content)) {
               navigate('/login');
             } else {
               localStorage.setItem(
                 'jwt-token',
-                JSON.stringify(content.jwt_token)
+                JSON.stringify((content as Token).jwt_token)
               );
               navigate('/');
             }

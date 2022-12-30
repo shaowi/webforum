@@ -1,5 +1,5 @@
 import { CommentCardProps } from '../types/Comment';
-import { User } from '../types/User';
+import { CurrentUser } from '../types/User';
 import { API_HOST_COMMENT } from './constants';
 import { convertUnixTSToDT } from './post_service';
 import { getRequest, postRequest } from './request_service';
@@ -31,7 +31,7 @@ function convertToCommentCard({
   comment_id: number;
   created_dt: number;
   content: string;
-  user: User;
+  user: CurrentUser;
 }): CommentCardProps {
   return {
     posted_on: convertUnixTSToDT(created_dt),

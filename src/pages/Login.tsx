@@ -14,6 +14,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../App.css';
 import TransitionModal from '../components/TransitionModal';
+import { Token } from '../types/User';
+import { isError } from '../utils/constants';
 import { signIn } from '../utils/user_service';
 
 export default function Login() {
@@ -41,10 +43,13 @@ export default function Login() {
 
     signIn(values)
       .then((content) => {
-        if ('error' in content) {
+        if (isError(content)) {
           setShowError(true);
         } else {
-          localStorage.setItem('jwt-token', JSON.stringify(content.jwt_token));
+          localStorage.setItem(
+            'jwt-token',
+            JSON.stringify((content as Token).jwt_token)
+          );
           navigate('/');
         }
       })

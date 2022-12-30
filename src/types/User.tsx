@@ -1,4 +1,4 @@
-interface User {
+interface CurrentUser {
   user_id: number;
   email: string;
   name: string;
@@ -6,8 +6,19 @@ interface User {
   avatar_color: string;
 }
 
+interface UserSignIn {
+  email: string;
+  password: string;
+}
+
+interface UserSignUp extends UserSignIn {
+  name: string;
+  access_type: string;
+  avatar_color: string;
+}
+
 interface UserCardImageProps {
-  user: User;
+  user: CurrentUser;
   stats: { label: string; value: string }[];
 }
 
@@ -18,4 +29,22 @@ interface Author {
   avatar_color: string;
 }
 
-export type { User, UserCardImageProps, Author };
+interface Token {
+  jwt_token: string;
+}
+
+interface UserStats {
+  views: string;
+  likes: string;
+  mades: string;
+}
+
+export type {
+  CurrentUser,
+  UserStats,
+  UserSignIn,
+  UserSignUp,
+  UserCardImageProps,
+  Author,
+  Token
+};

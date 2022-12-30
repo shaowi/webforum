@@ -20,7 +20,7 @@ import {
 import { useEffect, useState } from 'react';
 import '../../App.css';
 import { PostCardProps } from '../../types/Post';
-import { Author, User } from '../../types/User';
+import { Author, CurrentUser } from '../../types/User';
 import { createComment, removeComment } from '../../utils/comment_service';
 import { capitalize, lowerCaseStrArrays } from '../../utils/constants';
 import {
@@ -39,7 +39,7 @@ import { accountLikes } from '../../utils/user_service';
 import TransitionModal from '../TransitionModal';
 import PostCard from './PostCard';
 
-export default function HistoryPostContainer({ user }: { user: User }) {
+export default function HistoryPostContainer({ user }: { user: CurrentUser }) {
   const useStyles = createStyles((_) => ({}));
   const { theme } = useStyles();
   const curUser: Author = {

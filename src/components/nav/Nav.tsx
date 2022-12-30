@@ -13,7 +13,7 @@ export default function Nav({
 }: {
   setUser: Function;
   activePage: Number;
-  setActivePage: any;
+  setActivePage: Function;
 }) {
   const navIcons = [
     { icon: IconHome2, label: 'Home' },

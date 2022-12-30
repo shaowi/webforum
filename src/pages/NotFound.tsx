@@ -7,8 +7,7 @@ import {
   Text,
   Title
 } from '@mantine/core';
-import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import image from '../assets/image.svg';
 
 const useStyles = createStyles((theme) => ({
@@ -46,11 +45,9 @@ const useStyles = createStyles((theme) => ({
 
 export default function NotFound() {
   const { classes } = useStyles();
-  const [redirectToHome, setRedirectToHome] = useState(false);
+  const navigate = useNavigate();
 
-  return redirectToHome ? (
-    <Navigate to="/" />
-  ) : (
+  return (
     <div className="centered">
       <Container className={classes.root}>
         <SimpleGrid
@@ -71,7 +68,7 @@ export default function NotFound() {
               size="md"
               mt="xl"
               className={classes.control}
-              onClick={() => setRedirectToHome(true)}
+              onClick={() => navigate('/')}
             >
               Get back to home page
             </Button>
