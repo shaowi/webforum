@@ -349,6 +349,9 @@ export default function PostContainer({
               <Select
                 label="Sort By"
                 placeholder="Pick one"
+                transitionDuration={150}
+                transition="pop-top-left"
+                transitionTimingFunction="ease"
                 value={sortBy}
                 onChange={(v: string) => sortPosts(v, orderByAsc)}
                 data={[
