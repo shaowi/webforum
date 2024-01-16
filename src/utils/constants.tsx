@@ -1,6 +1,6 @@
 import { ErrorResponse } from '../types/Other';
 
-export const API_HOST = 'https://webforumrestfulapi.up.railway.app/api';
+export const API_HOST = 'http://localhost:3000/api';
 export const API_HOST_USER = `${API_HOST}/user`;
 export const API_HOST_POST = `${API_HOST}/post`;
 export const API_HOST_POST_HISTORY = `${API_HOST_POST}/history`;
